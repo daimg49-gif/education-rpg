@@ -1,0 +1,23 @@
+const { chromium } = require('playwright');
+const fs = require('fs');
+(async()=>{
+ const browser=await chromium.launch({headless:true});
+ const page=await browser.newPage({viewport:{width:390,height:844},isMobile:true,hasTouch:true});
+ const errors=[];page.on('pageerror',e=>errors.push(e.message));
+ await page.goto('file://'+process.cwd()+'/index.html');
+ await page.waitForSelector('#game');
+ const title=await page.locator('h1').innerText();
+ if(!title.includes('校園真相調查局'))throw Error('Missing game title');
+ await page.locator('[data-dir=right]').dispatchEvent('pointerdown',{pointerId:1});
+ await page.locator('[data-dir=right]').dispatchEvent('pointerup',{pointerId:1});
+ await page.locator('#interact').click();
+ if(errors.length)throw Error('JavaScript errors: '+errors.join('; '));
+ const stored=await page.evaluate(()=>Object.keys(localStorage).filter(k=>k.startsWith('education-rpg')));
+ if(!stored.length)throw Error('Save did not persist');
+ await page.reload();
+ if(errors.length)throw Error('Reload errors: '+errors.join('; '));
+ await page.locator('#reset').click();
+ page.once('dialog',d=>d.accept());
+ console.log('PASS: page loads, movement, interaction, persistence, reload, reset controls');
+ await browser.close();
+})().catch(e=>{console.error(e);process.exit(1);});
