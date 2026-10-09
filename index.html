@@ -240,6 +240,18 @@ else{ctx.fillStyle='#394d63';ctx.fillRect(px+12,py+11,16,8);}
 const near=scenes[state.scene].objects.find(o=>Math.abs(o.x-state.x)<=1&&Math.abs(o.y-state.y)<=1);
 if(near){const px=near.x*T+20,py=near.y*T-24;ctx.fillStyle='#fff1b6';ctx.fillRect(px-16,py-16,32,23);ctx.fillStyle='#202b39';ctx.font='bold 15px sans-serif';ctx.textAlign='center';ctx.fillText('!',px,py);ctx.strokeStyle='#ffeb88';ctx.lineWidth=3;ctx.strokeRect(near.x*T+2,near.y*T+2,36,36);ctx.lineWidth=1;}
 ctx.fillStyle='#172633';ctx.fillRect(0,360,640,24);ctx.fillStyle='#fff';ctx.textAlign='left';ctx.font='14px sans-serif';ctx.fillText(near?'可調查：'+near.label+'｜按調查／對話':'場景：'+scenes[state.scene].name+'｜黃色門口切換場景',12,377);
+// Compass mini-map: world positions never rotate between rooms.
+const mx=544,my=32;
+ctx.fillStyle='#192d38d9';ctx.fillRect(mx-47,my-20,94,92);
+ctx.strokeStyle='#d8b985';ctx.strokeRect(mx-47,my-20,94,92);
+for(let i=0;i<campusPositions.length;i++){
+ const [cx,cy]=campusPositions[i],x=mx+cx*26,y=my+cy*25;
+ ctx.fillStyle=i===state.scene?'#f5d08a':'#759b9b';
+ ctx.fillRect(x-9,y-8,18,16);
+ ctx.fillStyle='#233341';ctx.font='bold 10px sans-serif';ctx.textAlign='center';
+ ctx.fillText(['圖','教','刊','廊','檔'][i],x,y+4);
+}
+ctx.fillStyle='#fff0c6';ctx.font='10px sans-serif';ctx.fillText('北 ↑',mx,my-11);
 sceneTitle.textContent=scenes[state.scene].name;inv.replaceChildren();if(!state.found.length){inv.textContent='尚未蒐集資料';}else{state.found.forEach(id=>{const b=document.createElement('button');b.textContent='📄 '+(names[id]||id);b.style.margin='4px';b.style.fontSize='13px';b.onclick=()=>review(id);inv.appendChild(b);});}status.textContent='已蒐集 '+state.found.length+' 項資料｜已發表 '+state.publications.length+' 篇版本';
 const tasks=[['走訪圖書館',state.found.some(x=>['stats','notice','teacher'].includes(x))],['走訪四年級教室',state.found.some(x=>['hua','ming','class'].includes(x))],['前往校刊社發表',state.publications.length>0],['發表後回訪一位受訪者',state.followups.length>0],['重新編輯並發表第二版',state.publications.length>1]];
 quest.textContent=tasks.map(([t,done])=>(done?'☑ ':'☐ ')+t).join('　｜　');
