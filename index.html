@@ -2,10 +2,10 @@
 <html lang="zh-Hant"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><title>校園真相調查局</title>
 <style>
 *{box-sizing:border-box}body{margin:0;background:#171f2c;color:#f4ebd7;font-family:system-ui,-apple-system,sans-serif}header{padding:14px 16px;background:#243349;display:flex;justify-content:space-between;align-items:center;gap:10px}h1{font-size:20px;margin:0}small{color:#bfcddd}button{touch-action:none;user-select:none;-webkit-user-select:none;background:#365371;color:white;border:2px solid #7994ad;border-radius:12px;padding:12px 16px;font-size:17px;font-weight:700}main{max-width:850px;margin:auto;padding:12px}canvas{display:block;width:100%;height:auto;image-rendering:pixelated;background:#273d49;border:5px solid #637d8f;border-radius:12px}.controls{display:flex;justify-content:space-between;align-items:center;margin:12px 0;gap:12px}.pad{display:grid;grid-template-columns:repeat(3,56px);gap:4px}.pad button{padding:8px 0;height:52px}.pad .up{grid-column:2}.pad .left{grid-column:1}.pad .down{grid-column:2}.pad .right{grid-column:3;grid-row:2}.pad .left,.pad .down{grid-row:2}.interact{background:#9b7141;border-color:#d8ac6b;color:#fff4e2}section{background:#26364b;padding:16px;border:1px solid #647f96;border-radius:14px;line-height:1.7;margin-top:12px}#message{min-height:110px}#choices{display:flex;flex-wrap:wrap;gap:8px;margin-top:12px}#choices button{font-size:15px}#inventory{font-size:14px;color:#cddde8}#status{font-size:13px;color:#c4d5e5}.tip{font-size:13px;color:#cbd7e4}#message{white-space:pre-line}#quest{line-height:2}#history{display:grid;gap:9px;margin-top:8px}.record{padding:10px;border-radius:9px;background:#1b2939;border:1px solid #526b81;font-size:14px}.record strong{color:#f3dca9}.tabs{display:flex;gap:8px;flex-wrap:wrap;margin:8px 0}.tabs button{font-size:14px;padding:8px 12px}.modal-note{color:#e6c68c;font-size:13px}body{background:radial-gradient(ellipse at 50% 0%,#354d57 0%,#111a27 72%)}header{background:linear-gradient(120deg,#334a57,#263447);border-bottom:3px solid #b18a5e;box-shadow:0 5px 20px #0005}h1{letter-spacing:.04em;text-shadow:2px 2px #142433}section{background:linear-gradient(150deg,#2c4152,#202f42);border-color:#71818a;box-shadow:0 5px 0 #111d2b,0 8px 18px #0003}section>strong{display:block;color:#f6d59d;font-size:18px;margin-bottom:8px}button{box-shadow:0 4px 0 #182b3c;transition:filter .12s,transform .12s}button:active{transform:translateY(3px);box-shadow:0 1px 0 #182b3c}button:focus-visible{outline:3px solid #f9d68c;outline-offset:3px}canvas{border:6px ridge #b28e67;box-shadow:0 9px 0 #152430,0 14px 30px #0007}.interact{background:linear-gradient(#bd8b4c,#936539)}#message{font-size:16px;line-height:1.85}.record{border-left:4px solid #bba078}.tip{margin-top:7px}@media(max-width:420px){header{padding:12px 10px}h1{font-size:17px}main{padding:9px}.pad{grid-template-columns:repeat(3,51px)}.pad button{height:50px}section{padding:13px}button{font-size:15px;padding:11px 12px}}#error{color:#ffb4a7;white-space:pre-wrap}.document{background:#f3e8cc;color:#302a23;border:3px double #8a7357;border-radius:7px;padding:14px;margin:8px 0;box-shadow:2px 3px 0 #151c28}.document strong{color:#563e2b}.document small{color:#6b5645}.document button{font-size:13px;padding:6px 10px}.story-panel{background:#1c2a39;border-left:4px solid #e0ba70;padding:12px;margin:10px 0}.story-panel button{margin:4px 5px 4px 0;font-size:14px}.panel-heading{font-size:17px;color:#f5db9d}.hint{font-size:13px;color:#c3d6df}</style></head><body>
-<header><div><h1>校園真相調查局 <small>v2.1</small></h1><small>探索資料・訪談人物・撰寫校刊報導</small></div><button id="reset">重新開始</button></header>
+<header><div><h1>校園真相調查局 <small>v2.5</small></h1><small>探索資料・訪談人物・撰寫校刊報導</small></div><button id="reset">重新開始</button></header>
 <main><canvas id="game" width="640" height="384" aria-label="遊戲地圖"></canvas>
 <div class="controls"><div class="pad"><button class="up" data-dir="up">▲</button><button class="left" data-dir="left">◀</button><button class="down" data-dir="down">▼</button><button class="right" data-dir="right">▶</button></div><button class="interact" id="interact">調查／對話</button></div>
-<div class="tip">方向鍵或 WASD 移動；接近物件後按「調查／對話」。黃色區域可切換場景。</div>
+<div class="tip">方向鍵或 WASD 移動；走向地圖四周標示的出口切換空間。靠近人物或文件可調查。</div>
 <section><strong id="sceneTitle">圖書館</strong><div id="message">你是校刊社的小編。校園群組正在轉傳：「閱讀週讓四年級借閱量翻倍，閱讀能力全面提升！」請蒐集資料，完成一篇報導。</div><div id="choices"></div></section>
 <section><strong>事件紀錄板</strong><div id="board"></div></section><section><strong>調查委託與進度</strong><div id="quest"></div></section><section><strong>讀者來信</strong><div id="letters"></div></section><section><strong>校刊版本紀錄</strong><div id="history"></div></section><section><strong>調查資料</strong><div id="inventory">尚未蒐集資料</div><div id="status"></div></section><div id="error"></div></main>
 <script>
@@ -13,16 +13,18 @@
 'use strict';
 const cv=document.getElementById('game'),ctx=cv.getContext('2d'),msg=document.getElementById('message'),choices=document.getElementById('choices'),inv=document.getElementById('inventory'),status=document.getElementById('status'),sceneTitle=document.getElementById('sceneTitle');
 const W=16,H=9,T=40;
+const routes=[{right:3,down:4},{left:3,down:0},{left:3,up:4},{left:0,right:1,up:2,down:4},{up:3,right:0}];
+const routeNames={left:'西側',right:'東側',up:'北側',down:'南側'};
 const quest=document.getElementById('quest'),history=document.getElementById('history'),letters=document.getElementById('letters'),board=document.getElementById('board');
 let animationFrame=0;
 const decor=[
 [{x:1,y:1,w:3,h:1,c:'#806149'},{x:11,y:1,w:3,h:1,c:'#806149'},{x:10,y:6,w:3,h:1,c:'#6b8a79'}],
 [{x:1,y:1,w:3,h:1,c:'#947a5d'},{x:11,y:1,w:3,h:1,c:'#947a5d'},{x:10,y:6,w:3,h:1,c:'#947a5d'}],
-[{x:1,y:1,w:3,h:1,c:'#6d6b82'},{x:11,y:1,w:3,h:1,c:'#6d6b82'},{x:10,y:6,w:3,h:1,c:'#6d6b82'}]
+[{x:1,y:1,w:3,h:1,c:'#6d6b82'},{x:11,y:1,w:3,h:1,c:'#6d6b82'},{x:10,y:6,w:3,h:1,c:'#6d6b82'}],[],[]
 ];
 function blocked(scene,x,y){
 if(x<1||x>14||y<1||y>7)return true;
-if((x===1||x===14)&&y>=3&&y<=5)return false;
+if(((x===1||x===14)&&y>=3&&y<=5)||((y===1||y===7)&&x>=7&&x<=8))return false;
 return scenes[scene].objects.some(o=>o.x===x&&o.y===y);
 }
 function rect(x,y,w,h,c){ctx.fillStyle=c;ctx.fillRect(x,y,w,h);}
@@ -30,10 +32,10 @@ function outline(x,y,w,h,c='#382e38'){rect(x-2,y-2,w+4,h+4,c);}
 function book(x,y,c){outline(x,y,10,14);rect(x,y,10,14,c);rect(x+2,y+2,2,10,'#e6cf9c');}
 function roomArt(){
 const scene=state.scene;
-const wall=['#344d54','#516b66','#4b4a67'][scene],trim=['#8f7759','#7b9b88','#8d829f'][scene];
+const wall=['#344d54','#516b66','#4b4a67','#465965','#504c48'][scene],trim=['#8f7759','#7b9b88','#8d829f','#8ea1a9','#b5a078'][scene];
 rect(0,0,640,360,wall);
-rect(16,16,608,327,['#c9aa80','#b2c4ad','#b8b4c9'][scene]);
-for(let y=0;y<9;y++)for(let x=0;x<16;x++){const tx=x*40,ty=y*40;rect(tx+1,ty+1,38,38,(x+y)%2?['#d7b68a','#b9cfb6','#c2bed2'][scene]:['#c9a47a','#adc2ac','#b4b0c7'][scene]);rect(tx+2,ty+36,36,2,'rgba(41,39,47,.10)');}
+rect(16,16,608,327,['#c9aa80','#b2c4ad','#b8b4c9','#b8c7c6','#b8aa90'][scene]);
+for(let y=0;y<9;y++)for(let x=0;x<16;x++){const tx=x*40,ty=y*40;rect(tx+1,ty+1,38,38,(x+y)%2?['#d7b68a','#b9cfb6','#c2bed2','#cbd8d5','#cbb99b'][scene]:['#c9a47a','#adc2ac','#b4b0c7','#b3c7c7','#b8a688'][scene]);rect(tx+2,ty+36,36,2,'rgba(41,39,47,.10)');}
 rect(0,0,640,25,wall);rect(0,325,640,35,wall);rect(0,0,22,360,wall);rect(618,0,22,360,wall);
 for(let i=0;i<13;i++){rect(30+i*45,17,28,5,trim);rect(30+i*45,333,28,5,trim);}
 rect(0,139,27,87,'#e8c77b');rect(613,139,27,87,'#e8c77b');
@@ -47,10 +49,21 @@ rect(260,38,118,48,'#6b4f3b');rect(267,44,104,36,'#f2dcaa');rect(276,54,86,4,'#b
 for(const x of [54,445]){outline(x,47,129,57);rect(x,47,129,57,'#92745a');for(let i=0;i<3;i++){rect(x+8+i*41,56,32,30,'#f4e1b6');rect(x+10+i*41,59,28,4,'#d39a72');rect(x+10+i*41,68,22,3,'#7e9b88');}rect(x,90,129,8,'#5e483b');}
 outline(418,251,115,47);rect(418,251,115,47,'#93735a');rect(426,259,40,28,'#efe0b5');rect(480,259,42,28,'#e6b67e');rect(487,266,28,4,'#886f60');
 rect(268,35,118,51,'#385d52');rect(275,42,104,37,'#568a76');rect(286,53,81,4,'#e9e1bd');rect(300,64,52,4,'#e9e1bd');
-}else{
+}else if(scene===2){
 for(const x of [51,447]){outline(x,47,133,59);rect(x,47,133,59,'#705e73');rect(x+7,54,119,45,'#ded4bd');rect(x+12,61,80,5,'#b58e75');rect(x+12,72,105,4,'#8c879d');rect(x+12,83,91,4,'#8c879d');}
 outline(406,247,134,51);rect(406,247,134,51,'#715c69');rect(416,257,64,34,'#c6c0aa');rect(485,257,43,32,'#494a5e');rect(491,262,31,22,'#8294a3');
 rect(250,39,136,47,'#6d586b');rect(258,46,120,33,'#f2dbac');rect(270,54,96,4,'#a88c81');rect(270,65,71,4,'#a88c81');
+}else if(scene===3){
+// Outdoor covered corridor: garden, windows, lockers and distinct stone walkway.
+rect(25,25,590,108,'#8bb5b0');rect(25,25,590,28,'#c7e3db');for(let i=0;i<11;i++){const x=38+i*54;rect(x,50,4,80,'#547d79');rect(x+9,80,37,45,i%2?'#80a999':'#6e9c8b');rect(x+15,60,24,28,'#a7d4be');}
+rect(24,220,592,105,'#8a9c93');for(let i=0;i<9;i++){rect(40+i*67,232,52,77,i%2?'#a5b1a4':'#b6c1b1');rect(48+i*67,240,37,6,'#d8cfad');}
+rect(250,45,139,62,'#d9c79b');rect(260,55,119,42,'#426d77');rect(270,66,98,5,'#e8e2c6');rect(284,79,69,5,'#e8e2c6');
+}else{
+// Records archive: tall filing cabinets, paper boxes and amber desk lamp.
+rect(38,37,178,95,'#5d5347');rect(45,44,164,81,'#8c7b63');for(let i=0;i<4;i++){rect(52+i*39,50,32,67,'#c2b49b');rect(56+i*39,55,24,7,'#6f6153');rect(62+i*39,77,12,5,'#a28a68');}
+rect(432,37,167,94,'#64574b');for(let i=0;i<4;i++){rect(441+i*37,47,31,74,'#a89475');rect(445+i*37,54,23,10,'#d3c4a6');rect(451+i*37,91,11,5,'#6c5d4d');}
+rect(405,249,144,49,'#765d48');rect(415,257,118,30,'#d2bd94');rect(464,241,12,18,'#715d4c');rect(453,234,34,12,'#efc971');rect(461,246,18,6,'#fff0a9');
+rect(251,35,134,50,'#675c4f');rect(258,42,120,36,'#f0e1bf');rect(271,52,96,4,'#927f66');rect(271,64,75,4,'#927f66');
 }
 }
 function sprite(x,y,color,phase=0){
@@ -72,12 +85,14 @@ if(o.id==='editor'){ctx.fillStyle='#c9a57a';ctx.fillRect(x+1,y+29,38,7);}
 const scenes=[
 {name:'圖書館',floor:'#c6a87c',objects:[{x:3,y:2,label:'借閱統計表',id:'stats',text:'四年級借閱統計：活動前一週 80 冊，閱讀週 164 冊。資料由圖書館借閱系統匯出。'},{x:8,y:2,label:'閱讀週公告',id:'notice',text:'閱讀週活動：每借閱一本書可獲得一點，集滿五點可兌換書籤。活動期間為星期一至星期五。'},{x:5,y:6,label:'黃小米老師',id:'teacher',text:'黃小米老師：我們整理的是借出冊數，活動週從星期一到星期五。'}]},
 {name:'四年級教室',floor:'#a8c5b4',objects:[{x:3,y:2,label:'小華',id:'hua',text:'小華：我借了六本，有兩本已經讀完，其他還放在書包裡。'},{x:8,y:3,label:'明明',id:'ming',text:'明明：我和同學一起參加集點，還交換推薦的書單。'},{x:5,y:6,label:'班級閱讀紀錄',id:'class',text:'四年級閱讀紀錄：本週完成心得分享的學生共 12 人；上週共 9 人。'}]},
-{name:'校刊社',floor:'#b4b8d2',objects:[{x:4,y:3,label:'校刊編輯桌',id:'editor',text:'編輯桌上放著三份候選標題。你可以決定要發表哪一篇報導。'},{x:9,y:5,label:'群組訊息',id:'rumor',text:'校園群組貼文：「閱讀週讓四年級借閱量翻倍，閱讀能力全面提升！」貼文未附原始統計資料。'}]}
+{name:'校刊社',floor:'#b4b8d2',objects:[{x:4,y:3,label:'校刊編輯桌',id:'editor',text:'編輯桌上放著三份候選標題。你可以決定要發表哪一篇報導。'},{x:9,y:5,label:'群組訊息',id:'rumor',text:'校園群組貼文：「閱讀週讓四年級借閱量翻倍，閱讀能力全面提升！」貼文未附原始統計資料。'}]},
+{name:'校園走廊',floor:'#b8c7c6',objects:[{x:5,y:2,label:'活動看板',id:'billboard',text:'活動看板：閱讀週週一開幕，週五集點兌換。公布欄貼著各班閱讀小隊的活動照片。'},{x:11,y:6,label:'走廊留言',id:'hallnote',text:'走廊便利貼：「有人借了好多書！」「我推薦的那本終於被借走了。」署名：四年級閱讀小隊。'}]},
+{name:'資料室',floor:'#b8aa90',objects:[{x:4,y:3,label:'舊校刊合訂本',id:'archive',text:'校刊社資料室：去年的閱讀活動也曾出現借閱冊數上升的新聞。附錄只列了借閱量，沒有列閱讀測驗成績。'},{x:10,y:5,label:'紀錄整理簿',id:'ledger',text:'借閱資料整理簿：本次活動由四年級閱讀小隊小華、明明、阿甘協助整理，指導老師黃小米。整理方式：按借閱系統日期篩選星期一至星期五，計算借出冊數。'}]}
 ];
-const names={stats:'借閱統計表',notice:'閱讀週公告',teacher:'黃小米老師訪談',hua:'小華訪談',ming:'明明訪談',class:'班級閱讀紀錄',rumor:'群組訊息'};
-const documentIds=new Set(['stats','notice','class','rumor']);
+const names={stats:'借閱統計表',notice:'閱讀週公告',teacher:'黃小米老師訪談',hua:'小華訪談',ming:'明明訪談',class:'班級閱讀紀錄',rumor:'群組訊息',billboard:'活動看板',hallnote:'走廊留言',archive:'舊校刊合訂本',ledger:'紀錄整理簿'};
+const documentIds=new Set(['stats','notice','class','rumor','billboard','hallnote','archive','ledger']);
 let state={scene:0,x:2,y:4,found:[],ending:null,citations:[],headline:null,publications:[],followups:[],readerLetters:[],direction:'down',introSeen:false,chapterDone:false,boardNotes:[],bodyChoice:0};
-try{let old=JSON.parse(localStorage.getItem('education-rpg-v21')||localStorage.getItem('education-rpg-v20')||localStorage.getItem('education-rpg-v16')||localStorage.getItem('education-rpg-v15')||localStorage.getItem('education-rpg-v12')||localStorage.getItem('education-rpg-v11')||localStorage.getItem('education-rpg-v10')||localStorage.getItem('education-rpg-v09')||localStorage.getItem('education-rpg-v03'));if(old&&Number.isInteger(old.scene)&&old.scene>=0&&old.scene<3)state={...state,...old};}catch(e){}
+try{let old=JSON.parse(localStorage.getItem('education-rpg-v25')||localStorage.getItem('education-rpg-v21')||localStorage.getItem('education-rpg-v20')||localStorage.getItem('education-rpg-v16')||localStorage.getItem('education-rpg-v15')||localStorage.getItem('education-rpg-v12')||localStorage.getItem('education-rpg-v11')||localStorage.getItem('education-rpg-v10')||localStorage.getItem('education-rpg-v09')||localStorage.getItem('education-rpg-v03'));if(old&&Number.isInteger(old.scene)&&old.scene>=0&&old.scene<5)state={...state,...old};}catch(e){}
 if(!Array.isArray(state.publications))state.publications=[];if(typeof state.introSeen!=='boolean')state.introSeen=false;if(typeof state.chapterDone!=='boolean')state.chapterDone=false;if(!Array.isArray(state.readerLetters))state.readerLetters=[];if(!Array.isArray(state.boardNotes))state.boardNotes=[];if(!Number.isInteger(state.bodyChoice))state.bodyChoice=0;if(!['up','down','left','right'].includes(state.direction))state.direction='down';if(!Array.isArray(state.followups))state.followups=[];if(!Array.isArray(state.found))state.found=[];if(!Array.isArray(state.citations))state.citations=[];
 function save(){try{localStorage.setItem('education-rpg-v20',JSON.stringify(state));}catch(e){}}
 function say(t){msg.textContent=t;choices.replaceChildren();}
@@ -122,7 +137,15 @@ return;
 function draw(){
 ctx.clearRect(0,0,640,384);roomArt();
 ctx.fillStyle='#fff0c6';ctx.font='bold 12px sans-serif';ctx.textAlign='center';
-ctx.fillText('← 校園走廊',70,131);ctx.fillText('校園走廊 →',563,131);
+const links=routes[state.scene];
+for(const [dir,target] of Object.entries(links)){
+let x=320,y=180;
+if(dir==='left'){x=67;y=132;}if(dir==='right'){x=573;y=132;}if(dir==='up'){x=320;y=31;}if(dir==='down'){x=320;y=320;}
+ctx.fillStyle='#293a46';ctx.fillRect(x-62,y-13,124,24);ctx.fillStyle='#ffe3a4';
+ctx.fillText(({left:'← ',right:'→ ',up:'↑ ',down:'↓ '})[dir]+scenes[target].name,x,y+4);
+}
+if(links.up){rect(280,4,80,26,'#d5a765');rect(289,7,62,18,'#ffe3a4');}
+if(links.down){rect(280,332,80,24,'#d5a765');rect(289,336,62,14,'#ffe3a4');}
 for(const o of scenes[state.scene].objects){const px=o.x*T,py=o.y*T;prop(o);ctx.fillStyle='#26303a';ctx.fillRect(px-26,py-21,92,18);ctx.fillStyle='#fff2d2';ctx.font='bold 11px sans-serif';ctx.textAlign='center';ctx.fillText(o.label,px+20,py-8);}
 // Pixel-art investigator with direction indicator, bag and face
 const px=state.x*T,py=state.y*T;
@@ -172,7 +195,25 @@ const detail=document.createElement('div');detail.textContent='引用：'+((pub.
 const b=document.createElement('button');b.textContent='閱讀這一版';b.style.fontSize='13px';b.style.padding='6px 10px';b.onclick=()=>{say('【第 '+(i+1)+' 版】\n'+(headlines[pub.headline]||'')+'\n引用資料：'+detail.textContent.slice(3));window.scrollTo({top:document.getElementById('message').getBoundingClientRect().top+window.scrollY-70,behavior:'smooth'});};wrap.appendChild(b);history.appendChild(wrap);
 });}
 }
-function move(dx,dy){if(dx<0)state.direction='left';else if(dx>0)state.direction='right';else if(dy<0)state.direction='up';else if(dy>0)state.direction='down';let x=Math.max(1,Math.min(14,state.x+dx)),y=Math.max(1,Math.min(7,state.y+dy));if(blocked(state.scene,x,y)){draw();return;}state.x=x;state.y=y;animationFrame++;if(x===14&&y>=3&&y<=5){state.scene=(state.scene+1)%3;state.x=2;state.y=4;say('你來到'+scenes[state.scene].name+'。請接近物件進行調查。');}else if(x===1&&y>=3&&y<=5){state.scene=(state.scene+2)%3;state.x=13;state.y=4;say('你來到'+scenes[state.scene].name+'。');}save();draw();}
+function move(dx,dy){
+if(dx<0)state.direction='left';else if(dx>0)state.direction='right';else if(dy<0)state.direction='up';else if(dy>0)state.direction='down';
+let x=Math.max(1,Math.min(14,state.x+dx)),y=Math.max(1,Math.min(7,state.y+dy));
+if(blocked(state.scene,x,y)){draw();return;}
+state.x=x;state.y=y;animationFrame++;
+let exit=null;
+if(x===14&&y>=3&&y<=5)exit='right';
+else if(x===1&&y>=3&&y<=5)exit='left';
+else if(y===1&&x>=7&&x<=8)exit='up';
+else if(y===7&&x>=7&&x<=8)exit='down';
+const destination=exit&&routes[state.scene][exit];
+if(destination!==undefined){
+state.scene=destination;
+const entry={right:[2,4],left:[13,4],up:[7,6],down:[7,2]}[exit];
+state.x=entry[0];state.y=entry[1];
+say('你從'+routeNames[exit]+'通道來到「'+scenes[state.scene].name+'」。仔細看看這裡有什麼新線索。');
+}
+save();draw();
+}
 function review(id){const o=scenes.flatMap(scene=>scene.objects).find(item=>item.id===id);if(o){if(documentIds.has(id))documentView(o);else say('【'+(names[id]||o.label)+'】'+o.text);}}
 function button(label,fn){const b=document.createElement('button');b.textContent=label;b.onclick=fn;choices.appendChild(b);}
 function interact(targetId){const o=scenes[state.scene].objects.find(o=>(!targetId||o.id===targetId)&&Math.abs(o.x-state.x)<=1&&Math.abs(o.y-state.y)<=1);if(!o){say('附近沒有可調查的物件。請靠近人物或文件。');return;}let detail=o.text;
