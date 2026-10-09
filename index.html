@@ -317,7 +317,7 @@ if(state.publications.length&&['teacher','hua','ming'].includes(o.id)){
 const extra={teacher:'黃小米老師：校刊出來了啊！下週我還會匯出一份借閱紀錄。',hua:'小華：我看到校刊了。我昨天又讀完一本借來的書。',ming:'明明：我們班有人把報導貼在群組，大家都在討論。'};
 detail+='\n【發表後回訪】'+extra[o.id];if(!state.followups.includes(o.id))state.followups.push(o.id);
 }
-say(detail);if(o.id==='editor'){openEditor();}else{if(!state.found.includes(o.id))state.found.push(o.id);save();draw();if(documentIds.has(o.id))documentView(o);}}
+say(detail);if(o.id==='editor'){if(state.chapterDone){say('【校刊社】\n調查報導已經發行，主編將結案檔案放在桌上。');button('閱讀事件結案',showConclusion);button('重新編輯報導',openEditor);}else openEditor();}else{if(!state.found.includes(o.id))state.found.push(o.id);save();draw();if(documentIds.has(o.id))documentView(o);}}
 const bodyOptions=['借閱紀錄：四年級活動前一週借出80冊，閱讀週借出164冊。','學生訪談：小華借了六本、已讀完兩本；明明與同學交換推薦書單。','活動公告：閱讀週每借一本書可獲得一點，集滿五點可兌換書籤。'];
 const headlines=['閱讀週讓四年級閱讀能力全面提升！','閱讀週借閱量從80冊增加到164冊','閱讀週借閱量增加，閱讀能力提升仍待查證'];
 function openEditor(){
