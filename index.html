@@ -2,7 +2,7 @@
 <html lang="zh-Hant"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><title>校園真相調查局</title>
 <style>
 *{box-sizing:border-box}body{margin:0;background:#171f2c;color:#f4ebd7;font-family:system-ui,-apple-system,sans-serif}header{padding:14px 16px;background:#243349;display:flex;justify-content:space-between;align-items:center;gap:10px}h1{font-size:20px;margin:0}small{color:#bfcddd}button{touch-action:none;user-select:none;-webkit-user-select:none;background:#365371;color:white;border:2px solid #7994ad;border-radius:12px;padding:12px 16px;font-size:17px;font-weight:700}main{max-width:850px;margin:auto;padding:12px}canvas{display:block;width:100%;height:auto;image-rendering:pixelated;background:#273d49;border:5px solid #637d8f;border-radius:12px}.controls{display:flex;justify-content:space-between;align-items:center;margin:12px 0;gap:12px}.pad{display:grid;grid-template-columns:repeat(3,56px);gap:4px}.pad button{padding:8px 0;height:52px}.pad .up{grid-column:2}.pad .left{grid-column:1}.pad .down{grid-column:2}.pad .right{grid-column:3;grid-row:2}.pad .left,.pad .down{grid-row:2}.interact{background:#9b7141;border-color:#d8ac6b;color:#fff4e2}section{background:#26364b;padding:16px;border:1px solid #647f96;border-radius:14px;line-height:1.7;margin-top:12px}#message{min-height:110px}#choices{display:flex;flex-wrap:wrap;gap:8px;margin-top:12px}#choices button{font-size:15px}#inventory{font-size:14px;color:#cddde8}#status{font-size:13px;color:#c4d5e5}.tip{font-size:13px;color:#cbd7e4}#message{white-space:pre-line}#quest{line-height:2}#history{display:grid;gap:9px;margin-top:8px}.record{padding:10px;border-radius:9px;background:#1b2939;border:1px solid #526b81;font-size:14px}.record strong{color:#f3dca9}.tabs{display:flex;gap:8px;flex-wrap:wrap;margin:8px 0}.tabs button{font-size:14px;padding:8px 12px}.modal-note{color:#e6c68c;font-size:13px}#error{color:#ffb4a7;white-space:pre-wrap}</style></head><body>
-<header><div><h1>校園真相調查局 <small>v0.9</small></h1><small>探索資料・訪談人物・撰寫校刊報導</small></div><button id="reset">重新開始</button></header>
+<header><div><h1>校園真相調查局 <small>v1.0</small></h1><small>探索資料・訪談人物・撰寫校刊報導</small></div><button id="reset">重新開始</button></header>
 <main><canvas id="game" width="640" height="384" aria-label="遊戲地圖"></canvas>
 <div class="controls"><div class="pad"><button class="up" data-dir="up">▲</button><button class="left" data-dir="left">◀</button><button class="down" data-dir="down">▼</button><button class="right" data-dir="right">▶</button></div><button class="interact" id="interact">調查／對話</button></div>
 <div class="tip">方向鍵或 WASD 移動；接近物件後按「調查／對話」。黃色區域可切換場景。</div>
@@ -47,11 +47,23 @@ const scenes=[
 {name:'校刊社',floor:'#b4b8d2',objects:[{x:4,y:3,label:'校刊編輯桌',id:'editor',text:'編輯桌上放著三份候選標題。你可以決定要發表哪一篇報導。'},{x:9,y:5,label:'群組訊息',id:'rumor',text:'校園群組貼文：「閱讀週讓四年級借閱量翻倍，閱讀能力全面提升！」貼文未附原始統計資料。'}]}
 ];
 const names={stats:'借閱統計表',notice:'閱讀週公告',teacher:'黃小米老師訪談',hua:'小華訪談',ming:'明明訪談',class:'班級閱讀紀錄',rumor:'群組訊息'};
-let state={scene:0,x:2,y:4,found:[],ending:null,citations:[],headline:null,publications:[],followups:[],direction:'down'};
-try{let old=JSON.parse(localStorage.getItem('education-rpg-v09')||localStorage.getItem('education-rpg-v03'));if(old&&Number.isInteger(old.scene)&&old.scene>=0&&old.scene<3)state={...state,...old};}catch(e){}
-if(!Array.isArray(state.publications))state.publications=[];if(!['up','down','left','right'].includes(state.direction))state.direction='down';if(!Array.isArray(state.followups))state.followups=[];if(!Array.isArray(state.found))state.found=[];if(!Array.isArray(state.citations))state.citations=[];
+let state={scene:0,x:2,y:4,found:[],ending:null,citations:[],headline:null,publications:[],followups:[],direction:'down',introSeen:false,chapterDone:false};
+try{let old=JSON.parse(localStorage.getItem('education-rpg-v10')||localStorage.getItem('education-rpg-v09')||localStorage.getItem('education-rpg-v03'));if(old&&Number.isInteger(old.scene)&&old.scene>=0&&old.scene<3)state={...state,...old};}catch(e){}
+if(!Array.isArray(state.publications))state.publications=[];if(typeof state.introSeen!=='boolean')state.introSeen=false;if(typeof state.chapterDone!=='boolean')state.chapterDone=false;if(!['up','down','left','right'].includes(state.direction))state.direction='down';if(!Array.isArray(state.followups))state.followups=[];if(!Array.isArray(state.found))state.found=[];if(!Array.isArray(state.citations))state.citations=[];
 function save(){try{localStorage.setItem('education-rpg-v09',JSON.stringify(state));}catch(e){}}
 function say(t){msg.textContent=t;choices.replaceChildren();}
+function narrative(){
+if(!state.introSeen){
+state.introSeen=true;save();
+say('【校刊社｜截稿前三天】\n校園群組正在轉傳：「閱讀週讓四年級借閱量翻倍，閱讀能力全面提升！」\n你收到一則匿名訊息：「如果你真的想寫這件事，就去看看那些數字是怎麼來的。」\n你決定從圖書館開始調查。');
+return;
+}
+if(state.publications.length>=2&&!state.chapterDone){
+state.chapterDone=true;save();
+say('【第一章・尾聲】\n第二版校刊發行了。有人保留第一版的截圖，也有人轉傳你的新版本。\n放學前，校刊社收到另一張紙條：「你們想知道誰最先寫下那句話嗎？」\n紙條背面只有一個日期。故事還沒結束。');
+return;
+}
+}
 function draw(){
 ctx.clearRect(0,0,640,384);ctx.fillStyle=scenes[state.scene].floor;ctx.fillRect(0,0,640,360);
 for(let y=0;y<H;y++)for(let x=0;x<W;x++){ctx.strokeStyle='rgba(50,60,70,.16)';ctx.strokeRect(x*T,y*T,T,T);}
@@ -119,6 +131,7 @@ const reactions=[
 ];
 state.ending=n+1;state.publications.push({headline:n,citations:[...state.citations],timestamp:Date.now()});save();draw();
 say('【校刊已發表】\\n標題：'+headlines[n]+'\\n引用資料：'+(citations.join('、')||'未列出')+'\\n讀者回應：'+reactions[n]+'\\n你可以繼續探索、回訪人物，或回到編輯桌發表修訂版。');
+if(state.publications.length>=2){button('閱讀第一章尾聲',()=>narrative());}
 }
 const keymap={ArrowUp:[0,-1],w:[0,-1],W:[0,-1],ArrowDown:[0,1],s:[0,1],S:[0,1],ArrowLeft:[-1,0],a:[-1,0],A:[-1,0],ArrowRight:[1,0],d:[1,0],D:[1,0]};
 document.addEventListener('keydown',e=>{if(keymap[e.key]){e.preventDefault();move(...keymap[e.key]);}else if(e.key===' '||e.key==='Enter'){e.preventDefault();interact();}});
@@ -138,7 +151,7 @@ if(o&&Math.abs(o.x-state.x)<=1&&Math.abs(o.y-state.y)<=1){interact();}
 });
 
 document.getElementById('reset').onclick=()=>{if(confirm('確定清除目前進度？')){state={scene:0,x:2,y:4,found:[],ending:null,citations:[],headline:null,publications:[],followups:[],direction:'down'};save();say('新調查開始！請靠近物件並點選調查。');draw();}};
-draw();
+draw();narrative();
 window.addEventListener('error',e=>{document.getElementById('error').textContent='執行錯誤：'+e.message;});
 })();
 </script></body></html>
