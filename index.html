@@ -1,8 +1,8 @@
 <!doctype html>
 <html lang="zh-Hant"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><title>校園真相調查局</title>
 <style>
-*{box-sizing:border-box}body{margin:0;background:#171f2c;color:#f4ebd7;font-family:system-ui,-apple-system,sans-serif}header{padding:14px 16px;background:#243349;display:flex;justify-content:space-between;align-items:center;gap:10px}h1{font-size:20px;margin:0}small{color:#bfcddd}button{touch-action:none;user-select:none;-webkit-user-select:none;background:#365371;color:white;border:2px solid #7994ad;border-radius:12px;padding:12px 16px;font-size:17px;font-weight:700}main{max-width:850px;margin:auto;padding:12px}canvas{display:block;width:100%;height:auto;image-rendering:pixelated;background:#273d49;border:5px solid #637d8f;border-radius:12px}.controls{display:flex;justify-content:space-between;align-items:center;margin:12px 0;gap:12px}.pad{display:grid;grid-template-columns:repeat(3,56px);gap:4px}.pad button{padding:8px 0;height:52px}.pad .up{grid-column:2}.pad .left{grid-column:1}.pad .down{grid-column:2}.pad .right{grid-column:3;grid-row:2}.pad .left,.pad .down{grid-row:2}.interact{background:#9b7141;border-color:#d8ac6b;color:#fff4e2}section{background:#26364b;padding:16px;border:1px solid #647f96;border-radius:14px;line-height:1.7;margin-top:12px}#message{min-height:110px}#choices{display:flex;flex-wrap:wrap;gap:8px;margin-top:12px}#choices button{font-size:15px}#inventory{font-size:14px;color:#cddde8}#status{font-size:13px;color:#c4d5e5}.tip{font-size:13px;color:#cbd7e4}#message{white-space:pre-line}#quest{line-height:2}#history{display:grid;gap:9px;margin-top:8px}.record{padding:10px;border-radius:9px;background:#1b2939;border:1px solid #526b81;font-size:14px}.record strong{color:#f3dca9}.tabs{display:flex;gap:8px;flex-wrap:wrap;margin:8px 0}.tabs button{font-size:14px;padding:8px 12px}.modal-note{color:#e6c68c;font-size:13px}body{background:radial-gradient(ellipse at 50% 0%,#354d57 0%,#111a27 72%)}header{background:linear-gradient(120deg,#334a57,#263447);border-bottom:3px solid #b18a5e;box-shadow:0 5px 20px #0005}h1{letter-spacing:.04em;text-shadow:2px 2px #142433}section{background:linear-gradient(150deg,#2c4152,#202f42);border-color:#71818a;box-shadow:0 5px 0 #111d2b,0 8px 18px #0003}section>strong{display:block;color:#f6d59d;font-size:18px;margin-bottom:8px}button{box-shadow:0 4px 0 #182b3c;transition:filter .12s,transform .12s}button:active{transform:translateY(3px);box-shadow:0 1px 0 #182b3c}button:focus-visible{outline:3px solid #f9d68c;outline-offset:3px}canvas{border:6px ridge #b28e67;box-shadow:0 9px 0 #152430,0 14px 30px #0007}.interact{background:linear-gradient(#bd8b4c,#936539)}#message{font-size:16px;line-height:1.85}.record{border-left:4px solid #bba078}.tip{margin-top:7px}@media(max-width:420px){header{padding:12px 10px}h1{font-size:17px}main{padding:9px}.pad{grid-template-columns:repeat(3,51px)}.pad button{height:50px}section{padding:13px}button{font-size:15px;padding:11px 12px}}#error{color:#ffb4a7;white-space:pre-wrap}.document{background:#f3e8cc;color:#302a23;border:3px double #8a7357;border-radius:7px;padding:14px;margin:8px 0;box-shadow:2px 3px 0 #151c28}.document strong{color:#563e2b}.document small{color:#6b5645}.document button{font-size:13px;padding:6px 10px}.story-panel{background:#1c2a39;border-left:4px solid #e0ba70;padding:12px;margin:10px 0}.story-panel button{margin:4px 5px 4px 0;font-size:14px}.panel-heading{font-size:17px;color:#f5db9d}.hint{font-size:13px;color:#c3d6df}</style></head><body>
-<header><div><h1>校園真相調查局 <small>v2.5.2</small></h1><small>探索資料・訪談人物・撰寫校刊報導</small></div><button id="reset">重新開始</button></header>
+*{box-sizing:border-box}body{margin:0;background:#171f2c;color:#f4ebd7;font-family:system-ui,-apple-system,sans-serif}header{padding:14px 16px;background:#243349;display:flex;justify-content:space-between;align-items:center;gap:10px}h1{font-size:20px;margin:0}small{color:#bfcddd}button{touch-action:none;user-select:none;-webkit-user-select:none;background:#365371;color:white;border:2px solid #7994ad;border-radius:12px;padding:12px 16px;font-size:17px;font-weight:700}main{max-width:850px;margin:auto;padding:12px}canvas{display:block;width:100%;height:auto;image-rendering:pixelated;background:#273d49;border:5px solid #637d8f;border-radius:12px}.controls{display:flex;justify-content:space-between;align-items:center;margin:12px 0;gap:12px}.pad{display:grid;grid-template-columns:repeat(3,56px);gap:4px}.pad button{padding:8px 0;height:52px}.pad .up{grid-column:2}.pad .left{grid-column:1}.pad .down{grid-column:2}.pad .right{grid-column:3;grid-row:2}.pad .left,.pad .down{grid-row:2}.interact{background:#9b7141;border-color:#d8ac6b;color:#fff4e2}section{background:#26364b;padding:16px;border:1px solid #647f96;border-radius:14px;line-height:1.7;margin-top:12px}#message{min-height:110px}#choices{display:flex;flex-wrap:wrap;gap:8px;margin-top:12px}#choices button{font-size:15px}#inventory{font-size:14px;color:#cddde8}#status{font-size:13px;color:#c4d5e5}.tip{font-size:13px;color:#cbd7e4}#message{white-space:pre-line}#quest{line-height:2}#history{display:grid;gap:9px;margin-top:8px}.record{padding:10px;border-radius:9px;background:#1b2939;border:1px solid #526b81;font-size:14px}.record strong{color:#f3dca9}.tabs{display:flex;gap:8px;flex-wrap:wrap;margin:8px 0}.tabs button{font-size:14px;padding:8px 12px}.modal-note{color:#e6c68c;font-size:13px}body{background:radial-gradient(ellipse at 50% 0%,#354d57 0%,#111a27 72%)}header{background:linear-gradient(120deg,#334a57,#263447);border-bottom:3px solid #b18a5e;box-shadow:0 5px 20px #0005}h1{letter-spacing:.04em;text-shadow:2px 2px #142433}section{background:linear-gradient(150deg,#2c4152,#202f42);border-color:#71818a;box-shadow:0 5px 0 #111d2b,0 8px 18px #0003}section>strong{display:block;color:#f6d59d;font-size:18px;margin-bottom:8px}button{box-shadow:0 4px 0 #182b3c;transition:filter .12s,transform .12s}button:active{transform:translateY(3px);box-shadow:0 1px 0 #182b3c}button:focus-visible{outline:3px solid #f9d68c;outline-offset:3px}canvas{border:6px ridge #b28e67;box-shadow:0 9px 0 #152430,0 14px 30px #0007;filter:saturate(1.12) contrast(1.04)}.interact{background:linear-gradient(#bd8b4c,#936539)}#message{font-size:16px;line-height:1.85}.record{border-left:4px solid #bba078}.tip{margin-top:7px}@media(max-width:420px){header{padding:12px 10px}h1{font-size:17px}main{padding:9px}.pad{grid-template-columns:repeat(3,51px)}.pad button{height:50px}section{padding:13px}button{font-size:15px;padding:11px 12px}}#error{color:#ffb4a7;white-space:pre-wrap}.document{background:#f3e8cc;color:#302a23;border:3px double #8a7357;border-radius:7px;padding:14px;margin:8px 0;box-shadow:2px 3px 0 #151c28}.document strong{color:#563e2b}.document small{color:#6b5645}.document button{font-size:13px;padding:6px 10px}.story-panel{background:#1c2a39;border-left:4px solid #e0ba70;padding:12px;margin:10px 0}.story-panel button{margin:4px 5px 4px 0;font-size:14px}.panel-heading{font-size:17px;color:#f5db9d}.hint{font-size:13px;color:#c3d6df}</style></head><body>
+<header><div><h1>校園真相調查局 <small>v2.6</small></h1><small>探索資料・訪談人物・撰寫校刊報導</small></div><button id="reset">重新開始</button></header>
 <main><canvas id="game" width="640" height="384" aria-label="遊戲地圖"></canvas>
 <div class="controls"><div class="pad"><button class="up" data-dir="up">▲</button><button class="left" data-dir="left">◀</button><button class="down" data-dir="down">▼</button><button class="right" data-dir="right">▶</button></div><button class="interact" id="interact">調查／對話</button></div>
 <div class="tip">方向鍵或 WASD 移動；走向地圖四周標示的出口切換空間。靠近人物或文件可調查。</div>
@@ -66,6 +66,56 @@ rect(405,249,144,49,'#765d48');rect(415,257,118,30,'#d2bd94');rect(464,241,12,18
 rect(251,35,134,50,'#675c4f');rect(258,42,120,36,'#f0e1bf');rect(271,52,96,4,'#927f66');rect(271,64,75,4,'#927f66');
 }
 }
+// Decorative layers use only drawing operations; no new collision tiles.
+function ellipse(x,y,rx,ry,c){ctx.fillStyle=c;ctx.beginPath();ctx.ellipse(x,y,rx,ry,0,0,Math.PI*2);ctx.fill();}
+function plant(x,y,scale=1){
+ctx.save();ctx.translate(x,y);ctx.scale(scale,scale);
+ellipse(0,11,17,5,'#0003');rect(-10,-1,20,15,'#936747');rect(-7,0,14,11,'#c08b5d');rect(-3,-24,6,27,'#3e6951');
+for(const [dx,dy,a] of [[-15,-27,-.6],[15,-27,.6],[-11,-42,-.3],[12,-42,.3],[0,-49,0]]){ctx.save();ctx.translate(dx,dy);ctx.rotate(a);ellipse(0,0,9,17,'#39745d');ellipse(-2,-5,4,9,'#66a47a');ctx.restore();}
+ctx.restore();
+}
+function windowArt(x,y,w=96){
+rect(x-4,y-4,w+8,66,'#584b43');rect(x,y,w,58,'#b7dce0');
+rect(x+4,y+4,w-8,50,'#8ec2c9');
+for(let i=0;i<4;i++){rect(x+6+i*22,y+31,15,20,'#79a9a2');rect(x+6+i*22,y+39,15,12,'#6b9882');}
+rect(x+w/2-3,y,6,58,'#e4d6b4');rect(x,y+27,w,5,'#e4d6b4');
+rect(x-6,y+56,w+12,8,'#c9a880');rect(x+6,y+5,18,13,'#fff5cb55');
+}
+function carpet(x,y,w,h,c){
+ellipse(x+w/2,y+h/2+5,w/2+6,h/2+5,'#0002');
+rect(x,y,w,h,'#e8d5ae');rect(x+5,y+5,w-10,h-10,c);
+for(let i=0;i<Math.floor(w/20);i++){rect(x+12+i*20,y+9,8,3,'#f6e8c0');rect(x+12+i*20,y+h-12,8,3,'#f6e8c0');}
+}
+function lamp(x,y){ellipse(x,y+4,22,6,'#0002');rect(x-3,y-39,6,41,'#776554');rect(x-17,y-48,34,17,'#e5b86f');rect(x-13,y-44,26,8,'#ffe2a0');rect(x-12,y-2,24,5,'#9c7c57');}
+function atmosphere(){
+const n=state.scene;
+if(n===0){
+carpet(207,182,224,102,'#8baca3');windowArt(198,40,82);windowArt(359,40,82);
+plant(47,314,.7);plant(586,311,.7);
+for(const [x,y] of [[95,239],[319,116],[546,239]]){ellipse(x,y+28,49,14,'#0002');rect(x-43,y,86,25,'#8a6044');rect(x-37,y+4,74,13,'#d4ad76');rect(x-30,y+20,9,15,'#5a4236');rect(x+21,y+20,9,15,'#5a4236');book(x-16,y+3,'#c36d62');book(x+4,y+3,'#7a9b9b');}
+}else if(n===1){
+rect(203,32,234,95,'#594f41');rect(210,39,220,80,'#42755d');
+for(let i=0;i<3;i++){rect(224+i*65,46,52,4,'#d9e3c2');rect(226+i*65,57,37,3,'#a8cbb5');}
+rect(201,124,238,7,'#b99a72');windowArt(44,37,100);windowArt(489,37,100);
+for(const [x,y] of [[101,179],[310,179],[519,179],[101,278],[310,278],[519,278]]){ellipse(x,y+19,38,11,'#0002');rect(x-32,y-9,64,32,'#987653');rect(x-27,y-8,54,20,'#dfbd8b');rect(x-23,y-3,22,13,'#f3e9cb');rect(x+8,y-4,12,14,'#6d9eaa');rect(x-28,y+23,7,8,'#59483e');rect(x+21,y+23,7,8,'#59483e');}
+}else if(n===2){
+carpet(216,155,213,149,'#656d87');windowArt(42,41,110);
+rect(480,154,108,75,'#4c4659');rect(488,161,92,61,'#d7caa8');
+for(let i=0;i<4;i++){rect(495,171+i*11,78-i*8,3,['#aa7d6a','#7b8a9a','#a5a085','#aa7d6a'][i]);}
+for(const [x,y] of [[108,274],[325,218],[528,284]]){ellipse(x,y+16,40,12,'#0003');rect(x-33,y-9,66,32,'#715b59');rect(x-29,y-5,58,21,'#b4a18c');rect(x-15,y-2,30,17,'#e9e1c8');rect(x-13,y+1,25,3,'#ac9984');}
+lamp(572,124);
+}else if(n===3){
+for(let i=0;i<8;i++){const x=41+i*77;rect(x,25,8,104,'#d5e0d1');rect(x+8,28,60,97,'#90b5b0');ellipse(x+35,109,26,19,'#4e8873');ellipse(x+47,100,18,22,'#70a68a');}
+for(let i=0;i<7;i++){const x=49+i*89;rect(x,250,71,65,'#7b8e82');rect(x+5,257,61,52,'#a4b3a1');rect(x+11,262,50,6,'#d1d9bb');}
+plant(93,212,.65);plant(541,209,.7);
+rect(242,36,152,85,'#7b624d');rect(250,43,136,70,'#d7d0a7');rect(261,53,114,7,'#b1765e');rect(261,69,86,4,'#6d9189');rect(261,80,101,4,'#6d9189');
+}else{
+carpet(217,154,193,141,'#937e68');
+for(const [x,y] of [[66,174],[484,170]]){rect(x,y,99,58,'#69584b');for(let i=0;i<3;i++){rect(x+7+i*30,y+6,25,45,'#b19d7e');rect(x+12+i*30,y+13,15,6,'#e4d5ae');rect(x+16+i*30,y+35,7,5,'#675747');}}
+for(const [x,y] of [[99,283],[326,242],[548,284]]){ellipse(x,y+12,38,12,'#0003');rect(x-31,y-12,62,32,'#886d50');rect(x-26,y-8,52,22,'#c4ac7c');rect(x-20,y-4,38,17,'#eee0b6');rect(x-17,y+1,32,2,'#a69474');}
+lamp(337,126);
+}
+}
 function sprite(x,y,color,phase=0){
 const px=x*T,py=y*T;
 ctx.fillStyle='#2c3340';ctx.fillRect(px+12,py+34,7,4);ctx.fillRect(px+23,py+34,7,4);
@@ -92,7 +142,7 @@ const scenes=[
 const names={stats:'借閱統計表',notice:'閱讀週公告',teacher:'黃小米老師訪談',hua:'小華訪談',ming:'明明訪談',class:'班級閱讀紀錄',rumor:'群組訊息',billboard:'活動看板',hallnote:'走廊留言',archive:'舊校刊合訂本',ledger:'紀錄整理簿'};
 const documentIds=new Set(['stats','notice','class','rumor','billboard','hallnote','archive','ledger']);
 let state={scene:0,x:2,y:4,found:[],ending:null,citations:[],headline:null,publications:[],followups:[],readerLetters:[],direction:'down',introSeen:false,chapterDone:false,boardNotes:[],bodyChoice:0};
-try{let old=JSON.parse(localStorage.getItem('education-rpg-v252')||localStorage.getItem('education-rpg-v251')||localStorage.getItem('education-rpg-v25')||localStorage.getItem('education-rpg-v21')||localStorage.getItem('education-rpg-v20')||localStorage.getItem('education-rpg-v16')||localStorage.getItem('education-rpg-v15')||localStorage.getItem('education-rpg-v12')||localStorage.getItem('education-rpg-v11')||localStorage.getItem('education-rpg-v10')||localStorage.getItem('education-rpg-v09')||localStorage.getItem('education-rpg-v03'));if(old&&Number.isInteger(old.scene)&&old.scene>=0&&old.scene<5)state={...state,...old};}catch(e){}
+try{let old=JSON.parse(localStorage.getItem('education-rpg-v26')||localStorage.getItem('education-rpg-v252')||localStorage.getItem('education-rpg-v251')||localStorage.getItem('education-rpg-v25')||localStorage.getItem('education-rpg-v21')||localStorage.getItem('education-rpg-v20')||localStorage.getItem('education-rpg-v16')||localStorage.getItem('education-rpg-v15')||localStorage.getItem('education-rpg-v12')||localStorage.getItem('education-rpg-v11')||localStorage.getItem('education-rpg-v10')||localStorage.getItem('education-rpg-v09')||localStorage.getItem('education-rpg-v03'));if(old&&Number.isInteger(old.scene)&&old.scene>=0&&old.scene<5)state={...state,...old};}catch(e){}
 if(!Number.isInteger(state.scene)||state.scene<0||state.scene>=scenes.length)state.scene=0;
 if(!Number.isInteger(state.x)||state.x<1||state.x>14)state.x=2;
 if(!Number.isInteger(state.y)||state.y<1||state.y>7)state.y=4;
@@ -144,7 +194,7 @@ if(!Array.isArray(state.found))state.found=[];
 if(!Array.isArray(state.publications))state.publications=[];
 if(!Array.isArray(state.followups))state.followups=[];
 if(!Array.isArray(state.citations))state.citations=[];
-ctx.clearRect(0,0,640,384);roomArt();
+ctx.clearRect(0,0,640,384);roomArt();atmosphere();
 ctx.fillStyle='#fff0c6';ctx.font='bold 12px sans-serif';ctx.textAlign='center';
 const links=routes[state.scene];
 for(const [dir,target] of Object.entries(links)){
