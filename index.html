@@ -1,8 +1,8 @@
 <!doctype html>
 <html lang="zh-Hant"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><title>校園真相調查局</title>
 <style>
-*{box-sizing:border-box}body{margin:0;background:#171f2c;color:#f4ebd7;font-family:system-ui,-apple-system,sans-serif}header{padding:14px 16px;background:#243349;display:flex;justify-content:space-between;align-items:center;gap:10px}h1{font-size:20px;margin:0}small{color:#bfcddd}button{touch-action:none;user-select:none;-webkit-user-select:none;background:#365371;color:white;border:2px solid #7994ad;border-radius:12px;padding:12px 16px;font-size:17px;font-weight:700}main{max-width:850px;margin:auto;padding:12px}canvas{display:block;width:100%;height:auto;image-rendering:pixelated;background:#273d49;border:5px solid #637d8f;border-radius:12px}.controls{display:flex;justify-content:space-between;align-items:center;margin:12px 0;gap:12px}.pad{display:grid;grid-template-columns:repeat(3,56px);gap:4px}.pad button{padding:8px 0;height:52px}.pad .up{grid-column:2}.pad .left{grid-column:1}.pad .down{grid-column:2}.pad .right{grid-column:3;grid-row:2}.pad .left,.pad .down{grid-row:2}.interact{background:#9b7141;border-color:#d8ac6b;color:#fff4e2}section{background:#26364b;padding:16px;border:1px solid #647f96;border-radius:14px;line-height:1.7;margin-top:12px}#message{min-height:110px}#choices{display:flex;flex-wrap:wrap;gap:8px;margin-top:12px}#choices button{font-size:15px}#inventory{font-size:14px;color:#cddde8}#status{font-size:13px;color:#c4d5e5}.tip{font-size:13px;color:#cbd7e4}#message{white-space:pre-line}#quest{line-height:2}#history{display:grid;gap:9px;margin-top:8px}.record{padding:10px;border-radius:9px;background:#1b2939;border:1px solid #526b81;font-size:14px}.record strong{color:#f3dca9}.tabs{display:flex;gap:8px;flex-wrap:wrap;margin:8px 0}.tabs button{font-size:14px;padding:8px 12px}.modal-note{color:#e6c68c;font-size:13px}#error{color:#ffb4a7;white-space:pre-wrap}.document{background:#f3e8cc;color:#302a23;border:3px double #8a7357;border-radius:7px;padding:14px;margin:8px 0;box-shadow:2px 3px 0 #151c28}.document strong{color:#563e2b}.document small{color:#6b5645}.document button{font-size:13px;padding:6px 10px}.story-panel{background:#1c2a39;border-left:4px solid #e0ba70;padding:12px;margin:10px 0}.story-panel button{margin:4px 5px 4px 0;font-size:14px}.panel-heading{font-size:17px;color:#f5db9d}.hint{font-size:13px;color:#c3d6df}</style></head><body>
-<header><div><h1>校園真相調查局 <small>v1.6</small></h1><small>探索資料・訪談人物・撰寫校刊報導</small></div><button id="reset">重新開始</button></header>
+*{box-sizing:border-box}body{margin:0;background:#171f2c;color:#f4ebd7;font-family:system-ui,-apple-system,sans-serif}header{padding:14px 16px;background:#243349;display:flex;justify-content:space-between;align-items:center;gap:10px}h1{font-size:20px;margin:0}small{color:#bfcddd}button{touch-action:none;user-select:none;-webkit-user-select:none;background:#365371;color:white;border:2px solid #7994ad;border-radius:12px;padding:12px 16px;font-size:17px;font-weight:700}main{max-width:850px;margin:auto;padding:12px}canvas{display:block;width:100%;height:auto;image-rendering:pixelated;background:#273d49;border:5px solid #637d8f;border-radius:12px}.controls{display:flex;justify-content:space-between;align-items:center;margin:12px 0;gap:12px}.pad{display:grid;grid-template-columns:repeat(3,56px);gap:4px}.pad button{padding:8px 0;height:52px}.pad .up{grid-column:2}.pad .left{grid-column:1}.pad .down{grid-column:2}.pad .right{grid-column:3;grid-row:2}.pad .left,.pad .down{grid-row:2}.interact{background:#9b7141;border-color:#d8ac6b;color:#fff4e2}section{background:#26364b;padding:16px;border:1px solid #647f96;border-radius:14px;line-height:1.7;margin-top:12px}#message{min-height:110px}#choices{display:flex;flex-wrap:wrap;gap:8px;margin-top:12px}#choices button{font-size:15px}#inventory{font-size:14px;color:#cddde8}#status{font-size:13px;color:#c4d5e5}.tip{font-size:13px;color:#cbd7e4}#message{white-space:pre-line}#quest{line-height:2}#history{display:grid;gap:9px;margin-top:8px}.record{padding:10px;border-radius:9px;background:#1b2939;border:1px solid #526b81;font-size:14px}.record strong{color:#f3dca9}.tabs{display:flex;gap:8px;flex-wrap:wrap;margin:8px 0}.tabs button{font-size:14px;padding:8px 12px}.modal-note{color:#e6c68c;font-size:13px}body{background:radial-gradient(ellipse at 50% 0%,#354d57 0%,#111a27 72%)}header{background:linear-gradient(120deg,#334a57,#263447);border-bottom:3px solid #b18a5e;box-shadow:0 5px 20px #0005}h1{letter-spacing:.04em;text-shadow:2px 2px #142433}section{background:linear-gradient(150deg,#2c4152,#202f42);border-color:#71818a;box-shadow:0 5px 0 #111d2b,0 8px 18px #0003}section>strong{display:block;color:#f6d59d;font-size:18px;margin-bottom:8px}button{box-shadow:0 4px 0 #182b3c;transition:filter .12s,transform .12s}button:active{transform:translateY(3px);box-shadow:0 1px 0 #182b3c}button:focus-visible{outline:3px solid #f9d68c;outline-offset:3px}canvas{border:6px ridge #b28e67;box-shadow:0 9px 0 #152430,0 14px 30px #0007}.interact{background:linear-gradient(#bd8b4c,#936539)}#message{font-size:16px;line-height:1.85}.record{border-left:4px solid #bba078}.tip{margin-top:7px}@media(max-width:420px){header{padding:12px 10px}h1{font-size:17px}main{padding:9px}.pad{grid-template-columns:repeat(3,51px)}.pad button{height:50px}section{padding:13px}button{font-size:15px;padding:11px 12px}}#error{color:#ffb4a7;white-space:pre-wrap}.document{background:#f3e8cc;color:#302a23;border:3px double #8a7357;border-radius:7px;padding:14px;margin:8px 0;box-shadow:2px 3px 0 #151c28}.document strong{color:#563e2b}.document small{color:#6b5645}.document button{font-size:13px;padding:6px 10px}.story-panel{background:#1c2a39;border-left:4px solid #e0ba70;padding:12px;margin:10px 0}.story-panel button{margin:4px 5px 4px 0;font-size:14px}.panel-heading{font-size:17px;color:#f5db9d}.hint{font-size:13px;color:#c3d6df}</style></head><body>
+<header><div><h1>校園真相調查局 <small>v2.0</small></h1><small>探索資料・訪談人物・撰寫校刊報導</small></div><button id="reset">重新開始</button></header>
 <main><canvas id="game" width="640" height="384" aria-label="遊戲地圖"></canvas>
 <div class="controls"><div class="pad"><button class="up" data-dir="up">▲</button><button class="left" data-dir="left">◀</button><button class="down" data-dir="down">▼</button><button class="right" data-dir="right">▶</button></div><button class="interact" id="interact">調查／對話</button></div>
 <div class="tip">方向鍵或 WASD 移動；接近物件後按「調查／對話」。黃色區域可切換場景。</div>
@@ -25,6 +25,34 @@ if(x<1||x>14||y<1||y>7)return true;
 if((x===1||x===14)&&y>=3&&y<=5)return false;
 return scenes[scene].objects.some(o=>o.x===x&&o.y===y);
 }
+function rect(x,y,w,h,c){ctx.fillStyle=c;ctx.fillRect(x,y,w,h);}
+function outline(x,y,w,h,c='#382e38'){rect(x-2,y-2,w+4,h+4,c);}
+function book(x,y,c){outline(x,y,10,14);rect(x,y,10,14,c);rect(x+2,y+2,2,10,'#e6cf9c');}
+function roomArt(){
+const scene=state.scene;
+const wall=['#344d54','#516b66','#4b4a67'][scene],trim=['#8f7759','#7b9b88','#8d829f'][scene];
+rect(0,0,640,360,wall);
+rect(16,16,608,327,['#c9aa80','#b2c4ad','#b8b4c9'][scene]);
+for(let y=0;y<9;y++)for(let x=0;x<16;x++){const tx=x*40,ty=y*40;rect(tx+1,ty+1,38,38,(x+y)%2?['#d7b68a','#b9cfb6','#c2bed2'][scene]:['#c9a47a','#adc2ac','#b4b0c7'][scene]);rect(tx+2,ty+36,36,2,'rgba(41,39,47,.10)');}
+rect(0,0,640,25,wall);rect(0,325,640,35,wall);rect(0,0,22,360,wall);rect(618,0,22,360,wall);
+for(let i=0;i<13;i++){rect(30+i*45,17,28,5,trim);rect(30+i*45,333,28,5,trim);}
+rect(0,139,27,87,'#e8c77b');rect(613,139,27,87,'#e8c77b');
+rect(3,146,16,72,'#6d503d');rect(621,146,16,72,'#6d503d');
+rect(4,153,13,56,'#ffe8a5');rect(623,153,13,56,'#ffe8a5');
+if(scene===0){
+for(const x of [48,452]){outline(x,44,132,57,'#493b35');rect(x,44,132,57,'#896248');for(let i=0;i<9;i++)book(x+6+i*13,53,['#c96961','#e6bb69','#73999b','#8b82a7'][i%4]);rect(x+3,77,126,7,'#5a4235');for(let i=0;i<9;i++)book(x+6+i*13,84,['#82a46f','#d99c63','#b5a0b4'][i%3]);}
+outline(408,251,125,45);rect(408,251,125,45,'#6b8b7b');rect(420,257,30,31,'#e9cda0');rect(465,257,45,26,'#8d6d53');rect(468,260,39,3,'#e0b98b');
+rect(260,38,118,48,'#6b4f3b');rect(267,44,104,36,'#f2dcaa');rect(276,54,86,4,'#b67862');rect(276,65,70,4,'#7a9e9c');
+}else if(scene===1){
+for(const x of [54,445]){outline(x,47,129,57);rect(x,47,129,57,'#92745a');for(let i=0;i<3;i++){rect(x+8+i*41,56,32,30,'#f4e1b6');rect(x+10+i*41,59,28,4,'#d39a72');rect(x+10+i*41,68,22,3,'#7e9b88');}rect(x,90,129,8,'#5e483b');}
+outline(418,251,115,47);rect(418,251,115,47,'#93735a');rect(426,259,40,28,'#efe0b5');rect(480,259,42,28,'#e6b67e');rect(487,266,28,4,'#886f60');
+rect(268,35,118,51,'#385d52');rect(275,42,104,37,'#568a76');rect(286,53,81,4,'#e9e1bd');rect(300,64,52,4,'#e9e1bd');
+}else{
+for(const x of [51,447]){outline(x,47,133,59);rect(x,47,133,59,'#705e73');rect(x+7,54,119,45,'#ded4bd');rect(x+12,61,80,5,'#b58e75');rect(x+12,72,105,4,'#8c879d');rect(x+12,83,91,4,'#8c879d');}
+outline(406,247,134,51);rect(406,247,134,51,'#715c69');rect(416,257,64,34,'#c6c0aa');rect(485,257,43,32,'#494a5e');rect(491,262,31,22,'#8294a3');
+rect(250,39,136,47,'#6d586b');rect(258,46,120,33,'#f2dbac');rect(270,54,96,4,'#a88c81');rect(270,65,71,4,'#a88c81');
+}
+}
 function sprite(x,y,color,phase=0){
 const px=x*T,py=y*T;
 ctx.fillStyle='#2c3340';ctx.fillRect(px+12,py+34,7,4);ctx.fillRect(px+23,py+34,7,4);
@@ -36,8 +64,8 @@ ctx.fillStyle='#29343e';ctx.fillRect(px+15,py+14+phase,3,3);ctx.fillRect(px+24,p
 function prop(o){
 const x=o.x*T,y=o.y*T;
 if(['teacher','hua','ming'].includes(o.id)){sprite(o.x,o.y,o.id==='teacher'?'#7a537f':'#537a80',animationFrame%2);return;}
-ctx.fillStyle=o.id==='editor'?'#8e6043':'#698a7a';ctx.fillRect(x+4,y+12,32,23);
-ctx.fillStyle='#f7e8c7';ctx.fillRect(x+10,y+6,21,16);
+ctx.fillStyle='#4a3940';ctx.fillRect(x+2,y+30,36,6);ctx.fillStyle=o.id==='editor'?'#9b755d':'#78958a';ctx.fillRect(x+4,y+12,32,23);
+ctx.fillStyle='#f7e8c7';ctx.fillRect(x+10,y+6,21,16);ctx.fillStyle='#c69d66';ctx.fillRect(x+7,y+13,3,16);
 ctx.fillStyle='#5c6872';ctx.fillRect(x+13,y+10,14,2);ctx.fillRect(x+13,y+14,10,2);
 if(o.id==='editor'){ctx.fillStyle='#c9a57a';ctx.fillRect(x+1,y+29,38,7);}
 }
@@ -49,9 +77,9 @@ const scenes=[
 const names={stats:'借閱統計表',notice:'閱讀週公告',teacher:'黃小米老師訪談',hua:'小華訪談',ming:'明明訪談',class:'班級閱讀紀錄',rumor:'群組訊息'};
 const documentIds=new Set(['stats','notice','class','rumor']);
 let state={scene:0,x:2,y:4,found:[],ending:null,citations:[],headline:null,publications:[],followups:[],readerLetters:[],direction:'down',introSeen:false,chapterDone:false,boardNotes:[],bodyChoice:0};
-try{let old=JSON.parse(localStorage.getItem('education-rpg-v16')||localStorage.getItem('education-rpg-v15')||localStorage.getItem('education-rpg-v12')||localStorage.getItem('education-rpg-v11')||localStorage.getItem('education-rpg-v10')||localStorage.getItem('education-rpg-v09')||localStorage.getItem('education-rpg-v03'));if(old&&Number.isInteger(old.scene)&&old.scene>=0&&old.scene<3)state={...state,...old};}catch(e){}
+try{let old=JSON.parse(localStorage.getItem('education-rpg-v20')||localStorage.getItem('education-rpg-v16')||localStorage.getItem('education-rpg-v15')||localStorage.getItem('education-rpg-v12')||localStorage.getItem('education-rpg-v11')||localStorage.getItem('education-rpg-v10')||localStorage.getItem('education-rpg-v09')||localStorage.getItem('education-rpg-v03'));if(old&&Number.isInteger(old.scene)&&old.scene>=0&&old.scene<3)state={...state,...old};}catch(e){}
 if(!Array.isArray(state.publications))state.publications=[];if(typeof state.introSeen!=='boolean')state.introSeen=false;if(typeof state.chapterDone!=='boolean')state.chapterDone=false;if(!Array.isArray(state.readerLetters))state.readerLetters=[];if(!Array.isArray(state.boardNotes))state.boardNotes=[];if(!Number.isInteger(state.bodyChoice))state.bodyChoice=0;if(!['up','down','left','right'].includes(state.direction))state.direction='down';if(!Array.isArray(state.followups))state.followups=[];if(!Array.isArray(state.found))state.found=[];if(!Array.isArray(state.citations))state.citations=[];
-function save(){try{localStorage.setItem('education-rpg-v09',JSON.stringify(state));}catch(e){}}
+function save(){try{localStorage.setItem('education-rpg-v20',JSON.stringify(state));}catch(e){}}
 function say(t){msg.textContent=t;choices.replaceChildren();}
 function noteBoard(id){
 if(!state.found.includes(id)){say('請先調查這份資料。');return;}
@@ -92,14 +120,9 @@ return;
 }
 }
 function draw(){
-ctx.clearRect(0,0,640,384);ctx.fillStyle=scenes[state.scene].floor;ctx.fillRect(0,0,640,360);
-for(let y=0;y<H;y++)for(let x=0;x<W;x++){ctx.strokeStyle='rgba(50,60,70,.16)';ctx.strokeRect(x*T,y*T,T,T);}
-ctx.fillStyle='#45596a';ctx.fillRect(0,0,640,18);ctx.fillRect(0,342,640,18);ctx.fillRect(0,0,18,360);ctx.fillRect(622,0,18,360);
-
-// Room-specific furniture and wall details
-for(const d of decor[state.scene]){ctx.fillStyle=d.c;ctx.fillRect(d.x*T+5,d.y*T+7,d.w*T-10,d.h*T-14);ctx.strokeStyle='#4c514b';ctx.strokeRect(d.x*T+5,d.y*T+7,d.w*T-10,d.h*T-14);}
-ctx.fillStyle='#efcc59';ctx.fillRect(606,145,26,78);ctx.fillRect(8,145,26,78);
-ctx.fillStyle='#293642';ctx.font='bold 13px sans-serif';ctx.textAlign='center';ctx.fillText('出口',595,137);ctx.fillText('出口',45,137);
+ctx.clearRect(0,0,640,384);roomArt();
+ctx.fillStyle='#fff0c6';ctx.font='bold 12px sans-serif';ctx.textAlign='center';
+ctx.fillText('← 校園走廊',70,131);ctx.fillText('校園走廊 →',563,131);
 for(const o of scenes[state.scene].objects){const px=o.x*T,py=o.y*T;prop(o);ctx.fillStyle='#fff5dc';ctx.font='bold 12px sans-serif';ctx.textAlign='center';ctx.fillText(o.label,px+20,py-3);}
 // Pixel-art investigator with direction indicator, bag and face
 const px=state.x*T,py=state.y*T;
@@ -116,7 +139,7 @@ else if(state.direction==='down'){ctx.fillRect(px+15,py+13,3,3);ctx.fillRect(px+
 else{ctx.fillStyle='#394d63';ctx.fillRect(px+12,py+11,16,8);}
 const near=scenes[state.scene].objects.find(o=>Math.abs(o.x-state.x)<=1&&Math.abs(o.y-state.y)<=1);
 if(near){const px=near.x*T+20,py=near.y*T-24;ctx.fillStyle='#fff1b6';ctx.fillRect(px-16,py-16,32,23);ctx.fillStyle='#202b39';ctx.font='bold 15px sans-serif';ctx.textAlign='center';ctx.fillText('!',px,py);ctx.strokeStyle='#ffeb88';ctx.lineWidth=3;ctx.strokeRect(near.x*T+2,near.y*T+2,36,36);ctx.lineWidth=1;}
-ctx.fillStyle='#1d3040';ctx.fillRect(0,360,640,24);ctx.fillStyle='#fff';ctx.textAlign='left';ctx.font='14px sans-serif';ctx.fillText(near?'可調查：'+near.label+'｜按調查／對話':'場景：'+scenes[state.scene].name+'｜黃色門口切換場景',12,377);
+ctx.fillStyle='#172633';ctx.fillRect(0,360,640,24);ctx.fillStyle='#fff';ctx.textAlign='left';ctx.font='14px sans-serif';ctx.fillText(near?'可調查：'+near.label+'｜按調查／對話':'場景：'+scenes[state.scene].name+'｜黃色門口切換場景',12,377);
 sceneTitle.textContent=scenes[state.scene].name;inv.replaceChildren();if(!state.found.length){inv.textContent='尚未蒐集資料';}else{state.found.forEach(id=>{const b=document.createElement('button');b.textContent='📄 '+(names[id]||id);b.style.margin='4px';b.style.fontSize='13px';b.onclick=()=>review(id);inv.appendChild(b);});}status.textContent='已蒐集 '+state.found.length+' 項資料｜已發表 '+state.publications.length+' 篇版本';
 const tasks=[['走訪圖書館',state.found.some(x=>['stats','notice','teacher'].includes(x))],['走訪四年級教室',state.found.some(x=>['hua','ming','class'].includes(x))],['前往校刊社發表',state.publications.length>0],['發表後回訪一位受訪者',state.followups.length>0],['重新編輯並發表第二版',state.publications.length>1]];
 quest.textContent=tasks.map(([t,done])=>(done?'☑ ':'☐ ')+t).join('　｜　');
@@ -141,14 +164,13 @@ if(state.publications.length>1&&!selected.includes(3))selected.push(3);
 selected.forEach(i=>{const note=document.createElement('div');note.className='record';const title=document.createElement('strong');title.textContent=lettersData[i].from;const body=document.createElement('div');body.textContent=lettersData[i].text;note.append(title,body);letters.appendChild(note);});
 }
 history.replaceChildren();
-if(!state.publications.length){history.textContent='尚未發表報導。';}else if(state.publications.length>=2){const compare=document.createElement('button');compare.textContent='比較最近兩版的修改';compare.onclick=compareReports;history.appendChild(compare);}
-else state.publications.forEach((pub,i)=>{
+if(!state.publications.length){history.textContent='尚未發表報導。';}else {if(state.publications.length>=2){const compare=document.createElement('button');compare.textContent='比較最近兩版的修改';compare.onclick=compareReports;history.appendChild(compare);}state.publications.forEach((pub,i)=>{
 const wrap=document.createElement('div');wrap.className='record';
 const heading=document.createElement('strong');heading.textContent='第 '+(i+1)+' 版｜'+(headlines[pub.headline]||'未命名標題');wrap.appendChild(heading);
 const paragraph=document.createElement('div');paragraph.textContent=bodyOptions[pub.bodyChoice]||bodyOptions[0];wrap.appendChild(paragraph);
 const detail=document.createElement('div');detail.textContent='引用：'+((pub.citations||[]).map(id=>names[id]||id).join('、')||'未列出');wrap.appendChild(detail);
 const b=document.createElement('button');b.textContent='閱讀這一版';b.style.fontSize='13px';b.style.padding='6px 10px';b.onclick=()=>{say('【第 '+(i+1)+' 版】\n'+(headlines[pub.headline]||'')+'\n引用資料：'+detail.textContent.slice(3));window.scrollTo({top:document.getElementById('message').getBoundingClientRect().top+window.scrollY-70,behavior:'smooth'});};wrap.appendChild(b);history.appendChild(wrap);
-});
+});}
 }
 function move(dx,dy){if(dx<0)state.direction='left';else if(dx>0)state.direction='right';else if(dy<0)state.direction='up';else if(dy>0)state.direction='down';let x=Math.max(1,Math.min(14,state.x+dx)),y=Math.max(1,Math.min(7,state.y+dy));if(blocked(state.scene,x,y)){draw();return;}state.x=x;state.y=y;animationFrame++;if(x===14&&y>=3&&y<=5){state.scene=(state.scene+1)%3;state.x=2;state.y=4;say('你來到'+scenes[state.scene].name+'。請接近物件進行調查。');}else if(x===1&&y>=3&&y<=5){state.scene=(state.scene+2)%3;state.x=13;state.y=4;say('你來到'+scenes[state.scene].name+'。');}save();draw();}
 function review(id){const o=scenes.flatMap(scene=>scene.objects).find(item=>item.id===id);if(o){if(documentIds.has(id))documentView(o);else say('【'+(names[id]||o.label)+'】'+o.text);}}
