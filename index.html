@@ -1,19 +1,19 @@
 <!doctype html>
 <html lang="zh-Hant"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><title>校園真相調查局</title>
 <style>
-*{box-sizing:border-box}body{margin:0;background:#171f2c;color:#f4ebd7;font-family:system-ui,-apple-system,sans-serif}header{padding:14px 16px;background:#243349;display:flex;justify-content:space-between;align-items:center;gap:10px}h1{font-size:20px;margin:0}small{color:#bfcddd}button{touch-action:none;user-select:none;-webkit-user-select:none;background:#365371;color:white;border:2px solid #7994ad;border-radius:12px;padding:12px 16px;font-size:17px;font-weight:700}main{max-width:850px;margin:auto;padding:12px}canvas{display:block;width:100%;height:auto;image-rendering:pixelated;background:#273d49;border:5px solid #637d8f;border-radius:12px}.controls{display:flex;justify-content:space-between;align-items:center;margin:12px 0;gap:12px}.pad{display:grid;grid-template-columns:repeat(3,56px);gap:4px}.pad button{padding:8px 0;height:52px}.pad .up{grid-column:2}.pad .left{grid-column:1}.pad .down{grid-column:2}.pad .right{grid-column:3;grid-row:2}.pad .left,.pad .down{grid-row:2}.interact{background:#9b7141;border-color:#d8ac6b;color:#fff4e2}section{background:#26364b;padding:16px;border:1px solid #647f96;border-radius:14px;line-height:1.7;margin-top:12px}#message{min-height:110px}#choices{display:flex;flex-wrap:wrap;gap:8px;margin-top:12px}#choices button{font-size:15px}#inventory{font-size:14px;color:#cddde8}#status{font-size:13px;color:#c4d5e5}.tip{font-size:13px;color:#cbd7e4}#message{white-space:pre-line}#quest{line-height:2}#history{display:grid;gap:9px;margin-top:8px}.record{padding:10px;border-radius:9px;background:#1b2939;border:1px solid #526b81;font-size:14px}.record strong{color:#f3dca9}.tabs{display:flex;gap:8px;flex-wrap:wrap;margin:8px 0}.tabs button{font-size:14px;padding:8px 12px}.modal-note{color:#e6c68c;font-size:13px}#error{color:#ffb4a7;white-space:pre-wrap}</style></head><body>
-<header><div><h1>校園真相調查局 <small>v1.2</small></h1><small>探索資料・訪談人物・撰寫校刊報導</small></div><button id="reset">重新開始</button></header>
+*{box-sizing:border-box}body{margin:0;background:#171f2c;color:#f4ebd7;font-family:system-ui,-apple-system,sans-serif}header{padding:14px 16px;background:#243349;display:flex;justify-content:space-between;align-items:center;gap:10px}h1{font-size:20px;margin:0}small{color:#bfcddd}button{touch-action:none;user-select:none;-webkit-user-select:none;background:#365371;color:white;border:2px solid #7994ad;border-radius:12px;padding:12px 16px;font-size:17px;font-weight:700}main{max-width:850px;margin:auto;padding:12px}canvas{display:block;width:100%;height:auto;image-rendering:pixelated;background:#273d49;border:5px solid #637d8f;border-radius:12px}.controls{display:flex;justify-content:space-between;align-items:center;margin:12px 0;gap:12px}.pad{display:grid;grid-template-columns:repeat(3,56px);gap:4px}.pad button{padding:8px 0;height:52px}.pad .up{grid-column:2}.pad .left{grid-column:1}.pad .down{grid-column:2}.pad .right{grid-column:3;grid-row:2}.pad .left,.pad .down{grid-row:2}.interact{background:#9b7141;border-color:#d8ac6b;color:#fff4e2}section{background:#26364b;padding:16px;border:1px solid #647f96;border-radius:14px;line-height:1.7;margin-top:12px}#message{min-height:110px}#choices{display:flex;flex-wrap:wrap;gap:8px;margin-top:12px}#choices button{font-size:15px}#inventory{font-size:14px;color:#cddde8}#status{font-size:13px;color:#c4d5e5}.tip{font-size:13px;color:#cbd7e4}#message{white-space:pre-line}#quest{line-height:2}#history{display:grid;gap:9px;margin-top:8px}.record{padding:10px;border-radius:9px;background:#1b2939;border:1px solid #526b81;font-size:14px}.record strong{color:#f3dca9}.tabs{display:flex;gap:8px;flex-wrap:wrap;margin:8px 0}.tabs button{font-size:14px;padding:8px 12px}.modal-note{color:#e6c68c;font-size:13px}#error{color:#ffb4a7;white-space:pre-wrap}.document{background:#f3e8cc;color:#302a23;border:3px double #8a7357;border-radius:7px;padding:14px;margin:8px 0;box-shadow:2px 3px 0 #151c28}.document strong{color:#563e2b}.document small{color:#6b5645}.document button{font-size:13px;padding:6px 10px}.story-panel{background:#1c2a39;border-left:4px solid #e0ba70;padding:12px;margin:10px 0}.story-panel button{margin:4px 5px 4px 0;font-size:14px}.panel-heading{font-size:17px;color:#f5db9d}.hint{font-size:13px;color:#c3d6df}</style></head><body>
+<header><div><h1>校園真相調查局 <small>v1.5</small></h1><small>探索資料・訪談人物・撰寫校刊報導</small></div><button id="reset">重新開始</button></header>
 <main><canvas id="game" width="640" height="384" aria-label="遊戲地圖"></canvas>
 <div class="controls"><div class="pad"><button class="up" data-dir="up">▲</button><button class="left" data-dir="left">◀</button><button class="down" data-dir="down">▼</button><button class="right" data-dir="right">▶</button></div><button class="interact" id="interact">調查／對話</button></div>
 <div class="tip">方向鍵或 WASD 移動；接近物件後按「調查／對話」。黃色區域可切換場景。</div>
 <section><strong id="sceneTitle">圖書館</strong><div id="message">你是校刊社的小編。校園群組正在轉傳：「閱讀週讓四年級借閱量翻倍，閱讀能力全面提升！」請蒐集資料，完成一篇報導。</div><div id="choices"></div></section>
-<section><strong>調查委託與進度</strong><div id="quest"></div></section><section><strong>讀者來信</strong><div id="letters"></div></section><section><strong>校刊版本紀錄</strong><div id="history"></div></section><section><strong>調查資料</strong><div id="inventory">尚未蒐集資料</div><div id="status"></div></section><div id="error"></div></main>
+<section><strong>事件紀錄板</strong><div id="board"></div></section><section><strong>調查委託與進度</strong><div id="quest"></div></section><section><strong>讀者來信</strong><div id="letters"></div></section><section><strong>校刊版本紀錄</strong><div id="history"></div></section><section><strong>調查資料</strong><div id="inventory">尚未蒐集資料</div><div id="status"></div></section><div id="error"></div></main>
 <script>
 (function(){
 'use strict';
 const cv=document.getElementById('game'),ctx=cv.getContext('2d'),msg=document.getElementById('message'),choices=document.getElementById('choices'),inv=document.getElementById('inventory'),status=document.getElementById('status'),sceneTitle=document.getElementById('sceneTitle');
 const W=16,H=9,T=40;
-const quest=document.getElementById('quest'),history=document.getElementById('history'),letters=document.getElementById('letters');
+const quest=document.getElementById('quest'),history=document.getElementById('history'),letters=document.getElementById('letters'),board=document.getElementById('board');
 let animationFrame=0;
 const decor=[
 [{x:1,y:1,w:3,h:1,c:'#806149'},{x:11,y:1,w:3,h:1,c:'#806149'},{x:10,y:6,w:3,h:1,c:'#6b8a79'}],
@@ -47,11 +47,26 @@ const scenes=[
 {name:'校刊社',floor:'#b4b8d2',objects:[{x:4,y:3,label:'校刊編輯桌',id:'editor',text:'編輯桌上放著三份候選標題。你可以決定要發表哪一篇報導。'},{x:9,y:5,label:'群組訊息',id:'rumor',text:'校園群組貼文：「閱讀週讓四年級借閱量翻倍，閱讀能力全面提升！」貼文未附原始統計資料。'}]}
 ];
 const names={stats:'借閱統計表',notice:'閱讀週公告',teacher:'黃小米老師訪談',hua:'小華訪談',ming:'明明訪談',class:'班級閱讀紀錄',rumor:'群組訊息'};
-let state={scene:0,x:2,y:4,found:[],ending:null,citations:[],headline:null,publications:[],followups:[],readerLetters:[],direction:'down',introSeen:false,chapterDone:false};
-try{let old=JSON.parse(localStorage.getItem('education-rpg-v12')||localStorage.getItem('education-rpg-v11')||localStorage.getItem('education-rpg-v10')||localStorage.getItem('education-rpg-v09')||localStorage.getItem('education-rpg-v03'));if(old&&Number.isInteger(old.scene)&&old.scene>=0&&old.scene<3)state={...state,...old};}catch(e){}
-if(!Array.isArray(state.publications))state.publications=[];if(typeof state.introSeen!=='boolean')state.introSeen=false;if(typeof state.chapterDone!=='boolean')state.chapterDone=false;if(!Array.isArray(state.readerLetters))state.readerLetters=[];if(!['up','down','left','right'].includes(state.direction))state.direction='down';if(!Array.isArray(state.followups))state.followups=[];if(!Array.isArray(state.found))state.found=[];if(!Array.isArray(state.citations))state.citations=[];
+const documentIds=new Set(['stats','notice','class','rumor']);
+let state={scene:0,x:2,y:4,found:[],ending:null,citations:[],headline:null,publications:[],followups:[],readerLetters:[],direction:'down',introSeen:false,chapterDone:false,boardNotes:[],bodyChoice:0};
+try{let old=JSON.parse(localStorage.getItem('education-rpg-v15')||localStorage.getItem('education-rpg-v12')||localStorage.getItem('education-rpg-v11')||localStorage.getItem('education-rpg-v10')||localStorage.getItem('education-rpg-v09')||localStorage.getItem('education-rpg-v03'));if(old&&Number.isInteger(old.scene)&&old.scene>=0&&old.scene<3)state={...state,...old};}catch(e){}
+if(!Array.isArray(state.publications))state.publications=[];if(typeof state.introSeen!=='boolean')state.introSeen=false;if(typeof state.chapterDone!=='boolean')state.chapterDone=false;if(!Array.isArray(state.readerLetters))state.readerLetters=[];if(!Array.isArray(state.boardNotes))state.boardNotes=[];if(!Number.isInteger(state.bodyChoice))state.bodyChoice=0;if(!['up','down','left','right'].includes(state.direction))state.direction='down';if(!Array.isArray(state.followups))state.followups=[];if(!Array.isArray(state.found))state.found=[];if(!Array.isArray(state.citations))state.citations=[];
 function save(){try{localStorage.setItem('education-rpg-v09',JSON.stringify(state));}catch(e){}}
 function say(t){msg.textContent=t;choices.replaceChildren();}
+function noteBoard(id){
+if(!state.found.includes(id)){say('請先調查這份資料。');return;}
+if(state.boardNotes.includes(id))state.boardNotes=state.boardNotes.filter(x=>x!==id);else state.boardNotes.push(id);
+save();draw();
+}
+function documentView(o){
+say('【'+o.label+'】');
+const paper=document.createElement('div');paper.className='document';
+const h=document.createElement('strong');h.textContent=o.label;
+const body=document.createElement('div');body.textContent=o.text;
+paper.append(h,body);
+const mark=document.createElement('button');mark.textContent=state.boardNotes.includes(o.id)?'從紀錄板移除':'貼到事件紀錄板';mark.onclick=()=>{noteBoard(o.id);documentView(o);};
+paper.appendChild(mark);choices.appendChild(paper);
+}
 function narrative(){
 if(!state.introSeen){
 state.introSeen=true;save();
@@ -93,6 +108,12 @@ ctx.fillStyle='#1d3040';ctx.fillRect(0,360,640,24);ctx.fillStyle='#fff';ctx.text
 sceneTitle.textContent=scenes[state.scene].name;inv.replaceChildren();if(!state.found.length){inv.textContent='尚未蒐集資料';}else{state.found.forEach(id=>{const b=document.createElement('button');b.textContent='📄 '+(names[id]||id);b.style.margin='4px';b.style.fontSize='13px';b.onclick=()=>review(id);inv.appendChild(b);});}status.textContent='已蒐集 '+state.found.length+' 項資料｜已發表 '+state.publications.length+' 篇版本';
 const tasks=[['走訪圖書館',state.found.some(x=>['stats','notice','teacher'].includes(x))],['走訪四年級教室',state.found.some(x=>['hua','ming','class'].includes(x))],['前往校刊社發表',state.publications.length>0],['發表後回訪一位受訪者',state.followups.length>0],['重新編輯並發表第二版',state.publications.length>1]];
 quest.textContent=tasks.map(([t,done])=>(done?'☑ ':'☐ ')+t).join('　｜　');
+board.replaceChildren();
+const boardIntro=document.createElement('div');boardIntro.className='hint';boardIntro.textContent='把已發現的資料貼到紀錄板。這裡只整理線索，不替你下結論。';board.appendChild(boardIntro);
+if(!state.boardNotes.length){const empty=document.createElement('div');empty.textContent='目前沒有釘選的資料。';board.appendChild(empty);}
+else state.boardNotes.forEach(id=>{const card=document.createElement('div');card.className='record';const b=document.createElement('button');b.textContent='查看 '+(names[id]||id);b.onclick=()=>review(id);card.appendChild(b);board.appendChild(card);});
+const addable=state.found.filter(id=>!state.boardNotes.includes(id));if(addable.length){const tools=document.createElement('div');tools.className='tabs';addable.forEach(id=>{const b=document.createElement('button');b.textContent='＋'+(names[id]||id);b.onclick=()=>noteBoard(id);tools.appendChild(b);});board.appendChild(tools);}
+
 letters.replaceChildren();
 if(!state.publications.length){letters.textContent='校刊發行後，讀者來信會出現在這裡。';}
 else {
@@ -112,28 +133,32 @@ if(!state.publications.length){history.textContent='尚未發表報導。';}
 else state.publications.forEach((pub,i)=>{
 const wrap=document.createElement('div');wrap.className='record';
 const heading=document.createElement('strong');heading.textContent='第 '+(i+1)+' 版｜'+(headlines[pub.headline]||'未命名標題');wrap.appendChild(heading);
+const paragraph=document.createElement('div');paragraph.textContent=bodyOptions[pub.bodyChoice]||bodyOptions[0];wrap.appendChild(paragraph);
 const detail=document.createElement('div');detail.textContent='引用：'+((pub.citations||[]).map(id=>names[id]||id).join('、')||'未列出');wrap.appendChild(detail);
 const b=document.createElement('button');b.textContent='閱讀這一版';b.style.fontSize='13px';b.style.padding='6px 10px';b.onclick=()=>{say('【第 '+(i+1)+' 版】\n'+(headlines[pub.headline]||'')+'\n引用資料：'+detail.textContent.slice(3));window.scrollTo({top:document.getElementById('message').getBoundingClientRect().top+window.scrollY-70,behavior:'smooth'});};wrap.appendChild(b);history.appendChild(wrap);
 });
 }
 function move(dx,dy){if(dx<0)state.direction='left';else if(dx>0)state.direction='right';else if(dy<0)state.direction='up';else if(dy>0)state.direction='down';let x=Math.max(1,Math.min(14,state.x+dx)),y=Math.max(1,Math.min(7,state.y+dy));if(blocked(state.scene,x,y)){draw();return;}state.x=x;state.y=y;animationFrame++;if(x===14&&y>=3&&y<=5){state.scene=(state.scene+1)%3;state.x=2;state.y=4;say('你來到'+scenes[state.scene].name+'。請接近物件進行調查。');}else if(x===1&&y>=3&&y<=5){state.scene=(state.scene+2)%3;state.x=13;state.y=4;say('你來到'+scenes[state.scene].name+'。');}save();draw();}
-function review(id){const o=scenes.flatMap(scene=>scene.objects).find(item=>item.id===id);if(o)say('【'+(names[id]||o.label)+'】'+o.text);}
+function review(id){const o=scenes.flatMap(scene=>scene.objects).find(item=>item.id===id);if(o){if(documentIds.has(id))documentView(o);else say('【'+(names[id]||o.label)+'】'+o.text);}}
 function button(label,fn){const b=document.createElement('button');b.textContent=label;b.onclick=fn;choices.appendChild(b);}
 function interact(targetId){const o=scenes[state.scene].objects.find(o=>(!targetId||o.id===targetId)&&Math.abs(o.x-state.x)<=1&&Math.abs(o.y-state.y)<=1);if(!o){say('附近沒有可調查的物件。請靠近人物或文件。');return;}let detail=o.text;
 if(state.publications.length&&['teacher','hua','ming'].includes(o.id)){
 const extra={teacher:'黃小米老師：校刊出來了啊！下週我還會匯出一份借閱紀錄。',hua:'小華：我看到校刊了。我昨天又讀完一本借來的書。',ming:'明明：我們班有人把報導貼在群組，大家都在討論。'};
 detail+='\n【發表後回訪】'+extra[o.id];if(!state.followups.includes(o.id))state.followups.push(o.id);
 }
-say(detail);if(o.id==='editor'){openEditor();}else{if(!state.found.includes(o.id))state.found.push(o.id);save();draw();}}
+say(detail);if(o.id==='editor'){openEditor();}else{if(!state.found.includes(o.id))state.found.push(o.id);save();draw();if(documentIds.has(o.id))documentView(o);}}
+const bodyOptions=['活動成果：四年級閱讀週借閱紀錄為164冊，活動前一週為80冊。','學生經驗：小華借了六本書，其中兩本已讀完；明明和同學交換推薦書單。','活動安排：閱讀週每借一本書可獲得一點，集滿五點可兌換書籤。'];
 const headlines=['閱讀週讓四年級閱讀能力全面提升！','四年級閱讀週借閱冊數從80冊增至164冊','閱讀週的借閱數字與學生故事'];
 function openEditor(){
 say('校刊編輯桌：請選擇標題與引用資料。你可以在資料尚未蒐集齊全時發稿。');
 const h=document.createElement('div');h.textContent='第一步：選擇標題';choices.appendChild(h);
 headlines.forEach((name,i)=>button((state.headline===i?'✓ ':'')+name,()=>{state.headline=i;save();openEditor();}));
 if(state.headline===null)return;
-const t=document.createElement('div');t.textContent='第二步：勾選要引用的資料（可多選）';t.style.width='100%';choices.appendChild(t);
+const bodyHeading=document.createElement('div');bodyHeading.textContent='第二步：選擇報導主段落';bodyHeading.style.width='100%';choices.appendChild(bodyHeading);
+bodyOptions.forEach((body,i)=>button((state.bodyChoice===i?'◉ ':'○ ')+body,()=>{state.bodyChoice=i;save();openEditor();}));
+const t=document.createElement('div');t.textContent='第三步：勾選要引用的資料（可多選）';t.style.width='100%';choices.appendChild(t);
 state.found.forEach(id=>{const b=document.createElement('button');b.textContent=(state.citations.includes(id)?'☑ ':'☐ ')+(names[id]||id);b.onclick=()=>{if(state.citations.includes(id))state.citations=state.citations.filter(x=>x!==id);else state.citations.push(id);save();openEditor();};choices.appendChild(b);});
-const preview=document.createElement('div');preview.className='record';preview.style.width='100%';preview.textContent='報導預覽｜'+headlines[state.headline]+'\n引用：'+(state.citations.map(id=>names[id]||id).join('、')||'未列出');preview.style.whiteSpace='pre-line';choices.appendChild(preview);
+const preview=document.createElement('div');preview.className='record';preview.style.width='100%';preview.textContent='報導預覽｜'+headlines[state.headline]+'\n'+bodyOptions[state.bodyChoice]+'\n引用：'+(state.citations.map(id=>names[id]||id).join('、')||'未列出');preview.style.whiteSpace='pre-line';choices.appendChild(preview);
 button('確認發表報導',()=>finish(state.headline));
 }
 function finish(n){
@@ -143,7 +168,7 @@ const reactions=[
 '黃小米老師轉貼報導，並補充下一週的借閱紀錄仍在整理中。',
 '小華把報導分享給同學，明明留言說也想分享自己借書的經驗。'
 ];
-state.ending=n+1;state.publications.push({headline:n,citations:[...state.citations],timestamp:Date.now()});save();draw();
+state.ending=n+1;state.publications.push({headline:n,bodyChoice:state.bodyChoice,citations:[...state.citations],timestamp:Date.now()});save();draw();
 say('【校刊已發表】\\n標題：'+headlines[n]+'\\n引用資料：'+(citations.join('、')||'未列出')+'\\n讀者回應：'+reactions[n]+'\\n你可以繼續探索、回訪人物，或回到編輯桌發表修訂版。');
 if(state.publications.length>=2){button('閱讀第一章尾聲',()=>{state.chapterDone=false;narrative();});}else{button('閱讀讀者來信',()=>{say('新一期校刊已送出。你可以在下方「讀者來信」查看不同讀者的留言。');});}
 }
