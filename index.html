@@ -2,7 +2,7 @@
 <html lang="zh-Hant"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><title>校園真相調查局</title>
 <style>
 *{box-sizing:border-box}body{margin:0;background:#171f2c;color:#f4ebd7;font-family:system-ui,-apple-system,sans-serif}header{padding:14px 16px;background:#243349;display:flex;justify-content:space-between;align-items:center;gap:10px}h1{font-size:20px;margin:0}small{color:#bfcddd}button{touch-action:manipulation;background:#365371;color:white;border:2px solid #7994ad;border-radius:12px;padding:12px 16px;font-size:17px;font-weight:700}main{max-width:850px;margin:auto;padding:12px}canvas{display:block;width:100%;height:auto;image-rendering:pixelated;background:#273d49;border:5px solid #637d8f;border-radius:12px}.controls{display:flex;justify-content:space-between;align-items:center;margin:12px 0;gap:12px}.pad{display:grid;grid-template-columns:repeat(3,56px);gap:4px}.pad button{padding:8px 0;height:52px}.pad .up{grid-column:2}.pad .left{grid-column:1}.pad .down{grid-column:2}.pad .right{grid-column:3;grid-row:2}.pad .left,.pad .down{grid-row:2}.interact{background:#9b7141;border-color:#d8ac6b;color:#fff4e2}section{background:#26364b;padding:16px;border:1px solid #647f96;border-radius:14px;line-height:1.7;margin-top:12px}#message{min-height:110px}#choices{display:flex;flex-wrap:wrap;gap:8px;margin-top:12px}#choices button{font-size:15px}#inventory{font-size:14px;color:#cddde8}#status{font-size:13px;color:#c4d5e5}.tip{font-size:13px;color:#cbd7e4}#error{color:#ffb4a7;white-space:pre-wrap}</style></head><body>
-<header><div><h1>校園真相調查局 <small>v0.3</small></h1><small>探索資料・訪談人物・撰寫校刊報導</small></div><button id="reset">重新開始</button></header>
+<header><div><h1>校園真相調查局 <small>v0.4</small></h1><small>探索資料・訪談人物・撰寫校刊報導</small></div><button id="reset">重新開始</button></header>
 <main><canvas id="game" width="640" height="384" aria-label="遊戲地圖"></canvas>
 <div class="controls"><div class="pad"><button class="up" data-dir="up">▲</button><button class="left" data-dir="left">◀</button><button class="down" data-dir="down">▼</button><button class="right" data-dir="right">▶</button></div><button class="interact" id="interact">調查／對話</button></div>
 <div class="tip">方向鍵或 WASD 移動；接近物件後按「調查／對話」。黃色區域可切換場景。</div>
@@ -19,8 +19,8 @@ const scenes=[
 {name:'校刊社',floor:'#b4b8d2',objects:[{x:4,y:3,label:'校刊編輯桌',id:'editor',text:'編輯桌上放著三份候選標題。你可以決定要發表哪一篇報導。'},{x:9,y:5,label:'群組訊息',id:'rumor',text:'校園群組貼文：「閱讀週讓四年級借閱量翻倍，閱讀能力全面提升！」貼文未附原始統計資料。'}]}
 ];
 const names={stats:'借閱統計表',notice:'閱讀週公告',teacher:'黃小米老師訪談',hua:'小華訪談',ming:'明明訪談',class:'班級閱讀紀錄',rumor:'群組訊息'};
-let state={scene:0,x:2,y:4,found:[],ending:null};
-try{let old=JSON.parse(localStorage.getItem('education-rpg-v03'));if(old&&Number.isInteger(old.scene)&&old.scene>=0&&old.scene<3)state={...state,...old};}catch(e){}
+let state={scene:0,x:2,y:4,found:[],ending:null,citations:[],headline:null};
+try{let old=JSON.parse(localStorage.getItem('education-rpg-v04'));if(old&&Number.isInteger(old.scene)&&old.scene>=0&&old.scene<3)state={...state,...old};}catch(e){}
 function save(){try{localStorage.setItem('education-rpg-v03',JSON.stringify(state));}catch(e){}}
 function say(t){msg.textContent=t;choices.replaceChildren();}
 function draw(){
@@ -31,17 +31,37 @@ ctx.fillStyle='#efcc59';ctx.fillRect(606,145,26,78);ctx.fillRect(8,145,26,78);
 for(const o of scenes[state.scene].objects){const px=o.x*T,py=o.y*T;ctx.fillStyle=o.id==='editor'?'#805c49':'#527c8c';ctx.fillRect(px+4,py+4,32,32);ctx.fillStyle='#fff5dc';ctx.font='bold 12px sans-serif';ctx.textAlign='center';ctx.fillText(o.label,px+20,py-3);}
 ctx.fillStyle='#263e73';ctx.fillRect(state.x*T+8,state.y*T+10,24,26);ctx.fillStyle='#ffcf99';ctx.fillRect(state.x*T+11,state.y*T+3,18,16);ctx.fillStyle='#1b2637';ctx.fillRect(state.x*T+12,state.y*T+2,16,5);
 ctx.fillStyle='#1d3040';ctx.fillRect(0,360,640,24);ctx.fillStyle='#fff';ctx.textAlign='left';ctx.font='14px sans-serif';ctx.fillText(scenes[state.scene].name+'｜黃色門口切換場景',12,377);
-sceneTitle.textContent=scenes[state.scene].name;inv.textContent=state.found.length?state.found.map(id=>names[id]||id).join('、'):'尚未蒐集資料';status.textContent='已蒐集 '+state.found.length+' 項資料'+(state.ending?'｜報導已發表':'');
+sceneTitle.textContent=scenes[state.scene].name;inv.replaceChildren();if(!state.found.length){inv.textContent='尚未蒐集資料';}else{state.found.forEach(id=>{const b=document.createElement('button');b.textContent='📄 '+(names[id]||id);b.style.margin='4px';b.style.fontSize='13px';b.onclick=()=>review(id);inv.appendChild(b);});}status.textContent='已蒐集 '+state.found.length+' 項資料'+(state.ending?'｜報導已發表':'');
 }
 function move(dx,dy){if(state.ending)return;let x=Math.max(1,Math.min(14,state.x+dx)),y=Math.max(1,Math.min(7,state.y+dy));state.x=x;state.y=y;if(x===14&&y>=3&&y<=5){state.scene=(state.scene+1)%3;state.x=2;state.y=4;say('你來到'+scenes[state.scene].name+'。請接近物件進行調查。');}else if(x===1&&y>=3&&y<=5){state.scene=(state.scene+2)%3;state.x=13;state.y=4;say('你來到'+scenes[state.scene].name+'。');}save();draw();}
+function review(id){const o=scenes.flatMap(scene=>scene.objects).find(item=>item.id===id);if(o)say('【'+(names[id]||o.label)+'】'+o.text);}
 function button(label,fn){const b=document.createElement('button');b.textContent=label;b.onclick=fn;choices.appendChild(b);}
-function interact(){if(state.ending){say('報導已發表。按「重新開始」可再次體驗。');return;}const o=scenes[state.scene].objects.find(o=>Math.abs(o.x-state.x)<=1&&Math.abs(o.y-state.y)<=1);if(!o){say('附近沒有可調查的物件。請靠近方塊。');return;}say(o.text);if(o.id==='editor'){button('發表：閱讀能力全面提升！',()=>finish(0));button('發表：閱讀週借閱冊數上升',()=>finish(1));button('發表：閱讀週的數字與參與故事',()=>finish(2));}else{if(!state.found.includes(o.id))state.found.push(o.id);save();draw();}}
-function finish(n){const results=['校刊發布後，有同學詢問「閱讀能力」是用什麼方法測量的。編輯部收到要求補充資料的留言。','校刊發布後，讀者看到借閱冊數的變化，也有人想知道活動結束後的借閱情形。','校刊發布後，受訪學生分享自己的經驗；讀者也開始討論數字和個人經驗能回答哪些不同問題。'];state.ending=n+1;say('報導發表完成。'+results[n]+' 你可以和同學比較各種報導的依據。');save();draw();}
+function interact(){if(state.ending){say('報導已發表。按「重新開始」可再次體驗。');return;}const o=scenes[state.scene].objects.find(o=>Math.abs(o.x-state.x)<=1&&Math.abs(o.y-state.y)<=1);if(!o){say('附近沒有可調查的物件。請靠近方塊。');return;}say(o.text);if(o.id==='editor'){openEditor();}else{if(!state.found.includes(o.id))state.found.push(o.id);save();draw();}}
+const headlines=['閱讀週讓四年級閱讀能力全面提升！','四年級閱讀週借閱冊數從80冊增至164冊','閱讀週的借閱數字與學生故事'];
+function openEditor(){
+say('校刊編輯桌：請選擇標題與引用資料。你可以在資料尚未蒐集齊全時發稿。');
+const h=document.createElement('div');h.textContent='第一步：選擇標題';choices.appendChild(h);
+headlines.forEach((name,i)=>button((state.headline===i?'✓ ':'')+name,()=>{state.headline=i;save();openEditor();}));
+if(state.headline===null)return;
+const t=document.createElement('div');t.textContent='第二步：勾選要引用的資料（可多選）';t.style.width='100%';choices.appendChild(t);
+state.found.forEach(id=>{const b=document.createElement('button');b.textContent=(state.citations.includes(id)?'☑ ':'☐ ')+(names[id]||id);b.onclick=()=>{if(state.citations.includes(id))state.citations=state.citations.filter(x=>x!==id);else state.citations.push(id);save();openEditor();};choices.appendChild(b);});
+button('確認發表報導',()=>finish(state.headline));
+}
+function finish(n){
+const citations=state.citations.map(id=>names[id]||id);
+const reactions=[
+'讀者留言：「你們是怎麼測量閱讀能力的？我想看調查方式。」',
+'黃小米老師轉貼報導，並補充下一週的借閱紀錄仍在整理中。',
+'小華把報導分享給同學，明明留言說也想分享自己借書的經驗。'
+];
+state.ending=n+1;save();draw();
+say('【校刊已發表】\\n標題：'+headlines[n]+'\\n引用資料：'+(citations.join('、')||'未列出')+'\\n讀者回應：'+reactions[n]+'\\n你可以重新開始，試試不同的報導。');
+}
 const keymap={ArrowUp:[0,-1],w:[0,-1],W:[0,-1],ArrowDown:[0,1],s:[0,1],S:[0,1],ArrowLeft:[-1,0],a:[-1,0],A:[-1,0],ArrowRight:[1,0],d:[1,0],D:[1,0]};
 document.addEventListener('keydown',e=>{if(keymap[e.key]){e.preventDefault();move(...keymap[e.key]);}else if(e.key===' '||e.key==='Enter'){e.preventDefault();interact();}});
 document.querySelectorAll('[data-dir]').forEach(b=>{const d={up:[0,-1],down:[0,1],left:[-1,0],right:[1,0]}[b.dataset.dir];b.addEventListener('pointerdown',e=>{e.preventDefault();move(...d);});});
 document.getElementById('interact').onclick=interact;
-document.getElementById('reset').onclick=()=>{if(confirm('確定清除目前進度？')){state={scene:0,x:2,y:4,found:[],ending:null};save();say('新調查開始！請靠近物件並點選調查。');draw();}};
+document.getElementById('reset').onclick=()=>{if(confirm('確定清除目前進度？')){state={scene:0,x:2,y:4,found:[],ending:null,citations:[],headline:null};save();say('新調查開始！請靠近物件並點選調查。');draw();}};
 draw();
 window.addEventListener('error',e=>{document.getElementById('error').textContent='執行錯誤：'+e.message;});
 })();
