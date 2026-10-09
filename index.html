@@ -2,7 +2,7 @@
 <html lang="zh-Hant"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><title>校園真相調查局</title>
 <style>
 *{box-sizing:border-box}body{margin:0;background:#171f2c;color:#f4ebd7;font-family:system-ui,-apple-system,sans-serif}header{padding:14px 16px;background:#243349;display:flex;justify-content:space-between;align-items:center;gap:10px}h1{font-size:20px;margin:0}small{color:#bfcddd}button{touch-action:none;user-select:none;-webkit-user-select:none;background:#365371;color:white;border:2px solid #7994ad;border-radius:12px;padding:12px 16px;font-size:17px;font-weight:700}main{max-width:850px;margin:auto;padding:12px}canvas{display:block;width:100%;height:auto;image-rendering:pixelated;background:#273d49;border:5px solid #637d8f;border-radius:12px}.controls{display:flex;justify-content:space-between;align-items:center;margin:12px 0;gap:12px}.pad{display:grid;grid-template-columns:repeat(3,56px);gap:4px}.pad button{padding:8px 0;height:52px}.pad .up{grid-column:2}.pad .left{grid-column:1}.pad .down{grid-column:2}.pad .right{grid-column:3;grid-row:2}.pad .left,.pad .down{grid-row:2}.interact{background:#9b7141;border-color:#d8ac6b;color:#fff4e2}section{background:#26364b;padding:16px;border:1px solid #647f96;border-radius:14px;line-height:1.7;margin-top:12px}#message{min-height:110px}#choices{display:flex;flex-wrap:wrap;gap:8px;margin-top:12px}#choices button{font-size:15px}#inventory{font-size:14px;color:#cddde8}#status{font-size:13px;color:#c4d5e5}.tip{font-size:13px;color:#cbd7e4}#message{white-space:pre-line}#quest{line-height:2}#history{display:grid;gap:9px;margin-top:8px}.record{padding:10px;border-radius:9px;background:#1b2939;border:1px solid #526b81;font-size:14px}.record strong{color:#f3dca9}.tabs{display:flex;gap:8px;flex-wrap:wrap;margin:8px 0}.tabs button{font-size:14px;padding:8px 12px}.modal-note{color:#e6c68c;font-size:13px}#error{color:#ffb4a7;white-space:pre-wrap}.document{background:#f3e8cc;color:#302a23;border:3px double #8a7357;border-radius:7px;padding:14px;margin:8px 0;box-shadow:2px 3px 0 #151c28}.document strong{color:#563e2b}.document small{color:#6b5645}.document button{font-size:13px;padding:6px 10px}.story-panel{background:#1c2a39;border-left:4px solid #e0ba70;padding:12px;margin:10px 0}.story-panel button{margin:4px 5px 4px 0;font-size:14px}.panel-heading{font-size:17px;color:#f5db9d}.hint{font-size:13px;color:#c3d6df}</style></head><body>
-<header><div><h1>校園真相調查局 <small>v1.5</small></h1><small>探索資料・訪談人物・撰寫校刊報導</small></div><button id="reset">重新開始</button></header>
+<header><div><h1>校園真相調查局 <small>v1.6</small></h1><small>探索資料・訪談人物・撰寫校刊報導</small></div><button id="reset">重新開始</button></header>
 <main><canvas id="game" width="640" height="384" aria-label="遊戲地圖"></canvas>
 <div class="controls"><div class="pad"><button class="up" data-dir="up">▲</button><button class="left" data-dir="left">◀</button><button class="down" data-dir="down">▼</button><button class="right" data-dir="right">▶</button></div><button class="interact" id="interact">調查／對話</button></div>
 <div class="tip">方向鍵或 WASD 移動；接近物件後按「調查／對話」。黃色區域可切換場景。</div>
@@ -49,7 +49,7 @@ const scenes=[
 const names={stats:'借閱統計表',notice:'閱讀週公告',teacher:'黃小米老師訪談',hua:'小華訪談',ming:'明明訪談',class:'班級閱讀紀錄',rumor:'群組訊息'};
 const documentIds=new Set(['stats','notice','class','rumor']);
 let state={scene:0,x:2,y:4,found:[],ending:null,citations:[],headline:null,publications:[],followups:[],readerLetters:[],direction:'down',introSeen:false,chapterDone:false,boardNotes:[],bodyChoice:0};
-try{let old=JSON.parse(localStorage.getItem('education-rpg-v15')||localStorage.getItem('education-rpg-v12')||localStorage.getItem('education-rpg-v11')||localStorage.getItem('education-rpg-v10')||localStorage.getItem('education-rpg-v09')||localStorage.getItem('education-rpg-v03'));if(old&&Number.isInteger(old.scene)&&old.scene>=0&&old.scene<3)state={...state,...old};}catch(e){}
+try{let old=JSON.parse(localStorage.getItem('education-rpg-v16')||localStorage.getItem('education-rpg-v15')||localStorage.getItem('education-rpg-v12')||localStorage.getItem('education-rpg-v11')||localStorage.getItem('education-rpg-v10')||localStorage.getItem('education-rpg-v09')||localStorage.getItem('education-rpg-v03'));if(old&&Number.isInteger(old.scene)&&old.scene>=0&&old.scene<3)state={...state,...old};}catch(e){}
 if(!Array.isArray(state.publications))state.publications=[];if(typeof state.introSeen!=='boolean')state.introSeen=false;if(typeof state.chapterDone!=='boolean')state.chapterDone=false;if(!Array.isArray(state.readerLetters))state.readerLetters=[];if(!Array.isArray(state.boardNotes))state.boardNotes=[];if(!Number.isInteger(state.bodyChoice))state.bodyChoice=0;if(!['up','down','left','right'].includes(state.direction))state.direction='down';if(!Array.isArray(state.followups))state.followups=[];if(!Array.isArray(state.found))state.found=[];if(!Array.isArray(state.citations))state.citations=[];
 function save(){try{localStorage.setItem('education-rpg-v09',JSON.stringify(state));}catch(e){}}
 function say(t){msg.textContent=t;choices.replaceChildren();}
@@ -66,6 +66,18 @@ const body=document.createElement('div');body.textContent=o.text;
 paper.append(h,body);
 const mark=document.createElement('button');mark.textContent=state.boardNotes.includes(o.id)?'從紀錄板移除':'貼到事件紀錄板';mark.onclick=()=>{noteBoard(o.id);documentView(o);};
 paper.appendChild(mark);choices.appendChild(paper);
+}
+function compareReports(){
+if(state.publications.length<2){say('需要至少兩版報導才能比較。');return;}
+const a=state.publications[state.publications.length-2],b=state.publications[state.publications.length-1];
+const changes=[];
+if(a.headline!==b.headline)changes.push('標題：'+headlines[a.headline]+' → '+headlines[b.headline]);
+if(a.bodyChoice!==b.bodyChoice)changes.push('主段落：'+(bodyOptions[a.bodyChoice]||bodyOptions[0])+' → '+(bodyOptions[b.bodyChoice]||bodyOptions[0]));
+const added=b.citations.filter(id=>!a.citations.includes(id)),removed=a.citations.filter(id=>!b.citations.includes(id));
+if(added.length)changes.push('新增引用：'+added.map(id=>names[id]||id).join('、'));
+if(removed.length)changes.push('移除引用：'+removed.map(id=>names[id]||id).join('、'));
+if(!changes.length)changes.push('這兩版的標題、主段落與引用資料相同。');
+say('【校刊修訂比較｜第 '+(state.publications.length-1)+' 版 → 第 '+state.publications.length+' 版】\n'+changes.join('\n'));
 }
 function narrative(){
 if(!state.introSeen){
@@ -129,7 +141,7 @@ if(state.publications.length>1&&!selected.includes(3))selected.push(3);
 selected.forEach(i=>{const note=document.createElement('div');note.className='record';const title=document.createElement('strong');title.textContent=lettersData[i].from;const body=document.createElement('div');body.textContent=lettersData[i].text;note.append(title,body);letters.appendChild(note);});
 }
 history.replaceChildren();
-if(!state.publications.length){history.textContent='尚未發表報導。';}
+if(!state.publications.length){history.textContent='尚未發表報導。';}else if(state.publications.length>=2){const compare=document.createElement('button');compare.textContent='比較最近兩版的修改';compare.onclick=compareReports;history.appendChild(compare);}
 else state.publications.forEach((pub,i)=>{
 const wrap=document.createElement('div');wrap.className='record';
 const heading=document.createElement('strong');heading.textContent='第 '+(i+1)+' 版｜'+(headlines[pub.headline]||'未命名標題');wrap.appendChild(heading);
@@ -170,7 +182,7 @@ const reactions=[
 ];
 state.ending=n+1;state.publications.push({headline:n,bodyChoice:state.bodyChoice,citations:[...state.citations],timestamp:Date.now()});save();draw();
 say('【校刊已發表】\\n標題：'+headlines[n]+'\\n引用資料：'+(citations.join('、')||'未列出')+'\\n讀者回應：'+reactions[n]+'\\n你可以繼續探索、回訪人物，或回到編輯桌發表修訂版。');
-if(state.publications.length>=2){button('閱讀第一章尾聲',()=>{state.chapterDone=false;narrative();});}else{button('閱讀讀者來信',()=>{say('新一期校刊已送出。你可以在下方「讀者來信」查看不同讀者的留言。');});}
+if(state.publications.length>=2){button('比較兩版報導',compareReports);button('閱讀第一章尾聲',()=>{state.chapterDone=false;narrative();});}else{button('閱讀讀者來信',()=>{say('新一期校刊已送出。你可以在下方「讀者來信」查看不同讀者的留言。');});}
 }
 const keymap={ArrowUp:[0,-1],w:[0,-1],W:[0,-1],ArrowDown:[0,1],s:[0,1],S:[0,1],ArrowLeft:[-1,0],a:[-1,0],A:[-1,0],ArrowRight:[1,0],d:[1,0],D:[1,0]};
 document.addEventListener('keydown',e=>{if(keymap[e.key]){e.preventDefault();move(...keymap[e.key]);}else if(e.key===' '||e.key==='Enter'){e.preventDefault();interact();}});
