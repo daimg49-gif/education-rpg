@@ -2,7 +2,7 @@
 <html lang="zh-Hant"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><title>校園真相調查局</title>
 <style>
 *{box-sizing:border-box}body{margin:0;background:#171f2c;color:#f4ebd7;font-family:system-ui,-apple-system,sans-serif}header{padding:14px 16px;background:#243349;display:flex;justify-content:space-between;align-items:center;gap:10px}h1{font-size:20px;margin:0}small{color:#bfcddd}button{touch-action:none;user-select:none;-webkit-user-select:none;background:#365371;color:white;border:2px solid #7994ad;border-radius:12px;padding:12px 16px;font-size:17px;font-weight:700}main{max-width:850px;margin:auto;padding:12px}canvas{display:block;width:100%;height:auto;image-rendering:pixelated;background:#273d49;border:5px solid #637d8f;border-radius:12px}.controls{display:flex;justify-content:space-between;align-items:center;margin:12px 0;gap:12px}.pad{display:grid;grid-template-columns:repeat(3,56px);gap:4px}.pad button{padding:8px 0;height:52px}.pad .up{grid-column:2}.pad .left{grid-column:1}.pad .down{grid-column:2}.pad .right{grid-column:3;grid-row:2}.pad .left,.pad .down{grid-row:2}.interact{background:#9b7141;border-color:#d8ac6b;color:#fff4e2}section{background:#26364b;padding:16px;border:1px solid #647f96;border-radius:14px;line-height:1.7;margin-top:12px}#message{min-height:110px}#choices{display:flex;flex-wrap:wrap;gap:8px;margin-top:12px}#choices button{font-size:15px}#inventory{font-size:14px;color:#cddde8}#status{font-size:13px;color:#c4d5e5}.tip{font-size:13px;color:#cbd7e4}#message{white-space:pre-line}#quest{line-height:2}#history{display:grid;gap:9px;margin-top:8px}.record{padding:10px;border-radius:9px;background:#1b2939;border:1px solid #526b81;font-size:14px}.record strong{color:#f3dca9}.tabs{display:flex;gap:8px;flex-wrap:wrap;margin:8px 0}.tabs button{font-size:14px;padding:8px 12px}.modal-note{color:#e6c68c;font-size:13px}body{background:radial-gradient(ellipse at 50% 0%,#354d57 0%,#111a27 72%)}header{background:linear-gradient(120deg,#334a57,#263447);border-bottom:3px solid #b18a5e;box-shadow:0 5px 20px #0005}h1{letter-spacing:.04em;text-shadow:2px 2px #142433}section{background:linear-gradient(150deg,#2c4152,#202f42);border-color:#71818a;box-shadow:0 5px 0 #111d2b,0 8px 18px #0003}section>strong{display:block;color:#f6d59d;font-size:18px;margin-bottom:8px}button{box-shadow:0 4px 0 #182b3c;transition:filter .12s,transform .12s}button:active{transform:translateY(3px);box-shadow:0 1px 0 #182b3c}button:focus-visible{outline:3px solid #f9d68c;outline-offset:3px}canvas{border:6px ridge #b28e67;box-shadow:0 9px 0 #152430,0 14px 30px #0007}.interact{background:linear-gradient(#bd8b4c,#936539)}#message{font-size:16px;line-height:1.85}.record{border-left:4px solid #bba078}.tip{margin-top:7px}@media(max-width:420px){header{padding:12px 10px}h1{font-size:17px}main{padding:9px}.pad{grid-template-columns:repeat(3,51px)}.pad button{height:50px}section{padding:13px}button{font-size:15px;padding:11px 12px}}#error{color:#ffb4a7;white-space:pre-wrap}.document{background:#f3e8cc;color:#302a23;border:3px double #8a7357;border-radius:7px;padding:14px;margin:8px 0;box-shadow:2px 3px 0 #151c28}.document strong{color:#563e2b}.document small{color:#6b5645}.document button{font-size:13px;padding:6px 10px}.story-panel{background:#1c2a39;border-left:4px solid #e0ba70;padding:12px;margin:10px 0}.story-panel button{margin:4px 5px 4px 0;font-size:14px}.panel-heading{font-size:17px;color:#f5db9d}.hint{font-size:13px;color:#c3d6df}</style></head><body>
-<header><div><h1>校園真相調查局 <small>v2.5.1</small></h1><small>探索資料・訪談人物・撰寫校刊報導</small></div><button id="reset">重新開始</button></header>
+<header><div><h1>校園真相調查局 <small>v2.5.2</small></h1><small>探索資料・訪談人物・撰寫校刊報導</small></div><button id="reset">重新開始</button></header>
 <main><canvas id="game" width="640" height="384" aria-label="遊戲地圖"></canvas>
 <div class="controls"><div class="pad"><button class="up" data-dir="up">▲</button><button class="left" data-dir="left">◀</button><button class="down" data-dir="down">▼</button><button class="right" data-dir="right">▶</button></div><button class="interact" id="interact">調查／對話</button></div>
 <div class="tip">方向鍵或 WASD 移動；走向地圖四周標示的出口切換空間。靠近人物或文件可調查。</div>
@@ -25,7 +25,7 @@ const decor=[
 function blocked(scene,x,y){
 if(x<1||x>14||y<1||y>7)return true;
 if(((x===1||x===14)&&y>=3&&y<=5)||((y===1||y===7)&&x>=7&&x<=8))return false;
-return scenes[scene].objects.some(o=>o.x===x&&o.y===y);
+return !scenes[scene]||scenes[scene].objects.some(o=>o.x===x&&o.y===y);
 }
 function rect(x,y,w,h,c){ctx.fillStyle=c;ctx.fillRect(x,y,w,h);}
 function outline(x,y,w,h,c='#382e38'){rect(x-2,y-2,w+4,h+4,c);}
@@ -92,7 +92,10 @@ const scenes=[
 const names={stats:'借閱統計表',notice:'閱讀週公告',teacher:'黃小米老師訪談',hua:'小華訪談',ming:'明明訪談',class:'班級閱讀紀錄',rumor:'群組訊息',billboard:'活動看板',hallnote:'走廊留言',archive:'舊校刊合訂本',ledger:'紀錄整理簿'};
 const documentIds=new Set(['stats','notice','class','rumor','billboard','hallnote','archive','ledger']);
 let state={scene:0,x:2,y:4,found:[],ending:null,citations:[],headline:null,publications:[],followups:[],readerLetters:[],direction:'down',introSeen:false,chapterDone:false,boardNotes:[],bodyChoice:0};
-try{let old=JSON.parse(localStorage.getItem('education-rpg-v251')||localStorage.getItem('education-rpg-v25')||localStorage.getItem('education-rpg-v21')||localStorage.getItem('education-rpg-v20')||localStorage.getItem('education-rpg-v16')||localStorage.getItem('education-rpg-v15')||localStorage.getItem('education-rpg-v12')||localStorage.getItem('education-rpg-v11')||localStorage.getItem('education-rpg-v10')||localStorage.getItem('education-rpg-v09')||localStorage.getItem('education-rpg-v03'));if(old&&Number.isInteger(old.scene)&&old.scene>=0&&old.scene<5)state={...state,...old};}catch(e){}
+try{let old=JSON.parse(localStorage.getItem('education-rpg-v252')||localStorage.getItem('education-rpg-v251')||localStorage.getItem('education-rpg-v25')||localStorage.getItem('education-rpg-v21')||localStorage.getItem('education-rpg-v20')||localStorage.getItem('education-rpg-v16')||localStorage.getItem('education-rpg-v15')||localStorage.getItem('education-rpg-v12')||localStorage.getItem('education-rpg-v11')||localStorage.getItem('education-rpg-v10')||localStorage.getItem('education-rpg-v09')||localStorage.getItem('education-rpg-v03'));if(old&&Number.isInteger(old.scene)&&old.scene>=0&&old.scene<5)state={...state,...old};}catch(e){}
+if(!Number.isInteger(state.scene)||state.scene<0||state.scene>=scenes.length)state.scene=0;
+if(!Number.isInteger(state.x)||state.x<1||state.x>14)state.x=2;
+if(!Number.isInteger(state.y)||state.y<1||state.y>7)state.y=4;
 if(!Array.isArray(state.publications))state.publications=[];if(typeof state.introSeen!=='boolean')state.introSeen=false;if(typeof state.chapterDone!=='boolean')state.chapterDone=false;if(!Array.isArray(state.readerLetters))state.readerLetters=[];if(!Array.isArray(state.boardNotes))state.boardNotes=[];if(!Number.isInteger(state.bodyChoice))state.bodyChoice=0;if(!['up','down','left','right'].includes(state.direction))state.direction='down';if(!Array.isArray(state.followups))state.followups=[];if(!Array.isArray(state.found))state.found=[];if(!Array.isArray(state.citations))state.citations=[];
 function save(){try{localStorage.setItem('education-rpg-v20',JSON.stringify(state));}catch(e){}}
 function say(t){msg.textContent=t;choices.replaceChildren();}
@@ -135,6 +138,7 @@ return;
 }
 }
 function draw(){
+if(!scenes[state.scene]){state.scene=0;state.x=2;state.y=4;save();}
 if(!Array.isArray(state.boardNotes))state.boardNotes=[];
 if(!Array.isArray(state.found))state.found=[];
 if(!Array.isArray(state.publications))state.publications=[];
@@ -210,8 +214,8 @@ if(x===14&&y>=3&&y<=5)exit='right';
 else if(x===1&&y>=3&&y<=5)exit='left';
 else if(y===1&&x>=7&&x<=8)exit='up';
 else if(y===7&&x>=7&&x<=8)exit='down';
-const destination=exit&&routes[state.scene][exit];
-if(destination!==undefined){
+const destination=exit===null?undefined:routes[state.scene]?.[exit];
+if(Number.isInteger(destination)&&destination>=0&&destination<scenes.length){
 state.scene=destination;
 const entry={right:[2,4],left:[13,4],up:[7,6],down:[7,2]}[exit];
 state.x=entry[0];state.y=entry[1];
