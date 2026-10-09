@@ -2,7 +2,7 @@
 <html lang="zh-Hant"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><title>校園真相調查局</title>
 <style>
 *{box-sizing:border-box}body{margin:0;background:#171f2c;color:#f4ebd7;font-family:system-ui,-apple-system,sans-serif}header{padding:14px 16px;background:#243349;display:flex;justify-content:space-between;align-items:center;gap:10px}h1{font-size:20px;margin:0}small{color:#bfcddd}button{touch-action:manipulation;background:#365371;color:white;border:2px solid #7994ad;border-radius:12px;padding:12px 16px;font-size:17px;font-weight:700}main{max-width:850px;margin:auto;padding:12px}canvas{display:block;width:100%;height:auto;image-rendering:pixelated;background:#273d49;border:5px solid #637d8f;border-radius:12px}.controls{display:flex;justify-content:space-between;align-items:center;margin:12px 0;gap:12px}.pad{display:grid;grid-template-columns:repeat(3,56px);gap:4px}.pad button{padding:8px 0;height:52px}.pad .up{grid-column:2}.pad .left{grid-column:1}.pad .down{grid-column:2}.pad .right{grid-column:3;grid-row:2}.pad .left,.pad .down{grid-row:2}.interact{background:#9b7141;border-color:#d8ac6b;color:#fff4e2}section{background:#26364b;padding:16px;border:1px solid #647f96;border-radius:14px;line-height:1.7;margin-top:12px}#message{min-height:110px}#choices{display:flex;flex-wrap:wrap;gap:8px;margin-top:12px}#choices button{font-size:15px}#inventory{font-size:14px;color:#cddde8}#status{font-size:13px;color:#c4d5e5}.tip{font-size:13px;color:#cbd7e4}#error{color:#ffb4a7;white-space:pre-wrap}</style></head><body>
-<header><div><h1>校園真相調查局 <small>v0.6</small></h1><small>探索資料・訪談人物・撰寫校刊報導</small></div><button id="reset">重新開始</button></header>
+<header><div><h1>校園真相調查局 <small>v0.7</small></h1><small>探索資料・訪談人物・撰寫校刊報導</small></div><button id="reset">重新開始</button></header>
 <main><canvas id="game" width="640" height="384" aria-label="遊戲地圖"></canvas>
 <div class="controls"><div class="pad"><button class="up" data-dir="up">▲</button><button class="left" data-dir="left">◀</button><button class="down" data-dir="down">▼</button><button class="right" data-dir="right">▶</button></div><button class="interact" id="interact">調查／對話</button></div>
 <div class="tip">方向鍵或 WASD 移動；接近物件後按「調查／對話」。黃色區域可切換場景。</div>
@@ -21,7 +21,7 @@ const scenes=[
 ];
 const names={stats:'借閱統計表',notice:'閱讀週公告',teacher:'黃小米老師訪談',hua:'小華訪談',ming:'明明訪談',class:'班級閱讀紀錄',rumor:'群組訊息'};
 let state={scene:0,x:2,y:4,found:[],ending:null,citations:[],headline:null,publications:[],followups:[]};
-try{let old=JSON.parse(localStorage.getItem('education-rpg-v06'));if(old&&Number.isInteger(old.scene)&&old.scene>=0&&old.scene<3)state={...state,...old};}catch(e){}
+try{let old=JSON.parse(localStorage.getItem('education-rpg-v07'));if(old&&Number.isInteger(old.scene)&&old.scene>=0&&old.scene<3)state={...state,...old};}catch(e){}
 if(!Array.isArray(state.publications))state.publications=[];if(!Array.isArray(state.followups))state.followups=[];if(!Array.isArray(state.found))state.found=[];if(!Array.isArray(state.citations))state.citations=[];
 function save(){try{localStorage.setItem('education-rpg-v03',JSON.stringify(state));}catch(e){}}
 function say(t){msg.textContent=t;choices.replaceChildren();}
@@ -29,10 +29,21 @@ function draw(){
 ctx.clearRect(0,0,640,384);ctx.fillStyle=scenes[state.scene].floor;ctx.fillRect(0,0,640,360);
 for(let y=0;y<H;y++)for(let x=0;x<W;x++){ctx.strokeStyle='rgba(50,60,70,.16)';ctx.strokeRect(x*T,y*T,T,T);}
 ctx.fillStyle='#45596a';ctx.fillRect(0,0,640,18);ctx.fillRect(0,342,640,18);ctx.fillRect(0,0,18,360);ctx.fillRect(622,0,18,360);
+
+// Environment furniture: visual-only props stay out of walkable tile centers
+const decor=[
+[{x:1,y:1,w:3,h:1,c:'#806149'},{x:11,y:1,w:3,h:1,c:'#806149'},{x:10,y:6,w:3,h:1,c:'#6b8a79'}],
+[{x:1,y:1,w:3,h:1,c:'#947a5d'},{x:11,y:1,w:3,h:1,c:'#947a5d'},{x:10,y:6,w:3,h:1,c:'#947a5d'}],
+[{x:1,y:1,w:3,h:1,c:'#6d6b82'},{x:11,y:1,w:3,h:1,c:'#6d6b82'},{x:10,y:6,w:3,h:1,c:'#6d6b82'}]
+];
+for(const d of decor[state.scene]){ctx.fillStyle=d.c;ctx.fillRect(d.x*T+5,d.y*T+7,d.w*T-10,d.h*T-14);ctx.strokeStyle='#4c514b';ctx.strokeRect(d.x*T+5,d.y*T+7,d.w*T-10,d.h*T-14);}
 ctx.fillStyle='#efcc59';ctx.fillRect(606,145,26,78);ctx.fillRect(8,145,26,78);
+ctx.fillStyle='#293642';ctx.font='bold 13px sans-serif';ctx.textAlign='center';ctx.fillText('出口',595,137);ctx.fillText('出口',45,137);
 for(const o of scenes[state.scene].objects){const px=o.x*T,py=o.y*T;ctx.fillStyle=o.id==='editor'?'#805c49':'#527c8c';ctx.fillRect(px+4,py+4,32,32);ctx.fillStyle='#fff5dc';ctx.font='bold 12px sans-serif';ctx.textAlign='center';ctx.fillText(o.label,px+20,py-3);}
 ctx.fillStyle='#263e73';ctx.fillRect(state.x*T+8,state.y*T+10,24,26);ctx.fillStyle='#ffcf99';ctx.fillRect(state.x*T+11,state.y*T+3,18,16);ctx.fillStyle='#1b2637';ctx.fillRect(state.x*T+12,state.y*T+2,16,5);
-ctx.fillStyle='#1d3040';ctx.fillRect(0,360,640,24);ctx.fillStyle='#fff';ctx.textAlign='left';ctx.font='14px sans-serif';ctx.fillText(scenes[state.scene].name+'｜黃色門口切換場景',12,377);
+const near=scenes[state.scene].objects.find(o=>Math.abs(o.x-state.x)<=1&&Math.abs(o.y-state.y)<=1);
+if(near){const px=near.x*T+20,py=near.y*T-24;ctx.fillStyle='#fff1b6';ctx.fillRect(px-16,py-16,32,23);ctx.fillStyle='#202b39';ctx.font='bold 15px sans-serif';ctx.textAlign='center';ctx.fillText('!',px,py);ctx.strokeStyle='#ffeb88';ctx.lineWidth=3;ctx.strokeRect(near.x*T+2,near.y*T+2,36,36);ctx.lineWidth=1;}
+ctx.fillStyle='#1d3040';ctx.fillRect(0,360,640,24);ctx.fillStyle='#fff';ctx.textAlign='left';ctx.font='14px sans-serif';ctx.fillText(near?'可調查：'+near.label+'｜按調查／對話':'場景：'+scenes[state.scene].name+'｜黃色門口切換場景',12,377);
 sceneTitle.textContent=scenes[state.scene].name;inv.replaceChildren();if(!state.found.length){inv.textContent='尚未蒐集資料';}else{state.found.forEach(id=>{const b=document.createElement('button');b.textContent='📄 '+(names[id]||id);b.style.margin='4px';b.style.fontSize='13px';b.onclick=()=>review(id);inv.appendChild(b);});}status.textContent='已蒐集 '+state.found.length+' 項資料｜已發表 '+state.publications.length+' 篇版本';
 const tasks=[['走訪圖書館',state.found.some(x=>['stats','notice','teacher'].includes(x))],['走訪四年級教室',state.found.some(x=>['hua','ming','class'].includes(x))],['前往校刊社發表',state.publications.length>0],['發表後回訪一位受訪者',state.followups.length>0],['重新編輯並發表第二版',state.publications.length>1]];
 quest.textContent=tasks.map(([t,done])=>(done?'☑ ':'☐ ')+t).join('　｜　');
