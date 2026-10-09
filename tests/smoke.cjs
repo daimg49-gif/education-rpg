@@ -14,23 +14,23 @@ const assert = require('node:assert/strict');
  const page=await browser.newPage({viewport:{width:390,height:844},isMobile:true,hasTouch:true});
  const errors=[];page.on('pageerror',e=>errors.push(e.message));
  const check=()=>assert.deepEqual(errors,[],'Browser JavaScript errors');
- const state=()=>page.evaluate(()=>JSON.parse(localStorage.getItem('education-rpg-v16')));
+ const state=()=>page.evaluate(()=>JSON.parse(localStorage.getItem('education-rpg-v20')));
  try{
   await page.goto(url);
-  assert.match(await page.locator('h1').innerText(),/v1\.6/);
+  assert.match(await page.locator('h1').innerText(),/v2\.0/);
   assert.match(await page.locator('#message').innerText(),/匿名訊息/);
   await page.locator('[data-dir=right]').dispatchEvent('pointerdown',{pointerId:1});
   await page.locator('[data-dir=right]').dispatchEvent('pointerup',{pointerId:1});
   assert.equal((await state()).x,3,'Direction key moves one tile');
   check();
   // Inject a valid game position through the same save format, then test normal UI.
-  await page.evaluate(()=>{const s=JSON.parse(localStorage.getItem('education-rpg-v16'));s.scene=0;s.x=3;s.y=3;localStorage.setItem('education-rpg-v16',JSON.stringify(s));});
+  await page.evaluate(()=>{const s=JSON.parse(localStorage.getItem('education-rpg-v20'));s.scene=0;s.x=3;s.y=3;localStorage.setItem('education-rpg-v20',JSON.stringify(s));});
   await page.reload();
   await page.locator('#interact').click();
   assert.match(await page.locator('#message').innerText(),/借閱統計表/);
   await page.getByRole('button',{name:'貼到事件紀錄板'}).click();
   assert.match(await page.locator('#board').innerText(),/借閱統計表/);
-  await page.evaluate(()=>{const s=JSON.parse(localStorage.getItem('education-rpg-v16'));s.scene=2;s.x=4;s.y=4;localStorage.setItem('education-rpg-v16',JSON.stringify(s));});
+  await page.evaluate(()=>{const s=JSON.parse(localStorage.getItem('education-rpg-v20'));s.scene=2;s.x=4;s.y=4;localStorage.setItem('education-rpg-v20',JSON.stringify(s));});
   await page.reload();
   await page.locator('#interact').click();
   await page.getByRole('button',{name:/四年級閱讀週借閱冊數從80冊增至164冊/}).click();
