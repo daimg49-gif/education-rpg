@@ -17,6 +17,11 @@ const http=require('node:http'),fs=require('node:fs'),assert=require('node:asser
   await page.locator('[data-dir=left]').dispatchEvent('pointerdown',{pointerId:1});
   await page.locator('[data-dir=left]').dispatchEvent('pointerup',{pointerId:1});
   assert.equal((await state()).x,7);
+  assert.equal(await page.locator('#dashboard button').count(),1,'Movement must not duplicate meeting button');
+  await page.locator('[data-dir=right]').dispatchEvent('pointerdown',{pointerId:11});
+  await page.locator('[data-dir=right]').dispatchEvent('pointerup',{pointerId:11});
+  assert.equal((await state()).x,8,'Character moves right again');
+  assert.equal(await page.locator('#dashboard button').count(),1,'Dashboard remains single after repeated movement');
   await position(0,2,4);
   await page.locator('[data-dir=left]').dispatchEvent('pointerdown',{pointerId:2});
   await page.locator('[data-dir=left]').dispatchEvent('pointerup',{pointerId:2});
@@ -27,7 +32,7 @@ const http=require('node:http'),fs=require('node:fs'),assert=require('node:asser
   assert.equal((await state()).room,3,'North exit reaches science room');assert.equal((await state()).y,6,'Character enters science room near south door');
   await position(0,3,2);
   await page.locator('#interact').click();
-  assert.match(await page.locator('#dialogActions').innerText(),/校長室通知/);assert.equal(await page.locator('#sceneArt').isVisible(),true,'Illustrated scene appears during investigation');await page.locator('#closeDialog').click();assert.equal(await page.locator('#sceneArt').isVisible(),false,'Illustration disappears during exploration');
+  assert.match(await page.locator('#dialogActions').innerText(),/校長室通知/);assert.equal(await page.locator('#sceneArt').isVisible(),true,'Illustrated scene appears during investigation');assert.equal(await page.locator('#sceneArt').evaluate(img=>img.complete&&img.naturalWidth>0),true,'Illustrated background actually loaded');await page.locator('#closeDialog').click();assert.equal(await page.locator('#sceneArt').isVisible(),false,'Illustration disappears during exploration');
   assert.ok((await state()).seen.includes('notice'));
   await page.evaluate(()=>{const s=JSON.parse(localStorage.getItem('last-festival-v1'));s.seen=['notice','budget','music','history','equipment','circuit'];s.choices.science='low';s.choices.history='scan';localStorage.setItem('last-festival-v1',JSON.stringify(s));});
   await page.reload();await page.locator('#closeDialog').click();
