@@ -2,7 +2,7 @@
 <html lang="zh-Hant"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><title>校園真相調查局</title>
 <style>
 *{box-sizing:border-box}body{margin:0;background:#171f2c;color:#f4ebd7;font-family:system-ui,-apple-system,sans-serif}header{padding:14px 16px;background:#243349;display:flex;justify-content:space-between;align-items:center;gap:10px}h1{font-size:20px;margin:0}small{color:#bfcddd}button{touch-action:none;user-select:none;-webkit-user-select:none;background:#365371;color:white;border:2px solid #7994ad;border-radius:12px;padding:12px 16px;font-size:17px;font-weight:700}main{max-width:850px;margin:auto;padding:12px}canvas{display:block;width:100%;height:auto;image-rendering:pixelated;background:#273d49;border:5px solid #637d8f;border-radius:12px}.controls{display:flex;justify-content:space-between;align-items:center;margin:12px 0;gap:12px}.pad{display:grid;grid-template-columns:repeat(3,56px);gap:4px}.pad button{padding:8px 0;height:52px}.pad .up{grid-column:2}.pad .left{grid-column:1}.pad .down{grid-column:2}.pad .right{grid-column:3;grid-row:2}.pad .left,.pad .down{grid-row:2}.interact{background:#9b7141;border-color:#d8ac6b;color:#fff4e2}section{background:#26364b;padding:16px;border:1px solid #647f96;border-radius:14px;line-height:1.7;margin-top:12px}#message{min-height:110px}#choices{display:flex;flex-wrap:wrap;gap:8px;margin-top:12px}#choices button{font-size:15px}#inventory{font-size:14px;color:#cddde8}#status{font-size:13px;color:#c4d5e5}.tip{font-size:13px;color:#cbd7e4}#message{white-space:pre-line}#quest{line-height:2}#history{display:grid;gap:9px;margin-top:8px}.record{padding:10px;border-radius:9px;background:#1b2939;border:1px solid #526b81;font-size:14px}.record strong{color:#f3dca9}.tabs{display:flex;gap:8px;flex-wrap:wrap;margin:8px 0}.tabs button{font-size:14px;padding:8px 12px}.modal-note{color:#e6c68c;font-size:13px}body{background:radial-gradient(ellipse at 50% 0%,#354d57 0%,#111a27 72%)}header{background:linear-gradient(120deg,#334a57,#263447);border-bottom:3px solid #b18a5e;box-shadow:0 5px 20px #0005}h1{letter-spacing:.04em;text-shadow:2px 2px #142433}section{background:linear-gradient(150deg,#2c4152,#202f42);border-color:#71818a;box-shadow:0 5px 0 #111d2b,0 8px 18px #0003}section>strong{display:block;color:#f6d59d;font-size:18px;margin-bottom:8px}button{box-shadow:0 4px 0 #182b3c;transition:filter .12s,transform .12s}button:active{transform:translateY(3px);box-shadow:0 1px 0 #182b3c}button:focus-visible{outline:3px solid #f9d68c;outline-offset:3px}canvas{border:6px ridge #b28e67;box-shadow:0 9px 0 #152430,0 14px 30px #0007;filter:saturate(1.12) contrast(1.04)}.interact{background:linear-gradient(#bd8b4c,#936539)}#message{font-size:16px;line-height:1.85}.record{border-left:4px solid #bba078}.tip{margin-top:7px}@media(max-width:420px){header{padding:12px 10px}h1{font-size:17px}main{padding:9px}.pad{grid-template-columns:repeat(3,51px)}.pad button{height:50px}section{padding:13px}button{font-size:15px;padding:11px 12px}}#error{color:#ffb4a7;white-space:pre-wrap}.document{background:#f3e8cc;color:#302a23;border:3px double #8a7357;border-radius:7px;padding:14px;margin:8px 0;box-shadow:2px 3px 0 #151c28}.document strong{color:#563e2b}.document small{color:#6b5645}.document button{font-size:13px;padding:6px 10px}.story-panel{background:#1c2a39;border-left:4px solid #e0ba70;padding:12px;margin:10px 0}.story-panel button{margin:4px 5px 4px 0;font-size:14px}.panel-heading{font-size:17px;color:#f5db9d}.hint{font-size:13px;color:#c3d6df} .game-stage{position:relative;isolation:isolate;overflow:hidden;border-radius:12px}.game-stage canvas{box-shadow:none;margin:0}.story-overlay{position:absolute;inset:0;z-index:3;overflow:hidden;background:#182b38}.story-overlay[hidden]{display:none!important}.story-overlay img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;image-rendering:auto}.story-shade{position:absolute;inset:0;background:linear-gradient(180deg,transparent 18%,#09152322 42%,#081523e8 100%)}.story-dialog{position:absolute;inset:auto 0 0;padding:10px 14px 13px;max-height:88%;overflow-y:auto;overscroll-behavior:contain;color:#fff4db;text-shadow:0 1px 2px #000b}.story-close{float:right;position:sticky;top:0;z-index:2;padding:6px 10px;font-size:12px;background:#223747e8;border-color:#e6c68c}.overlay-title{font-size:14px;color:#ffdf99;font-weight:800;margin:2px 0 5px}.overlay-message{font-size:clamp(12px,2.4vw,16px);line-height:1.55;white-space:pre-line;clear:both}.overlay-choices{display:flex;flex-wrap:wrap;gap:5px;margin-top:8px}.overlay-choices button{font-size:12px;padding:6px 9px;box-shadow:none}.overlay-choices .document,.overlay-choices .record{margin:3px 0;padding:7px;font-size:12px;max-width:100%}.overlay-choices .document button{font-size:12px}.overlay-choices>div{max-width:100%}@media(max-width:420px){.story-dialog{padding:6px 9px 8px}.overlay-message{font-size:12px;line-height:1.4}.overlay-choices button{font-size:11px;padding:5px 7px}} </style></head><body>
-<header><div><h1>校園真相調查局 <small>v2.8</small></h1><small>探索資料・訪談人物・撰寫校刊報導</small></div><button id="reset">重新開始</button></header>
+<header><div><h1>校園真相調查局 <small>雙案件篇</small></h1><small>探索資料・訪談人物・撰寫校刊報導</small></div><button id="reset">重新開始</button></header>
 <main><div class="game-stage"><canvas id="game" width="640" height="384" aria-label="遊戲地圖"></canvas><div id="storyOverlay" class="story-overlay" hidden><img id="storyImage" alt="調查場景插畫"><div class="story-shade"></div><div class="story-dialog"><button id="closeStory" class="story-close" aria-label="返回探索地圖">× 返回探索</button><div id="overlayTitle" class="overlay-title"></div><div id="overlayMessage" class="overlay-message"></div><div id="overlayChoices" class="overlay-choices"></div></div></div></div>
 <div class="controls"><div class="pad"><button class="up" data-dir="up">▲</button><button class="left" data-dir="left">◀</button><button class="down" data-dir="down">▼</button><button class="right" data-dir="right">▶</button></div><button class="interact" id="interact">調查／對話</button></div>
 <div class="tip">方向鍵或 WASD 移動；走向地圖四周標示的出口切換空間。靠近人物或文件可調查。</div>
@@ -36,7 +36,7 @@ const decor=[
 function blocked(scene,x,y){
 if(x<1||x>14||y<1||y>7)return true;
 if((x===1&&y>=3&&y<=5&&routes[scene]?.left!==undefined)||(x===14&&y>=3&&y<=5&&routes[scene]?.right!==undefined)||(y===1&&x>=7&&x<=8&&routes[scene]?.up!==undefined)||(y===7&&x>=7&&x<=8&&routes[scene]?.down!==undefined))return false;
-return !scenes[scene]||scenes[scene].objects.some(o=>o.x===x&&o.y===y);
+return !scenes[scene]||(isSecond()?secondScenes[scene]:scenes[scene].objects).some(o=>o.x===x&&o.y===y);
 }
 function rect(x,y,w,h,c){ctx.fillStyle=c;ctx.fillRect(x,y,w,h);}
 function outline(x,y,w,h,c='#382e38'){rect(x-2,y-2,w+4,h+4,c);}
@@ -154,6 +154,7 @@ ctx.fillStyle='#29343e';ctx.fillRect(px+15,py+14+phase,3,3);ctx.fillRect(px+24,p
 }
 function prop(o){
 const x=o.x*T,y=o.y*T;
+if(isSecond()&&['cook','photographer','forwarder','witness'].includes(o.id)){const colors={cook:'#d8e1cf',photographer:'#8db0d6',forwarder:'#e0a7aa',witness:'#b4a7d9'};sprite(o.x,o.y,colors[o.id],animationFrame%2);if(o.id==='cook'){rect(x+9,y+2,23,8,'#fff7eb');rect(x+8,y+18,24,12,'#fff7eb');}if(o.id==='photographer'){rect(x+7,y+25,10,9,'#3d5967');}if(o.id==='forwarder'){rect(x+26,y+23,9,12,'#394c65');}if(o.id==='witness'){rect(x+9,y+4,22,5,'#594c46');}return;}
 if(['teacher','hua','ming'].includes(o.id)){sprite(o.x,o.y,o.id==='teacher'?'#88658c':o.id==='hua'?'#528d99':'#b57e5a',animationFrame%2);if(o.id==='teacher'){rect(x+9,y+4,23,4,'#483947');rect(x+13,y+29,14,3,'#f2dfb0');}else if(o.id==='ming'){rect(x+8,y+7,5,7,'#443330');rect(x+29,y+7,5,7,'#443330');}else{rect(x+8,y+3,25,4,'#4c3a30');}return;}
 ctx.fillStyle='#4a3940';ctx.fillRect(x+2,y+30,36,6);ctx.fillStyle=o.id==='editor'?'#9b755d':'#78958a';ctx.fillRect(x+4,y+12,32,23);
 ctx.fillStyle='#f7e8c7';ctx.fillRect(x+10,y+6,21,16);ctx.fillStyle='#c69d66';ctx.fillRect(x+7,y+13,3,16);
@@ -168,9 +169,30 @@ const scenes=[
 {name:'資料室',floor:'#b8aa90',objects:[{x:4,y:3,label:'舊校刊合訂本',id:'archive',text:'校刊社資料室：去年的閱讀活動也曾出現借閱冊數上升的新聞。附錄只列了借閱量，沒有列閱讀測驗成績。'},{x:10,y:5,label:'紀錄整理簿',id:'ledger',text:'借閱資料整理簿：本次活動由四年級閱讀小隊小華、明明、阿甘協助整理，指導老師黃小米。整理方式：按借閱系統日期篩選星期一至星期五，計算借出冊數。'}]}
 ];
 const names={stats:'借閱統計表',notice:'閱讀週公告',teacher:'黃小米老師訪談',hua:'小華訪談',ming:'明明訪談',class:'班級閱讀紀錄',rumor:'群組訊息',billboard:'活動看板',hallnote:'走廊留言',archive:'舊校刊合訂本',ledger:'紀錄整理簿'};
+
+const secondScenes=[
+[{x:3,y:2,id:'lunch_photo',label:'午餐照片',text:'【群組流傳照片】畫面中是一個餐盤，只有少量飯菜。貼文文字：「今天學校午餐只有這樣，學生根本吃不飽！」照片沒有拍攝日期。'},{x:8,y:2,id:'menu',label:'當日菜單',text:'【10月8日午餐菜單】白飯、滷雞腿、炒高麗菜、豆腐湯、香蕉。供餐紀錄顯示當日備餐正常。'},{x:5,y:6,id:'cook',label:'午餐阿姨',text:'午餐阿姨：我看到有人吃完還去添飯。回收餐盤時，有些人會留下幾口青菜。'}],
+[{x:3,y:2,id:'photographer',label:'拍照的小華',text:'小華：我在星期三午餐快結束時拍了那張照片。那是我自己的餐盤，我吃完大部分才拍的。'},{x:8,y:3,id:'forwarder',label:'轉傳的明明',text:'明明：我看到群組有人說午餐很少，就轉傳了。我沒有問照片是什麼時候拍的。'},{x:5,y:6,id:'class_note',label:'班級午餐紀錄',text:'【四年級午餐紀錄】10月8日，29人用餐；有7人登記添飯。紀錄沒有逐一記下每位學生吃飽的感受。'}],
+[{x:4,y:3,id:'desk2',label:'第二案編輯桌',text:'主編：這張照片是真的，但照片上的文字就一定正確嗎？請整理證據，再決定報導怎麼寫。'},{x:9,y:5,id:'viral',label:'熱門轉傳紀錄',text:'【群組轉傳紀錄】第一則貼文在星期三15:20出現，附上被裁切的餐盤照片；後續有人加上「學校偷工減料」的文字，未附採訪或供餐紀錄。'}],
+[{x:5,y:2,id:'poster2',label:'午餐意見公告',text:'【學校公告】午餐意見可透過班級導師或學務處反映；每週菜單於公布欄公告。10月8日的菜單與圖書館資料一致。'},{x:11,y:6,id:'witness',label:'目擊同學阿甘',text:'阿甘：我坐在小華旁邊。她先吃掉雞腿和飯，後來才拍照。有人覺得菜太少，也有人覺得夠吃。'}],
+[{x:4,y:3,id:'original',label:'原始照片紀錄',text:'【原始照片資訊】拍攝：10月8日12:32。原圖右側有空碗與吃過的雞腿骨；流傳版本裁掉了右側。原始照片與群組圖片的餐盤位置、桌面紋路相同。'},{x:10,y:5,id:'service',label:'供餐數量紀錄',text:'【10月8日供餐簿】備餐：學生份數310份；班級領餐紀錄：四年級29份。這份表單沒有記錄每一盤實際吃下的份量。'}]
+];
+const secondNames={lunch_photo:'午餐照片',menu:'當日菜單',cook:'午餐阿姨訪談',photographer:'小華訪談',forwarder:'明明訪談',class_note:'班級午餐紀錄',desk2:'第二案編輯桌',viral:'轉傳紀錄',poster2:'午餐意見公告',witness:'阿甘訪談',original:'原始照片紀錄',service:'供餐數量紀錄'};
+Object.assign(names,secondNames);
+function isSecond(){return state.chapter===2;}
+function activeObjects(){return isSecond()?secondScenes[state.scene]:scenes[state.scene].objects;}
+function secondFound(){return Array.isArray(state.secondFound)?state.secondFound:[];}
+function startSecond(){if(!state.chapterDone){say('請先完成第一單元並發表校刊，才能開啟新案件。');return;}state.chapter=2;state.secondFound=state.secondFound||[];state.secondReport=state.secondReport||null;state.scene=2;state.x=7;state.y=4;state.direction='down';save();draw();say('【第二單元｜消失的午餐】\\n第一篇校刊剛發行，校刊社又收到一則熱門群組訊息：「今天午餐只有一點點，學校偷工減料！」\\n主編將照片交給你：「這次別只看照片。去找拍照的人、原始影像和供餐紀錄，再回來寫報導。」');}
+function secondEvidence(o){if(o.id==='desk2'){openSecondEditor();return;}if(!state.secondFound.includes(o.id))state.secondFound.push(o.id);save();draw();say('【'+o.label+'】\\n'+o.text);const b=document.createElement('button');b.textContent='加入第二案證據板';b.onclick=()=>{if(!state.secondPins)state.secondPins=[];if(!state.secondPins.includes(o.id))state.secondPins.push(o.id);save();draw();say('已加入第二案證據板：'+o.label);};choices.appendChild(b);}
+const secondHeadlines=['照片證明學校午餐偷工減料！','流傳午餐照片拍於用餐後，裁切版本未呈現完整脈絡','午餐完全沒問題，所有學生都吃得很飽'];
+const secondBodies=['流傳照片只見少量飯菜，網友認為學校偷工減料。','拍照者表示照片拍於用餐後；原圖可見吃過的雞腿骨，流傳圖裁掉部分畫面。','供餐簿有備餐數字，所以每一位學生都一定吃飽。'];
+function openSecondEditor(){say('【第二案｜校刊編輯】\\n主編：選擇標題、內文和引用來源。你的文字將影響讀者如何理解這張照片。');const t=document.createElement('div');t.textContent='選擇報導標題';choices.appendChild(t);secondHeadlines.forEach((h,i)=>button((state.secondHeadline===i?'✓ ':'')+h,()=>{state.secondHeadline=i;save();openSecondEditor();}));if(!Number.isInteger(state.secondHeadline))return;const p=document.createElement('div');p.textContent='選擇報導內文';choices.appendChild(p);secondBodies.forEach((b,i)=>button((state.secondBody===i?'✓ ':'')+b,()=>{state.secondBody=i;save();openSecondEditor();}));const c=document.createElement('div');c.textContent='選擇引用證據（至少兩份）';choices.appendChild(c);state.secondCitations=state.secondCitations||[];secondFound().forEach(id=>button((state.secondCitations.includes(id)?'☑ ':'☐ ')+(secondNames[id]||id),()=>{state.secondCitations=state.secondCitations.includes(id)?state.secondCitations.filter(x=>x!==id):[...state.secondCitations,id];save();openSecondEditor();}));button('發表第二案校刊',publishSecond);}
+function publishSecond(){const f=secondFound();const required=['lunch_photo','photographer','original','menu'];const missing=required.filter(id=>!f.includes(id));if(missing.length){say('主編：還需要補齊 '+missing.map(id=>secondNames[id]).join('、')+'。');button('返回編輯桌',openSecondEditor);return;}if(!Number.isInteger(state.secondBody)||!state.secondCitations||state.secondCitations.length<2){say('主編：請選擇內文並至少引用兩份證據。');button('返回編輯桌',openSecondEditor);return;}state.secondReport={headline:state.secondHeadline,body:state.secondBody,citations:[...state.secondCitations]};save();draw();say('【第二案報導發表】\\n'+secondHeadlines[state.secondHeadline]+'\\n'+secondBodies[state.secondBody]+'\\n引用：'+state.secondCitations.map(id=>secondNames[id]).join('、')+'\\n\\n讀者回信：「我想知道原圖到底長什麼樣子。照片是真的，說明卻可能不是完整的故事。」');button('查看第二案檔案',()=>{say('【第二案檔案】\\n你發表的標題：'+secondHeadlines[state.secondHeadline]+'\\n原始照片紀錄：10月8日12:32，右側被裁切。\\n拍攝者：用餐後才拍攝。\\n菜單與供餐簿：可確認供餐項目與備餐數量，但不能直接證明每個人都吃飽。');button('返回校園繼續調查',closeStory);});}
+
 const documentIds=new Set(['stats','notice','class','rumor','billboard','hallnote','archive','ledger']);
-let state={scene:0,x:2,y:4,found:[],ending:null,citations:[],headline:null,publications:[],followups:[],readerLetters:[],direction:'down',introSeen:false,chapterDone:false,boardNotes:[],bodyChoice:0};
+let state={scene:0,x:2,y:4,found:[],ending:null,citations:[],headline:null,publications:[],followups:[],readerLetters:[],direction:'down',introSeen:false,chapterDone:false,boardNotes:[],bodyChoice:0,chapter:1,secondFound:[],secondPins:[],secondCitations:[],secondHeadline:null,secondBody:null,secondReport:null};
 try{let old=JSON.parse(localStorage.getItem('education-rpg-v28')||localStorage.getItem('education-rpg-v27')||localStorage.getItem('education-rpg-v26')||localStorage.getItem('education-rpg-v252')||localStorage.getItem('education-rpg-v251')||localStorage.getItem('education-rpg-v25')||localStorage.getItem('education-rpg-v21')||localStorage.getItem('education-rpg-v20')||localStorage.getItem('education-rpg-v16')||localStorage.getItem('education-rpg-v15')||localStorage.getItem('education-rpg-v12')||localStorage.getItem('education-rpg-v11')||localStorage.getItem('education-rpg-v10')||localStorage.getItem('education-rpg-v09')||localStorage.getItem('education-rpg-v03'));if(old&&Number.isInteger(old.scene)&&old.scene>=0&&old.scene<5)state={...state,...old};}catch(e){}
+if(state.chapter!==2)state.chapter=1;if(!Array.isArray(state.secondFound))state.secondFound=[];if(!Array.isArray(state.secondPins))state.secondPins=[];if(!Array.isArray(state.secondCitations))state.secondCitations=[];
 if(!Number.isInteger(state.scene)||state.scene<0||state.scene>=scenes.length)state.scene=0;
 if(!Number.isInteger(state.x)||state.x<1||state.x>14)state.x=2;
 if(!Number.isInteger(state.y)||state.y<1||state.y>7)state.y=4;
@@ -204,6 +226,7 @@ if(!changes.length)changes.push('這兩版的標題、主段落與引用資料�
 say('【校刊修訂比較｜第 '+(state.publications.length-1)+' 版 → 第 '+state.publications.length+' 版】\n'+changes.join('\n'));
 }
 function narrative(){
+if(isSecond()){say('【第二單元｜消失的午餐】\\n回校刊社繼續調查照片爭議。');return;}
 if(!state.introSeen){
 state.introSeen=true;save();
 say('【校刊社｜閱讀週結束後】\n學校群組出現一則熱門消息：「閱讀週讓四年級借閱量翻倍，閱讀能力全面提升！」\n校刊社收到讀者阿甘的來信：「我們班真的每個人都變得更會閱讀了嗎？我想知道這句話有什麼根據。」\n主編請你走訪圖書館、四年級教室和資料室，帶著證據回來，查清楚這則消息。');
@@ -219,6 +242,7 @@ state.chapterDone=true;save();draw();
 say('【事件結案｜校刊社】\n主編把借閱紀錄、活動公告和你的報導放在桌上。\n借閱統計顯示：四年級活動前一週借出80冊，閱讀週借出164冊，增加84冊。\n閱讀週設有借書集點換書籤活動。\n小華借了六本、讀完兩本；明明與同學交換書單。\n校刊社沒有收到可以證明「全體閱讀能力全面提升」的測驗或評量資料。\n主編說：「借閱冊數的增加有紀錄可查；閱讀能力是否全面提升，目前的資料還不能證實。」\n你完成了這次校園傳聞調查，校刊將保留你發表的報導。');
 button('查看這次的調查檔案',()=>{say('【結案檔案】\n借閱統計：'+(hasStats?'已取得':'尚未取得')+'\n資料整理方法：'+(hasMethods?'已取得':'尚未取得')+'\n學生訪談：'+(hasStudent?'已取得':'尚未取得')+'\n發表標題：'+headlines[pub.headline]+'\n報導引用：'+(pub.citations.map(id=>names[id]||id).join('、')||'未列出'));button('返回結案畫面',showConclusion);});
 button('返回校園繼續查閱資料',()=>say('調查已結案。你仍然可以走訪各處，查看先前蒐集的文件。'));
+button('收到新案件：消失的午餐 → 進入第二單元',startSecond);
 }
 function draw(){
 if(!scenes[state.scene]){state.scene=0;state.x=2;state.y=4;save();}
@@ -237,7 +261,7 @@ ctx.fillStyle='#293a46';ctx.fillRect(x-62,y-13,124,24);ctx.fillStyle='#ffe3a4';
 ctx.fillText(({left:'← ',right:'→ ',up:'↑ ',down:'↓ '})[dir]+scenes[target].name,x,y+4);
 }
 
-for(const o of scenes[state.scene].objects){const px=o.x*T,py=o.y*T;prop(o);ctx.fillStyle='#26303a';ctx.fillRect(px-26,py-21,92,18);ctx.fillStyle='#fff2d2';ctx.font='bold 11px sans-serif';ctx.textAlign='center';ctx.fillText(o.label,px+20,py-8);}
+for(const o of activeObjects()){const px=o.x*T,py=o.y*T;prop(o);ctx.fillStyle='#26303a';ctx.fillRect(px-26,py-21,92,18);ctx.fillStyle='#fff2d2';ctx.font='bold 11px sans-serif';ctx.textAlign='center';ctx.fillText(o.label,px+20,py-8);}
 // Pixel-art investigator with direction indicator, bag and face
 const px=state.x*T,py=state.y*T;
 ctx.fillStyle='#263e73';ctx.fillRect(px+9,py+18,22,17);
@@ -251,7 +275,7 @@ if(state.direction==='left'){ctx.fillRect(px+12,py+13,3,3);}
 else if(state.direction==='right'){ctx.fillRect(px+25,py+13,3,3);}
 else if(state.direction==='down'){ctx.fillRect(px+15,py+13,3,3);ctx.fillRect(px+23,py+13,3,3);}
 else{ctx.fillStyle='#394d63';ctx.fillRect(px+12,py+11,16,8);}
-const near=scenes[state.scene].objects.find(o=>Math.abs(o.x-state.x)<=1&&Math.abs(o.y-state.y)<=1);
+const near=activeObjects().find(o=>Math.abs(o.x-state.x)<=1&&Math.abs(o.y-state.y)<=1);
 if(near){const px=near.x*T+20,py=near.y*T-24;ctx.fillStyle='#fff1b6';ctx.fillRect(px-16,py-16,32,23);ctx.fillStyle='#202b39';ctx.font='bold 15px sans-serif';ctx.textAlign='center';ctx.fillText('!',px,py);ctx.strokeStyle='#ffeb88';ctx.lineWidth=3;ctx.strokeRect(near.x*T+2,near.y*T+2,36,36);ctx.lineWidth=1;}
 ctx.fillStyle='#172633';ctx.fillRect(0,360,640,24);ctx.fillStyle='#fff';ctx.textAlign='left';ctx.font='14px sans-serif';ctx.fillText(near?'可調查：'+near.label+'｜按調查／對話':'場景：'+scenes[state.scene].name+'｜黃色門口切換場景',12,377);
 // Compass mini-map: world positions never rotate between rooms.
@@ -266,7 +290,7 @@ for(let i=0;i<campusPositions.length;i++){
  ctx.fillText(['圖','教','刊','廊','檔'][i],x,y+4);
 }
 ctx.fillStyle='#fff0c6';ctx.font='10px sans-serif';ctx.fillText('北 ↑',mx,my-11);
-sceneTitle.textContent=scenes[state.scene].name;inv.replaceChildren();if(!state.found.length){inv.textContent='尚未蒐集資料';}else{state.found.forEach(id=>{const b=document.createElement('button');b.textContent='📄 '+(names[id]||id);b.style.margin='4px';b.style.fontSize='13px';b.onclick=()=>review(id);inv.appendChild(b);});}status.textContent='已蒐集 '+state.found.length+' 項資料｜已發表 '+state.publications.length+' 篇版本';
+sceneTitle.textContent=(isSecond()?'第二案｜':'')+scenes[state.scene].name;inv.replaceChildren();if(isSecond()){inv.textContent='第二案已蒐集：'+secondFound().map(id=>secondNames[id]).join('、');status.textContent='第二案證據 '+secondFound().length+' 份｜'+(state.secondReport?'報導已發表':'尚未發表');quest.textContent='第二案任務：查核照片來源、拍攝時點、裁切內容與供餐紀錄，再返回校刊社發表。';board.replaceChildren();const info=document.createElement('div');info.textContent='第二案證據板：'+(state.secondPins||[]).map(id=>secondNames[id]).join('、');board.appendChild(info);const add=document.createElement('div');add.className='tabs';secondFound().forEach(id=>{const b=document.createElement('button');b.textContent='查看 '+secondNames[id];b.onclick=()=>review(id);add.appendChild(b);});board.appendChild(add);letters.textContent=state.secondReport?'讀者：原圖與轉傳圖的差別，會影響我們對事件的理解。':'等待第二案校刊發行。';history.textContent=state.secondReport?secondHeadlines[state.secondReport.headline]+'｜'+secondBodies[state.secondReport.body]:'第二案尚未發表';return;}if(!state.found.length){inv.textContent='尚未蒐集資料';}else{state.found.forEach(id=>{const b=document.createElement('button');b.textContent='📄 '+(names[id]||id);b.style.margin='4px';b.style.fontSize='13px';b.onclick=()=>review(id);inv.appendChild(b);});}status.textContent='已蒐集 '+state.found.length+' 項資料｜已發表 '+state.publications.length+' 篇版本';
 const tasks=[['取得借閱統計表',state.found.includes('stats')],['查閱閱讀週活動公告',state.found.includes('notice')],['訪問四年級學生',state.found.some(x=>['hua','ming'].includes(x))],['找到資料整理方式',state.found.includes('ledger')],['回校刊社提交調查報導',state.publications.length>0],['完成事件結案',state.chapterDone]];
 quest.textContent=tasks.map(([t,done])=>(done?'☑ ':'☐ ')+t).join('　｜　');
 board.replaceChildren();
@@ -317,9 +341,9 @@ say('你從'+routeNames[exit]+'通道來到「'+scenes[state.scene].name+'」。
 }
 save();draw();
 }
-function review(id){const o=scenes.flatMap(scene=>scene.objects).find(item=>item.id===id);if(o){if(documentIds.has(id))documentView(o);else say('【'+(names[id]||o.label)+'】'+o.text);}}
+function review(id){const o=(isSecond()?secondScenes:scenes.map(scene=>scene.objects)).flat().find(item=>item.id===id);if(o){if(documentIds.has(id))documentView(o);else say('【'+(names[id]||o.label)+'】'+o.text);}}
 function button(label,fn){const b=document.createElement('button');b.textContent=label;b.onclick=fn;choices.appendChild(b);}
-function interact(targetId){if(storyOpen){closeStory();return;}const o=scenes[state.scene].objects.find(o=>(!targetId||o.id===targetId)&&Math.abs(o.x-state.x)<=1&&Math.abs(o.y-state.y)<=1);if(!o){say('附近沒有可調查的物件。請靠近人物或文件。');return;}let detail=o.text;
+function interact(targetId){if(storyOpen){closeStory();return;}const o=activeObjects().find(o=>(!targetId||o.id===targetId)&&Math.abs(o.x-state.x)<=1&&Math.abs(o.y-state.y)<=1);if(!o){say('附近沒有可調查的物件。請靠近人物或文件。');return;}if(isSecond()){secondEvidence(o);return;}let detail=o.text;
 if(state.publications.length&&['teacher','hua','ming'].includes(o.id)){
 const extra={teacher:'黃小米老師：校刊出來了啊！下週我還會匯出一份借閱紀錄。',hua:'小華：我看到校刊了。我昨天又讀完一本借來的書。',ming:'明明：我們班有人把報導貼在群組，大家都在討論。'};
 detail+='\n【發表後回訪】'+extra[o.id];if(!state.followups.includes(o.id))state.followups.push(o.id);
@@ -362,11 +386,11 @@ b.addEventListener('pointerdown',e=>{e.preventDefault();stopWalk();try{b.setPoin
 document.getElementById('interact').onclick=()=>{if(storyOpen)closeStory();else interact();};
 cv.addEventListener('pointerdown',e=>{if(storyOpen)return;
 const r=cv.getBoundingClientRect(),x=Math.floor((e.clientX-r.left)/r.width*640/T),y=Math.floor((e.clientY-r.top)/r.height*384/T);
-const o=scenes[state.scene].objects.find(o=>o.x===x&&o.y===y);
+const o=activeObjects().find(o=>o.x===x&&o.y===y);
 if(o&&Math.abs(o.x-state.x)<=1&&Math.abs(o.y-state.y)<=1){interact(o.id);}
 });
 
-document.getElementById('reset').onclick=()=>{if(confirm('確定清除目前進度？')){state={scene:0,x:2,y:4,found:[],ending:null,citations:[],headline:null,publications:[],followups:[],readerLetters:[],direction:'down',introSeen:false,chapterDone:false,boardNotes:[],bodyChoice:0};save();draw();narrative();}};
+document.getElementById('reset').onclick=()=>{if(confirm('確定清除目前進度？')){state={scene:0,x:2,y:4,found:[],ending:null,citations:[],headline:null,publications:[],followups:[],readerLetters:[],direction:'down',introSeen:false,chapterDone:false,boardNotes:[],bodyChoice:0,chapter:1,secondFound:[],secondPins:[],secondCitations:[],secondHeadline:null,secondBody:null,secondReport:null};save();draw();narrative();}};
 draw();narrative();
 window.addEventListener('error',e=>{document.getElementById('error').textContent='執行錯誤：'+e.message;});
 })();
