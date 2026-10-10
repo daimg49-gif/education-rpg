@@ -46,18 +46,29 @@ if(readiness()<4){say('小晴：「我們還沒拿到足夠的場地與器材資
 say('【10月7日｜自治會協調會】\n桌上放著三份活動表。音樂組希望保留完整演出，展覽組需要乾燥空間，科學組希望保留動手操作。\n小晴：「明天中午就要交了。這次怎麼安排？」');
 btn('三組依原計畫分開準備',()=>resolve('separate'));
 btn('安排共用場地，先確認設備與動線',()=>resolve('coordinate'));
-btn('邀請舞台劇組參與音樂演出協商',()=>resolve('stage'));
+btn('邀請舞台劇組參與音樂演出協商',()=>negotiateStage());
 }
-function resolve(plan){state.choices.plan=plan;state.phase=1;save();draw();
+function negotiateStage(){
+if(!state.seen.includes('music')){say('小晴：「音樂組的時間表還沒拿到。先確認他們原本的安排吧。」');return;}
+if(state.choices.azhe!=='short'){say('小晴：「阿哲提出的是十五分鐘舞台時段，音樂組現在沒有空檔。你先去問他能不能調整演出內容。」');return;}
+say('【音樂組協商｜10月7日】\n音樂組代表：「樂團原訂14:35到15:00，排練三週了。如果要插入短劇，必須取消兩首歌。我不能自己替全組決定。」\n\n阿哲：「我們可以縮成十分鐘，還需要你們同意。」');
+btn('請音樂組先詢問組員，維持原時間表直到表決',()=>{state.choices.musicConsent='pending';save();say('音樂組代表帶走了修訂時間表。今天還不能確認舞台劇是否加入。');btn('改採原定三組方案',()=>resolve('separate'));});
+btn('提出音樂與短劇共用十五分鐘，並請音樂組表決',()=>{state.choices.musicConsent='yes';save();say('音樂組代表回來了：「我們六個人投票，四個同意改成短劇配樂，兩個希望保留原曲。已經確認新的15分鐘節目單。」');btn('提交共同演出方案',()=>resolve('stage'));});
+btn('暫不變動音樂組時段',()=>resolve('separate'));
+}
+function resolve(plan){
+if(plan==='stage'&&!(state.choices.azhe==='short'&&state.choices.musicConsent==='yes')){say('音樂組尚未確認新的節目單，無法提交共同演出方案。');return;}state.choices.plan=plan;state.phase=1;save();draw();
 const text={separate:'各組收到原定時段。音樂組照表排練，校史組繼續找展示桌。阿哲把舞台劇劇本帶回教室。',coordinate:'你把各組清單攤在桌上。科學組提出改用磁力小車，以安同意討論展區共用，但展品仍須隔離水源。',stage:'阿哲帶著十分鐘的短篇劇本來到會議。音樂組同意討論，但提出必須保留合唱與收場時間。'}[plan];
 say('【協調結果】\n'+text+'\n\n傍晚，總務處送來最新氣象通知：活動日可能降下大雨，戶外備用空間不能保證使用。');btn('查看雨天應變安排',storm);}
-function storm(){say('【10月8日｜雨天備案】\n總務處公告：戶外場地暫停列入正式活動空間。體育館與兩間教室可供使用。\n阿澄的配電圖仍在桌上。音樂組需要音響，科學組原提案需要投影機。');btn('將高耗電項目錯開時段，保留安全動線',()=>ending('schedule'));btn('科學組改用無水、低耗電體驗，與校史展覽分區',()=>ending('adapt'));btn('照原時間表進行，開幕當天再視情況調整',()=>ending('unchanged'));}
-function ending(action){state.phase=2;state.choices.storm=action;let safe=action!=='unchanged';let joined=state.choices.plan==='stage'&&state.choices.azhe==='short';let flexible=action==='adapt'||state.choices.science==='low';let trust=state.choices.azhe==='promise'&&!joined;let parts=[];
+function storm(){say('【10月8日｜雨天備案】\n總務處公告：戶外場地暫停列入正式活動空間。體育館與兩間教室可供使用。\n阿澄的配電圖仍在桌上。音樂組需要音響，科學組原提案需要投影機。');btn('將高耗電項目錯開時段，保留安全動線',()=>ending('schedule'));btn('科學組改用無水、低耗電體驗，與校史展覽分區',()=>{if(state.choices.science!=='low'){say('科學組還沒答應調整展示內容。先到科學教室確認他們能否改做磁力小車與手動光影盒。');btn('返回雨天應變',storm);return;}if(state.choices.history!=='share'&&state.choices.history!=='scan'){say('校史展覽組還不知道要改動場地。先找以安確認展品的保護方式。');btn('返回雨天應變',storm);return;}ending('adapt');});btn('照原時間表進行，開幕當天再視情況調整',()=>ending('unchanged'));}
+function ending(action){state.phase=2;state.choices.storm=action;let safe=action!=='unchanged';let joined=state.choices.plan==='stage'&&state.choices.azhe==='short'&&state.choices.musicConsent==='yes';let flexible=action==='adapt'||(state.choices.science==='low'&&action!=='unchanged');let trust=state.choices.azhe==='promise'&&!joined;let parts=[];
 parts.push('【10月9日｜校園祭當天】');
 parts.push(safe?'雨停了一陣，學生依照重新張貼的動線圖進入各活動室。':'活動開始前，老師檢查配電配置，要求音響與投影機不得同時啟動。科學組臨時撤下光影實驗。');
 parts.push(flexible?'科學組的磁力小車和手動光影盒吸引了不少人排隊。':'科學組依照核准的時段輪流開放體驗。');
-parts.push(state.choices.history==='scan'?'校史組展出掃描複本，原件由老師收存。':'校史組將原件放在隔離水源的展區，安排組員輪流看守。');
-parts.push(joined?'音樂演出中段，阿哲帶著舞台劇組完成十分鐘的短劇。':'音樂組完成演出。阿哲坐在觀眾席最後一排，手上仍拿著劇本。');
+parts.push(state.choices.history==='scan'?'校史組展出掃描複本，原件由老師收存。':'校史組將原件移入乾燥展櫃，因桌數不足只展出部分照片。');
+parts.push(joined?'音樂組刪去兩首曲目，與阿哲的短劇合作完成十五分鐘節目。':'音樂組依核准時段完成演出。阿哲的劇本沒有列入節目表。');
+if(state.choices.plan==='coordinate'&&state.choices.history==='share'&&state.choices.science!=='low')parts.push('展覽組看過科學組的水流模型後，拒絕共用展區。兩組最後分開布置，少了兩張展示桌。');
+if(state.choices.acheng!=='included'&&action==='schedule')parts.push('阿澄沒有參與前一天的排程，老師在開幕前重新核對配電圖，部分節目延後十分鐘。');
 if(trust)parts.push('阿哲在活動後問你：「你那天說一定有舞台，後來為什麼沒有通知我們？」');
 parts.push('【活動結束｜自治會辦公室】\n桌上留下活動表、設備借用單和一張全體合照。窗外的舊校舍已經熄燈。');
 state.ending={action,joined,flexible,safe,trust};save();draw();say(parts.join('\n\n'));btn('查看最後的工作紀錄',finalRecord);btn('留在校園繼續走訪',()=>say('校園祭結束了。教室裡還留著當天的資料。'));}
