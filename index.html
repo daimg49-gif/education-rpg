@@ -389,13 +389,13 @@ function firstCaseIntro(page=0){
  if(page===0){
   document.getElementById('openingKicker').textContent='新進編輯報到 · 遊戲說明';
   title.textContent='歡迎加入校園真相調查局';
-  copy.textContent='你是校刊社的新進編輯員。校園裡流傳著各種消息，你的工作不是立刻相信或否定，而是找出可以查證的事實。\\n\\n【通關任務】\\n① 走訪校園，訪談人物、閱讀文件並蒐集證據。\\n② 比對消息來源，查證校園傳聞。\\n③ 前往「校刊社」編輯桌，選擇調查立場、標題、內文與引用資料。\\n④ 發表有證據支持的正確報導，才能結案並解鎖下一案。\\n\\n全遊戲共有五件校園案件。';
+  copy.textContent='你是校刊社的新進編輯員。校園裡流傳著各種消息，你的工作不是立刻相信或否定，而是找出可以查證的事實。\n\n【通關任務】\n① 走訪校園，訪談人物、閱讀文件並蒐集證據。\n② 比對消息來源，查證校園傳聞。\n③ 前往「校刊社」編輯桌，選擇調查立場、標題、內文與引用資料。\n④ 發表有證據支持的正確報導，才能結案並解鎖下一案。\n\n全遊戲共有五件校園案件。';
   next.textContent='下一步｜閱讀第一案委託 →';
   next.onclick=()=>firstCaseIntro(1);
  }else{
   document.getElementById('openingKicker').textContent='第一案 · 閱讀週的驚人數字';
   title.textContent='借閱量翻倍，閱讀能力也翻倍？';
-  copy.textContent='閱讀週剛結束，校園群組流傳一則熱門消息：\\n「閱讀週讓四年級借閱量翻倍，閱讀能力全面提升！」\\n\\n阿甘寫信到校刊社：「我們班真的每個人都變得更會閱讀了嗎？這句話有什麼根據？」\\n\\n主編交代你：「到圖書館、四年級教室和資料室查證，找到可靠證據後，回校刊社編寫第一篇報導。」';
+  copy.textContent='閱讀週剛結束，校園群組流傳一則熱門消息：\n「閱讀週讓四年級借閱量翻倍，閱讀能力全面提升！」\n\n阿甘寫信到校刊社：「我們班真的每個人都變得更會閱讀了嗎？這句話有什麼根據？」\n\n主編交代你：「到圖書館、四年級教室和資料室查證，找到可靠證據後，回校刊社編寫第一篇報導。」';
   next.textContent='接受委託｜進入校園探索 →';
   next.onclick=()=>{introLocked=false;screen.hidden=true;state.introSeen=true;save();draw();};
  }
