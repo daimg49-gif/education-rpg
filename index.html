@@ -26,7 +26,7 @@ history:['校史展覽清單','借用舊照片28張，其中12張未數位化。
 equipment:['科學體驗器材清單','磁力小車：無須插電。\n光影實驗：投影機1台。\n電路體驗：低壓電源組2套。\n水流模型：需要水槽與防水桌墊。\n科學組願意調整展示項目，但須保留至少兩個可操作體驗。','科學組｜10月6日'],
 circuit:['器材室配電檢查表','體育館東側插座群與展覽室投影設備共用同一迴路。\n目前音響與投影機同時啟動時，負載接近使用上限。\n建議：改用無電展示、分時段使用，並由老師確認設備配置。','後勤組 阿澄｜10月6日']
 };
-const mark=id=>{if(!state.seen.includes(id))state.seen.push(id);save();render();};
+const mark=id=>{if(!state.seen.includes(id))state.seen.push(id);save();draw();};
 function say(t){msg.textContent=t;choices.replaceChildren();}
 function btn(label,fn){const b=document.createElement('button');b.textContent=label;b.onclick=fn;choices.appendChild(b);}
 function documentView(id){mark(id);const [title,body,by]=docs[id];say('你拿起桌上的資料。');const d=document.createElement('div');d.className='paper';d.textContent=title+'\n\n'+body+'\n\n'+by;choices.appendChild(d);btn('收起文件',()=>say('文件已放入自治會工作桌。'));}
@@ -34,10 +34,10 @@ function talk(id){
 mark(id);
 if(id==='xiaoqing'){say('小晴把三份活動提案放在桌上。\n「目前名額已滿。阿哲剛才來問舞台劇的事。明天中午前一定要交出安排表。」');btn('問她有沒有其他限制',()=>say('小晴：「經費表在辦公室右側。場地能不能共用，我還沒拿到各組的器材清單。」'));}
 if(id==='zihao'){say('子豪：「三個活動已經選好了。要不要直接公布？這樣大家才有時間準備。」');btn('詢問他是否看過各組清單',()=>say('子豪：「還沒。我只看了提案需要的人力和預算。你可以去找各組長。」'));}
-if(id==='azhe'){say('阿哲拿出一本寫滿筆記的劇本。\n「我們排練了三個月。音樂組有舞台，我們卻沒有。你們能不能留十五分鐘？」');btn('詢問能否改成短篇演出',()=>{state.choices.azhe='short';save();say('阿哲翻了幾頁：「可以縮成十分鐘，但需要音樂組同意讓出時段。我去問他們。」');render();});btn('告訴他目前沒有空檔',()=>{state.choices.azhe='declined';save();say('阿哲合上劇本：「好，我會告訴組員。」他把劇本收進書包。');render();});btn('承諾一定安排演出',()=>{state.choices.azhe='promise';save();say('阿哲：「真的？那我們今晚繼續排練。」你還沒有取得音樂組同意。');render();});}
-if(id==='yian'){say('以安正在把老照片放進保護套。\n「這十二張沒有電子檔，借來時老師說不能碰水。展覽室只有四張桌子，我們還缺兩張。」');btn('提議先把照片掃描備份',()=>{state.choices.history='scan';save();say('以安：「我可以先請老師協助掃描。不過今天要先把原件搬進乾燥的地方。」');render();});btn('建議和科學組共用場地',()=>{state.choices.history='share';save();say('以安：「如果他們不使用水流模型，也許可以。但請先看看器材表。」');render();});}
-if(id==='science'){say('科學組長指著桌上的磁力小車。\n「我們最想讓大家親手試。水流模型和投影機只是其中兩項，可以討論。」');btn('詢問能否改成無水、低耗電展示',()=>{state.choices.science='low';save();say('科學組長：「磁力小車和手動光影盒可以留下。我們要花一個下午重新做材料。」');render();});btn('維持原有展示項目',()=>{state.choices.science='full';save();say('科學組長：「那我們需要原本的水槽、投影機和插座。」');render();});}
-if(id==='acheng'){say('阿澄把一張配電圖推到你面前。\n「音響和投影機會用到同一組電路。我還沒把這件事告訴各組。」');btn('請他參加下一次場地協調',()=>{state.choices.acheng='included';save();say('阿澄：「好，我把每個時段的設備使用情況整理出來。」');render();});btn('請他先整理器材即可',()=>{state.choices.acheng='ignored';save();say('阿澄：「好。但用電的事情還是得有人確認。」');render();});}
+if(id==='azhe'){say('阿哲拿出一本寫滿筆記的劇本。\n「我們排練了三個月。音樂組有舞台，我們卻沒有。你們能不能留十五分鐘？」');btn('詢問能否改成短篇演出',()=>{state.choices.azhe='short';save();say('阿哲翻了幾頁：「可以縮成十分鐘，但需要音樂組同意讓出時段。我去問他們。」');draw();});btn('告訴他目前沒有空檔',()=>{state.choices.azhe='declined';save();say('阿哲合上劇本：「好，我會告訴組員。」他把劇本收進書包。');draw();});btn('承諾一定安排演出',()=>{state.choices.azhe='promise';save();say('阿哲：「真的？那我們今晚繼續排練。」你還沒有取得音樂組同意。');draw();});}
+if(id==='yian'){say('以安正在把老照片放進保護套。\n「這十二張沒有電子檔，借來時老師說不能碰水。展覽室只有四張桌子，我們還缺兩張。」');btn('提議先把照片掃描備份',()=>{state.choices.history='scan';save();say('以安：「我可以先請老師協助掃描。不過今天要先把原件搬進乾燥的地方。」');draw();});btn('建議和科學組共用場地',()=>{state.choices.history='share';save();say('以安：「如果他們不使用水流模型，也許可以。但請先看看器材表。」');draw();});}
+if(id==='science'){say('科學組長指著桌上的磁力小車。\n「我們最想讓大家親手試。水流模型和投影機只是其中兩項，可以討論。」');btn('詢問能否改成無水、低耗電展示',()=>{state.choices.science='low';save();say('科學組長：「磁力小車和手動光影盒可以留下。我們要花一個下午重新做材料。」');draw();});btn('維持原有展示項目',()=>{state.choices.science='full';save();say('科學組長：「那我們需要原本的水槽、投影機和插座。」');draw();});}
+if(id==='acheng'){say('阿澄把一張配電圖推到你面前。\n「音響和投影機會用到同一組電路。我還沒把這件事告訴各組。」');btn('請他參加下一次場地協調',()=>{state.choices.acheng='included';save();say('阿澄：「好，我把每個時段的設備使用情況整理出來。」');draw();});btn('請他先整理器材即可',()=>{state.choices.acheng='ignored';save();say('阿澄：「好。但用電的事情還是得有人確認。」');draw();});}
 }
 function interact(){const obj=rooms[state.room].objects.find(o=>Math.abs(o.x-state.x)<=1&&Math.abs(o.y-state.y)<=1);if(!obj){say('附近沒有可互動的人物或物件。');return;}if(docs[obj.id])documentView(obj.id);else talk(obj.id);}
 function readiness(){return ['notice','budget','music','history','equipment','circuit'].filter(id=>state.seen.includes(id)).length;}
@@ -48,7 +48,7 @@ btn('三組依原計畫分開準備',()=>resolve('separate'));
 btn('安排共用場地，先確認設備與動線',()=>resolve('coordinate'));
 btn('邀請舞台劇組參與音樂演出協商',()=>resolve('stage'));
 }
-function resolve(plan){state.choices.plan=plan;state.phase=1;save();render();
+function resolve(plan){state.choices.plan=plan;state.phase=1;save();draw();
 const text={separate:'各組收到原定時段。音樂組照表排練，校史組繼續找展示桌。阿哲把舞台劇劇本帶回教室。',coordinate:'你把各組清單攤在桌上。科學組提出改用磁力小車，以安同意討論展區共用，但展品仍須隔離水源。',stage:'阿哲帶著十分鐘的短篇劇本來到會議。音樂組同意討論，但提出必須保留合唱與收場時間。'}[plan];
 say('【協調結果】\n'+text+'\n\n傍晚，總務處送來最新氣象通知：活動日可能降下大雨，戶外備用空間不能保證使用。');btn('查看雨天應變安排',storm);}
 function storm(){say('【10月8日｜雨天備案】\n總務處公告：戶外場地暫停列入正式活動空間。體育館與兩間教室可供使用。\n阿澄的配電圖仍在桌上。音樂組需要音響，科學組原提案需要投影機。');btn('將高耗電項目錯開時段，保留安全動線',()=>ending('schedule'));btn('科學組改用無水、低耗電體驗，與校史展覽分區',()=>ending('adapt'));btn('照原時間表進行，開幕當天再視情況調整',()=>ending('unchanged'));}
@@ -60,7 +60,7 @@ parts.push(state.choices.history==='scan'?'校史組展出掃描複本，原件�
 parts.push(joined?'音樂演出中段，阿哲帶著舞台劇組完成十分鐘的短劇。':'音樂組完成演出。阿哲坐在觀眾席最後一排，手上仍拿著劇本。');
 if(trust)parts.push('阿哲在活動後問你：「你那天說一定有舞台，後來為什麼沒有通知我們？」');
 parts.push('【活動結束｜自治會辦公室】\n桌上留下活動表、設備借用單和一張全體合照。窗外的舊校舍已經熄燈。');
-state.ending={action,joined,flexible,safe,trust};save();render();say(parts.join('\n\n'));btn('查看最後的工作紀錄',finalRecord);btn('留在校園繼續走訪',()=>say('校園祭結束了。教室裡還留著當天的資料。'));}
+state.ending={action,joined,flexible,safe,trust};save();draw();say(parts.join('\n\n'));btn('查看最後的工作紀錄',finalRecord);btn('留在校園繼續走訪',()=>say('校園祭結束了。教室裡還留著當天的資料。'));}
 function finalRecord(){const e=state.ending;if(!e)return;say('【自治會結案紀錄】\n保留活動：科學體驗、校史展覽、音樂演出\n雨天安排：'+({schedule:'錯開設備使用時段',adapt:'改用低耗電體驗並分區',unchanged:'原表未提前調整，當日撤下部分設備'}[e.action])+'\n舞台劇：'+(e.joined?'與音樂組合作演出十分鐘':'未列入正式演出')+'\n尚待處理：'+(e.trust?'阿哲對先前承諾提出疑問':'活動後各組器材歸還與展品整理')+'\n\n紀錄人：青禾國小學生自治會');btn('返回活動當天',()=>{const x=state.ending;state.ending=null;ending(x.action);});}
 function draw(){const r=rooms[state.room];g.clearRect(0,0,640,360);g.fillStyle=r.wall;g.fillRect(0,0,640,360);g.fillStyle=r.floor;g.fillRect(35,35,570,290);for(let y=1;y<8;y++)for(let x=1;x<15;x++){g.strokeStyle='#ffffff12';g.strokeRect(x*T,y*T,T,T);}
 g.fillStyle='#30495a';g.fillRect(30,30,580,13);g.fillRect(30,310,580,15);
