@@ -1,13 +1,13 @@
 const {chromium}=require('playwright');
 const http=require('node:http'),fs=require('node:fs'),assert=require('node:assert/strict');
 (async()=>{
- const server=http.createServer((req,res)=>{res.writeHead(200,{'Content-Type':'text/html; charset=utf-8'});res.end(fs.readFileSync('index.html'));});
+ const server=http.createServer((req,res)=>{res.writeHead(200,{'Content-Type':'text/html; charset=utf-8'});const path=req.url.startsWith('/assets/')?'.'+req.url:'index.html';try{res.end(fs.readFileSync(path));}catch(e){res.writeHead(404);res.end('Not found');}});
  await new Promise(resolve=>server.listen(0,'127.0.0.1',resolve));
  const browser=await chromium.launch({headless:true});
  const page=await browser.newPage({viewport:{width:390,height:844},isMobile:true,hasTouch:true});
  const errors=[];page.on('pageerror',e=>errors.push(e.message));
  const state=()=>page.evaluate(()=>JSON.parse(localStorage.getItem('last-festival-v1')));
- const position=async(room,x,y)=>{await page.evaluate(v=>{const s=JSON.parse(localStorage.getItem('last-festival-v1'));Object.assign(s,v);localStorage.setItem('last-festival-v1',JSON.stringify(s));},{room,x,y});await page.reload();};
+ const position=async(room,x,y)=>{await page.evaluate(v=>{const s=JSON.parse(localStorage.getItem('last-festival-v1'));Object.assign(s,v);localStorage.setItem('last-festival-v1',JSON.stringify(s));},{room,x,y});await page.reload();await page.locator('#closeDialog').click();};
  try{
   await page.goto('http://127.0.0.1:'+server.address().port);
   assert.match(await page.locator('h1').innerText(),/最後的校園祭/);
@@ -20,17 +20,17 @@ const http=require('node:http'),fs=require('node:fs'),assert=require('node:asser
   await position(0,2,4);
   await page.locator('[data-dir=left]').dispatchEvent('pointerdown',{pointerId:2});
   await page.locator('[data-dir=left]').dispatchEvent('pointerup',{pointerId:2});
-  assert.equal((await state()).room,1,'West exit reaches music room');
+  assert.equal((await state()).room,1,'West exit reaches music room');assert.equal((await state()).x,13,'Character enters music room near east door');
   await position(0,8,2);
   await page.locator('[data-dir=up]').dispatchEvent('pointerdown',{pointerId:3});
   await page.locator('[data-dir=up]').dispatchEvent('pointerup',{pointerId:3});
-  assert.equal((await state()).room,3,'North exit reaches science room');
+  assert.equal((await state()).room,3,'North exit reaches science room');assert.equal((await state()).y,6,'Character enters science room near south door');
   await position(0,3,2);
   await page.locator('#interact').click();
-  assert.match(await page.locator('#dialogActions').innerText(),/校長室通知/);
+  assert.match(await page.locator('#dialogActions').innerText(),/校長室通知/);assert.equal(await page.locator('#sceneArt').isVisible(),true,'Illustrated scene appears during investigation');await page.locator('#closeDialog').click();assert.equal(await page.locator('#sceneArt').isVisible(),false,'Illustration disappears during exploration');
   assert.ok((await state()).seen.includes('notice'));
   await page.evaluate(()=>{const s=JSON.parse(localStorage.getItem('last-festival-v1'));s.seen=['notice','budget','music','history','equipment','circuit'];s.choices.science='low';s.choices.history='scan';localStorage.setItem('last-festival-v1',JSON.stringify(s));});
-  await page.reload();
+  await page.reload();await page.locator('#closeDialog').click();
   await page.getByRole('button',{name:'召開自治會協調會'}).click();
   await page.getByRole('button',{name:'安排共用場地，先確認設備與動線'}).click();
   assert.equal((await state()).phase,1);
