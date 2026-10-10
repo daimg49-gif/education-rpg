@@ -44,7 +44,7 @@
  next.addEventListener('click',()=>{if(page===0){showPage(1);}else{window.__openingDone=true;screen.hidden=true;if(typeof window.__onOpeningDone==='function')window.__onOpeningDone();}});
 })();
 </script>
-<header><div><h1>校園真相調查局 <small>v3.5.2｜五案完結篇</small></h1><small>探索資料・訪談人物・撰寫校刊報導</small></div><button id="reset">重新開始</button></header>
+<header><div><h1>校園真相調查局 <small>v3.5.3｜五案完結篇</small></h1><small>探索資料・訪談人物・撰寫校刊報導</small></div><button id="reset">重新開始</button></header>
 <main><div class="game-stage"><canvas id="game" width="640" height="384" aria-label="遊戲地圖"></canvas><div id="storyOverlay" class="story-overlay" hidden><img id="storyImage" alt="調查場景插畫"><div class="story-shade"></div><div class="story-dialog"><button id="closeStory" class="story-close" aria-label="返回探索地圖">× 返回探索</button><div id="overlayTitle" class="overlay-title"></div><div id="overlayMessage" class="overlay-message"></div><div id="overlayChoices" class="overlay-choices"></div></div></div></div>
 <div class="controls"><div class="pad"><button class="up" data-dir="up">▲</button><button class="left" data-dir="left">◀</button><button class="down" data-dir="down">▼</button><button class="right" data-dir="right">▶</button></div><button class="interact" id="interact">調查／對話</button></div>
 <div class="tip">方向鍵或 WASD 移動；走向地圖四周標示的出口切換空間。靠近人物或文件可調查。</div>
@@ -73,7 +73,7 @@ function openStory(){storyOpen=true;storyImage.src=artCache[state.scene].src;ove
 function closeStory(){if(introLocked)return;storyOpen=false;overlay.hidden=true;}
 function runStoryAction(fn){
  try{if(typeof fn!=='function')throw Error('找不到對應的操作');fn();}
- catch(err){console.error('校刊操作失敗',err);msg.textContent='【操作未完成】\\n系統無法完成這次操作，請點選下方按鈕重新進入編輯流程。';choices.replaceChildren();const retry=document.createElement('button');retry.textContent='重新開啟本案校刊編輯';retry.onclick=()=>caseWizard(editorConfig(state.chapter||1),3);choices.appendChild(retry);const back=document.createElement('button');back.textContent='返回地圖';back.onclick=()=>{storyOpen=false;overlay.hidden=true;};choices.appendChild(back);}
+ catch(err){console.error('校刊操作失敗',err);msg.textContent='【操作未完成】\n錯誤原因：'+(err&&err.message?err.message:String(err))+'\n請返回編輯流程重新檢查。';choices.replaceChildren();const retry=document.createElement('button');retry.textContent='重新開啟本案校刊編輯';retry.onclick=()=>caseWizard(editorConfig(state.chapter||1),3);choices.appendChild(retry);const back=document.createElement('button');back.textContent='返回地圖';back.onclick=()=>{storyOpen=false;overlay.hidden=true;};choices.appendChild(back);}
  finally{syncStory();}
 }
 function syncStory(){
@@ -451,6 +451,7 @@ function showConclusion(){
 const found=new Set(state.found);
 const hasStats=found.has('stats'),hasMethods=found.has('ledger'),hasStudent=found.has('hua')||found.has('ming');
 const pub=state.publications[state.publications.length-1];
+if(!pub){say('目前尚未發表校刊，請返回編輯桌。');button('返回校刊編輯',openEditor);return;}
 state.chapterDone=true;save();draw();
 say('【事件結案｜校刊社】\n主編把借閱紀錄、活動公告和你的報導放在桌上。\n借閱統計顯示：四年級活動前一週借出80冊，閱讀週借出164冊，增加84冊。\n閱讀週設有借書集點換書籤活動。\n小華借了六本、讀完兩本；明明與同學交換書單。\n校刊社沒有收到可以證明「全體閱讀能力全面提升」的測驗或評量資料。\n主編說：「借閱冊數的增加有紀錄可查；閱讀能力是否全面提升，目前的資料還不能證實。」\n你完成了這次校園傳聞調查，校刊將保留你發表的報導。');
 button('查看這次的調查檔案',()=>{say('【結案檔案】\n借閱統計：'+(hasStats?'已取得':'尚未取得')+'\n資料整理方法：'+(hasMethods?'已取得':'尚未取得')+'\n學生訪談：'+(hasStudent?'已取得':'尚未取得')+'\n發表標題：'+headlines[pub.headline]+'\n報導引用：'+(pub.citations.map(id=>names[id]||id).join('、')||'未列出'));button('返回結案畫面',showConclusion);});
@@ -566,10 +567,12 @@ const bodyOptions=["借閱量由80本增加至164本，足以證明全班閱讀�
 const headlines=["閱讀週借閱量上升，證明全班閱讀能力進步","閱讀週借閱冊數增加，尚不能證明能力提升","閱讀週借閱量上升，證明學生已讀完所有書"];
 function openEditor(){caseWizard(editorConfig(1));}
 function finish(n){
-if(!publicationGuard(1,state.citations,state.found,n,state.bodyChoice))return;
-state.ending=n+1;
-state.publications.push({headline:n,bodyChoice:state.bodyChoice,citations:[...state.citations],timestamp:Date.now()});
-state.chapterDone=false;save();draw();showConclusion();
+ if(!publicationGuard(1,state.citations,state.found,n,state.bodyChoice))return;
+ state.ending=n+1;
+ state.publications.push({headline:n,bodyChoice:state.bodyChoice,citations:[...state.citations],timestamp:Date.now()});
+ state.chapterDone=true;
+ save();
+ showConclusion();
 }
 const keymap={ArrowUp:[0,-1],w:[0,-1],W:[0,-1],ArrowDown:[0,1],s:[0,1],S:[0,1],ArrowLeft:[-1,0],a:[-1,0],A:[-1,0],ArrowRight:[1,0],d:[1,0],D:[1,0]};
 document.addEventListener('keydown',e=>{if(keymap[e.key]){e.preventDefault();move(...keymap[e.key]);}else if(e.key===' '||e.key==='Enter'){e.preventDefault();interact();}});
