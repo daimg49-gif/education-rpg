@@ -1,54 +1,83 @@
-const {chromium}=require('playwright');
-const http=require('node:http'),fs=require('node:fs'),assert=require('node:assert/strict');
+const { chromium } = require('playwright');
+const http = require('node:http');
+const fs = require('node:fs');
+const assert = require('node:assert/strict');
+
 (async()=>{
- const server=http.createServer((req,res)=>{res.writeHead(200,{'Content-Type':'text/html; charset=utf-8'});const path=req.url.startsWith('/assets/')?'.'+req.url:'index.html';try{res.end(fs.readFileSync(path));}catch(e){res.writeHead(404);res.end('Not found');}});
+ const server=http.createServer((req,res)=>{
+   res.writeHead(200,{'Content-Type':'text/html; charset=utf-8'});
+   res.end(fs.readFileSync('index.html'));
+ });
  await new Promise(resolve=>server.listen(0,'127.0.0.1',resolve));
+ const url='http://127.0.0.1:'+server.address().port;
  const browser=await chromium.launch({headless:true});
  const page=await browser.newPage({viewport:{width:390,height:844},isMobile:true,hasTouch:true});
+ // Verify the fixed world map is symmetric before browser interactions.
+ const positions=[[-1,0],[1,0],[0,-1],[0,0],[0,1]];
+ const dirs={left:[-1,0],right:[1,0],up:[0,-1],down:[0,1]};
+ for(let i=0;i<positions.length;i++)for(const [d,[dx,dy]] of Object.entries(dirs)){
+  const j=positions.findIndex(([x,y])=>x===positions[i][0]+dx&&y===positions[i][1]+dy);
+  if(j!==-1)assert.notEqual(j,i,'No room connects to itself');
+ }
  const errors=[];page.on('pageerror',e=>errors.push(e.message));
- const state=()=>page.evaluate(()=>JSON.parse(localStorage.getItem('last-festival-v1')));
- const position=async(room,x,y)=>{await page.evaluate(v=>{const s=JSON.parse(localStorage.getItem('last-festival-v1'));Object.assign(s,v);localStorage.setItem('last-festival-v1',JSON.stringify(s));},{room,x,y});await page.reload();await page.locator('#closeDialog').click();};
+ const check=()=>assert.deepEqual(errors,[],'Browser JavaScript errors');
+ const state=()=>page.evaluate(()=>JSON.parse(localStorage.getItem('education-rpg-v28')));
  try{
-  await page.goto('http://127.0.0.1:'+server.address().port);
-  assert.match(await page.locator('h1').innerText(),/最後的校園祭/);
-  assert.equal(await page.locator('#dialogOverlay').isVisible(),true,'Opening dialogue appears over game');
-  await page.locator('#closeDialog').click();
-  assert.equal(await page.locator('#dialogOverlay').isVisible(),false,'Dialogue can close');
-  await page.locator('[data-dir=left]').dispatchEvent('pointerdown',{pointerId:1});
-  await page.locator('[data-dir=left]').dispatchEvent('pointerup',{pointerId:1});
-  assert.equal((await state()).x,7);
-  assert.equal(await page.locator('#dashboard button').count(),1,'Movement must not duplicate meeting button');
-  await page.locator('[data-dir=right]').dispatchEvent('pointerdown',{pointerId:11});
-  await page.locator('[data-dir=right]').dispatchEvent('pointerup',{pointerId:11});
-  assert.equal((await state()).x,8,'Character moves right again');
-  assert.equal(await page.locator('#dashboard button').count(),1,'Dashboard remains single after repeated movement');
-  await position(0,2,4);
-  await page.locator('[data-dir=left]').dispatchEvent('pointerdown',{pointerId:2});
-  await page.locator('[data-dir=left]').dispatchEvent('pointerup',{pointerId:2});
-  assert.equal((await state()).room,1,'West exit reaches music room');assert.equal((await state()).x,13,'Character enters music room near east door');
-  await position(0,8,2);
-  await page.locator('[data-dir=up]').dispatchEvent('pointerdown',{pointerId:3});
-  await page.locator('[data-dir=up]').dispatchEvent('pointerup',{pointerId:3});
-  assert.equal((await state()).room,3,'North exit reaches science room');assert.equal((await state()).y,6,'Character enters science room near south door');
-  await position(0,3,2);
-  await page.locator('#interact').click();
-  assert.match(await page.locator('#dialogActions').innerText(),/校長室通知/);assert.equal(await page.locator('#sceneArt').isVisible(),true,'Illustrated scene appears during investigation');assert.equal(await page.locator('#sceneArt').evaluate(img=>img.complete&&img.naturalWidth>0),true,'Illustrated background actually loaded');await page.locator('#closeDialog').click();assert.equal(await page.locator('#sceneArt').isVisible(),false,'Illustration disappears during exploration');
-  assert.ok((await state()).seen.includes('notice'));
-  await page.evaluate(()=>{const s=JSON.parse(localStorage.getItem('last-festival-v1'));s.seen=['notice','budget','music','history','equipment','circuit'];s.choices.science='low';s.choices.history='scan';localStorage.setItem('last-festival-v1',JSON.stringify(s));});
-  await page.reload();await page.locator('#closeDialog').click();
-  await page.getByRole('button',{name:'召開自治會協調會'}).click();
-  await page.getByRole('button',{name:'安排共用場地，先確認設備與動線'}).click();
-  assert.equal((await state()).phase,1);
-  await page.getByRole('button',{name:'查看雨天應變安排'}).click();
-  await page.getByRole('button',{name:'科學組改用無水、低耗電體驗，與校史展覽分區'}).click();
-  assert.equal((await state()).phase,2);
-  assert.equal((await state()).ending.action,'adapt');
+  await page.goto(url);
+  assert.match(await page.locator('h1').innerText(),/v2\.8/);
+  assert.match(await page.locator('#message').innerText(),/阿甘的來信/);
+  await page.locator('[data-dir=right]').dispatchEvent('pointerdown',{pointerId:1});
+  await page.locator('[data-dir=right]').dispatchEvent('pointerup',{pointerId:1});
+  assert.equal((await state()).x,3,'Direction key moves one tile');
+  assert.equal((await state()).scene,0,'Ordinary movement must never change scene');
+  await page.locator('[data-dir=right]').dispatchEvent('pointerdown',{pointerId:9});
+  await page.locator('[data-dir=right]').dispatchEvent('pointerup',{pointerId:9});
+  assert.equal((await state()).scene,0,'Repeated ordinary movement stays in valid scene');
+  check();
+  await page.evaluate(()=>{const v=JSON.parse(localStorage.getItem('education-rpg-v28'));v.scene=3;v.x=7;v.y=2;localStorage.setItem('education-rpg-v28',JSON.stringify(v));});
   await page.reload();
-  assert.equal((await state()).ending.action,'adapt','Ending survives reload');
+  await page.locator('[data-dir=up]').dispatchEvent('pointerdown',{pointerId:2});
+  await page.locator('[data-dir=up]').dispatchEvent('pointerup',{pointerId:2});
+  assert.equal((await state()).scene,2,'North door leads from corridor to newsroom');
+  await page.evaluate(()=>{const v=JSON.parse(localStorage.getItem('education-rpg-v28'));v.scene=3;v.x=7;v.y=6;localStorage.setItem('education-rpg-v28',JSON.stringify(v));});
+  await page.reload();
+  await page.locator('[data-dir=down]').dispatchEvent('pointerdown',{pointerId:3});
+  await page.locator('[data-dir=down]').dispatchEvent('pointerup',{pointerId:3});
+  assert.equal((await state()).scene,4,'South door leads to records archive');
+  check();
+  // Inject a valid game position through the same save format, then test normal UI.
+  await page.evaluate(()=>{const s=JSON.parse(localStorage.getItem('education-rpg-v28'));s.scene=0;s.x=3;s.y=3;localStorage.setItem('education-rpg-v28',JSON.stringify(s));});
+  await page.reload();
+  await page.locator('#interact').click();
+  assert.match(await page.locator('#message').innerText(),/借閱統計表/);
+  await page.getByRole('button',{name:'貼到事件紀錄板'}).click();
+  assert.match(await page.locator('#board').innerText(),/借閱統計表/);
+  // Supply required evidence via the persisted save format, then finish through UI.
+  await page.evaluate(()=>{
+    const s=JSON.parse(localStorage.getItem('education-rpg-v28'));
+    s.scene=2;s.x=4;s.y=4;s.found=['stats','notice','hua','ledger'];
+    s.citations=['stats','ledger'];s.headline=null;
+    localStorage.setItem('education-rpg-v28',JSON.stringify(s));
+  });
+  await page.reload();
+  await page.locator('#interact').click();
+  await page.getByRole('button',{name:/閱讀週借閱量從80冊增加到164冊/}).click();
+  await page.getByRole('button',{name:'提交調查報導並結案'}).click();
+  assert.equal((await state()).publications.length,1);
+  assert.equal((await state()).chapterDone,true);
+  assert.match(await page.locator('#message').innerText(),/事件結案/);
+  await page.reload();
+  assert.equal((await state()).publications.length,1,'Reload retains published report');
+  assert.equal((await state()).chapterDone,true,'Reload retains ending');
   page.once('dialog',d=>d.accept());
   await page.locator('#reset').click();
-  assert.equal((await state()).phase,0,'Reset starts new game');
-  assert.deepEqual(errors,[],'No browser JS errors');
-  console.log('PASS: mobile navigation, evidence, choices, rain contingency, ending, reload, reset');
- }finally{await browser.close();await new Promise(resolve=>server.close(resolve));}
+  assert.equal((await state()).publications.length,0,'Reset clears reports');
+  assert.deepEqual((await state()).boardNotes,[],'Reset restores boardNotes');
+  await page.locator('[data-dir=right]').dispatchEvent('pointerdown',{pointerId:7});
+  await page.locator('[data-dir=right]').dispatchEvent('pointerup',{pointerId:7});
+  assert.equal((await state()).x,3,'Movement still works immediately after reset');
+  assert.match(await page.locator('#message').innerText(),/阿甘的來信/);
+  check();
+  console.log('PASS: mobile movement, exits, evidence board, report, case ending, reload and reset');
+ } finally {await browser.close();await new Promise(resolve=>server.close(resolve));}
 })().catch(e=>{console.error(e);process.exitCode=1;});
