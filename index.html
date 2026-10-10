@@ -215,7 +215,7 @@ if(!Number.isInteger(state.x)||state.x<1||state.x>14)state.x=2;
 if(!Number.isInteger(state.y)||state.y<1||state.y>7)state.y=4;
 if(!Array.isArray(state.publications))state.publications=[];if(typeof state.introSeen!=='boolean')state.introSeen=false;if(typeof state.chapterDone!=='boolean')state.chapterDone=false;if(!Array.isArray(state.readerLetters))state.readerLetters=[];if(!Array.isArray(state.boardNotes))state.boardNotes=[];if(!Number.isInteger(state.bodyChoice))state.bodyChoice=0;if(!['up','down','left','right'].includes(state.direction))state.direction='down';if(!Array.isArray(state.followups))state.followups=[];if(!Array.isArray(state.found))state.found=[];if(!Array.isArray(state.citations))state.citations=[];
 function save(){try{localStorage.setItem('education-rpg-v28',JSON.stringify(state));}catch(e){}}
-function say(t){msg.textContent=String(t).replace(/\\\\n/g,'\n');choices.replaceChildren();openStory();}
+function say(t){msg.textContent=String(t).replace(/\\n/g,'\n');choices.replaceChildren();openStory();}
 function noteBoard(id){
 if(!state.found.includes(id)){say('請先調查這份資料。');return;}
 if(state.boardNotes.includes(id))state.boardNotes=state.boardNotes.filter(x=>x!==id);else state.boardNotes.push(id);
