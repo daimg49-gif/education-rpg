@@ -18,6 +18,7 @@
  const screen=document.getElementById('openingScreen'),next=document.getElementById('openingNext');
  if(!screen||!next)return;
  let page=0;
+ window.__resetOpening=()=>{page=0;window.__openingDone=false;screen.hidden=false;document.getElementById('openingKicker').textContent='新進編輯報到 · 遊戲說明';document.getElementById('openingTitle').textContent='歡迎加入校園真相調查局';document.getElementById('openingText').textContent='你是校刊社的新進編輯員。校園裡流傳著各種消息，你的工作不是立刻相信或否定，而是找出可以查證的事實。\\n\\n【通關任務】\\n① 走訪校園，訪談人物、閱讀文件並蒐集證據。\\n② 比對來源，查證校園傳聞。\\n③ 前往「校刊社」編輯桌，選擇立場、標題、內文與引用證據。\\n④ 發表有證據支持的正確報導，才能結案並解鎖下一案。\\n\\n全遊戲共有五件校園案件。';next.textContent='下一步｜閱讀第一案委託 →';};
  next.addEventListener('click',function(){
   if(page===0){
    page=1;
@@ -554,7 +555,7 @@ const o=activeObjects().find(o=>o.x===x&&o.y===y);
 if(o&&Math.abs(o.x-state.x)<=1&&Math.abs(o.y-state.y)<=1){interact(o.id);}
 });
 
-function restartGame(confirmFirst=true){if(!confirmFirst||confirm('確定清除目前進度？')){introLocked=false;document.getElementById('openingScreen').hidden=true;document.getElementById('closeStory').hidden=false;storyOpen=false;overlay.hidden=true;state={scene:0,x:2,y:4,found:[],ending:null,citations:[],headline:null,publications:[],followups:[],readerLetters:[],direction:'down',introSeen:false,chapterDone:false,boardNotes:[],bodyChoice:0,chapter:1,secondFound:[],secondPins:[],secondCitations:[],secondHeadline:null,secondBody:null,secondReport:null,thirdFound:[],thirdPins:[],thirdCitations:[],thirdHeadline:null,thirdBody:null,thirdReport:null,laterFound:{},laterCitations:{},laterReports:{},laterPins:{}};document.body.classList.remove('game-finished');document.getElementById('reflectionPage').hidden=true;save();draw();narrative();}}
+function restartGame(confirmFirst=true){if(!confirmFirst||confirm('確定清除目前進度？')){introLocked=false;if(window.__resetOpening)window.__resetOpening();document.getElementById('closeStory').hidden=false;storyOpen=false;overlay.hidden=true;state={scene:0,x:2,y:4,found:[],ending:null,citations:[],headline:null,publications:[],followups:[],readerLetters:[],direction:'down',introSeen:false,chapterDone:false,boardNotes:[],bodyChoice:0,chapter:1,secondFound:[],secondPins:[],secondCitations:[],secondHeadline:null,secondBody:null,secondReport:null,thirdFound:[],thirdPins:[],thirdCitations:[],thirdHeadline:null,thirdBody:null,thirdReport:null,laterFound:{},laterCitations:{},laterReports:{},laterPins:{}};document.body.classList.remove('game-finished');document.getElementById('reflectionPage').hidden=true;save();draw();narrative();}}
 document.getElementById('reset').onclick=()=>restartGame(true);
 document.getElementById('playAgain').onclick=()=>restartGame(false);
 draw();if(state.gameFinished&&state.laterReports?.[5])showReflection();else narrative();
