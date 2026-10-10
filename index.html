@@ -44,7 +44,7 @@
  next.addEventListener('click',()=>{if(page===0){showPage(1);}else{window.__openingDone=true;screen.hidden=true;if(typeof window.__onOpeningDone==='function')window.__onOpeningDone();}});
 })();
 </script>
-<header><div><h1>校園真相調查局 <small>v3.4.4｜五案完結篇</small></h1><small>探索資料・訪談人物・撰寫校刊報導</small></div><button id="reset">重新開始</button></header>
+<header><div><h1>校園真相調查局 <small>v3.4.5｜五案完結篇</small></h1><small>探索資料・訪談人物・撰寫校刊報導</small></div><button id="reset">重新開始</button></header>
 <main><div class="game-stage"><canvas id="game" width="640" height="384" aria-label="遊戲地圖"></canvas><div id="storyOverlay" class="story-overlay" hidden><img id="storyImage" alt="調查場景插畫"><div class="story-shade"></div><div class="story-dialog"><button id="closeStory" class="story-close" aria-label="返回探索地圖">× 返回探索</button><div id="overlayTitle" class="overlay-title"></div><div id="overlayMessage" class="overlay-message"></div><div id="overlayChoices" class="overlay-choices"></div></div></div></div>
 <div class="controls"><div class="pad"><button class="up" data-dir="up">▲</button><button class="left" data-dir="left">◀</button><button class="down" data-dir="down">▼</button><button class="right" data-dir="right">▶</button></div><button class="interact" id="interact">調查／對話</button></div>
 <div class="tip">方向鍵或 WASD 移動；走向地圖四周標示的出口切換空間。靠近人物或文件可調查。</div>
@@ -71,7 +71,27 @@ const artFiles=['library','classroom','newsroom','hallway','records'];const artC
 let storyOpen=false;let introLocked=false;
 function openStory(){storyOpen=true;storyImage.src=artCache[state.scene].src;overlayTitle.textContent=scenes[state.scene].name;overlay.hidden=false;syncStory();}
 function closeStory(){if(introLocked)return;storyOpen=false;overlay.hidden=true;}
-function syncStory(){if(!storyOpen)return;overlayMessage.textContent=msg.textContent;overlayChoices.replaceChildren(...Array.from(choices.children).map(node=>node.cloneNode(true))); /* actions remain on original controls; rebind via source click */ const originals=Array.from(choices.children);Array.from(overlayChoices.children).forEach((node,i)=>{const source=originals[i];if(source?.tagName==='BUTTON'){node.onclick=()=>source.click();}else if(source){const srcButtons=source.querySelectorAll('button'),dstButtons=node.querySelectorAll('button');dstButtons.forEach((b,j)=>b.onclick=()=>srcButtons[j]?.click());}});}
+function runStoryAction(fn){
+ try{if(typeof fn!=='function')throw Error('找不到對應的操作');fn();}
+ catch(err){console.error('校刊操作失敗',err);msg.textContent='【操作未完成】\\n系統無法完成這次操作，請點選下方按鈕重新進入編輯流程。';choices.replaceChildren();const retry=document.createElement('button');retry.textContent='重新開啟本案校刊編輯';retry.onclick=()=>caseWizard(editorConfig(state.chapter||1),3);choices.appendChild(retry);const back=document.createElement('button');back.textContent='返回地圖';back.onclick=()=>{storyOpen=false;overlay.hidden=true;};choices.appendChild(back);}
+ finally{syncStory();}
+}
+function syncStory(){
+ if(!storyOpen)return;
+ overlayMessage.textContent=msg.textContent;
+ const originals=Array.from(choices.children);
+ overlayChoices.replaceChildren();
+ for(const source of originals){
+  const node=source.cloneNode(true);
+  if(source.tagName==='BUTTON'){
+   node.onclick=e=>{e.preventDefault();runStoryAction(source.onclick);};
+  }else{
+   const srcButtons=source.querySelectorAll('button'),dstButtons=node.querySelectorAll('button');
+   dstButtons.forEach((b,j)=>{b.onclick=e=>{e.preventDefault();runStoryAction(srcButtons[j]?.onclick);};});
+  }
+  overlayChoices.appendChild(node);
+ }
+}
 const mutation=new MutationObserver(()=>syncStory());mutation.observe(msg,{childList:true,subtree:true,characterData:true});mutation.observe(choices,{childList:true,subtree:true,characterData:true});document.getElementById('closeStory').onclick=closeStory;storyImage.onerror=()=>{overlayTitle.textContent=scenes[state.scene].name+'（圖片載入失敗）';};
 const campusPositions=[[-1,0],[1,0],[0,-1],[0,0],[0,1]];
 const directions={left:[-1,0],right:[1,0],up:[0,-1],down:[0,1]};
@@ -313,7 +333,7 @@ function evaluatePublication(which,selected,found,headline,body){
  if(citations.length<rubric.minimum)return {ok:false,reason:'few'};
  if(citations.some(id=>!known.has(id)))return {ok:false,reason:'unknown'};
  if(citations.some(id=>!rubric.allowed.includes(id)))return {ok:false,reason:'irrelevant'};
- if(citations.length===discovered.length&&discovered.length>rubric.minimum)return {ok:false,reason:'all'};
+ // Selecting every discovered item is allowed; assess evidence relevance instead.
  if(!rubric.core.every(id=>known.has(id)))return {ok:false,reason:'investigate'};
  if(!rubric.core.some(id=>citations.includes(id)))return {ok:false,reason:'connection'};
  if(stance===0)return {ok:false,reason:'stanceConflict'};
@@ -332,7 +352,7 @@ function evidenceReflection(which,result){
   few:'目前引用的資料偏少。是否有不同來源能相互印證？',
   unknown:'有些引用資料尚未完成調查，請先回到現場確認來源。',
   irrelevant:'你選的資料中，有些未必能支持這篇報導。請逐份問自己：「這份資料證明了哪一句話？」',
-  all:'你選取了全部資料，但引用不等於蒐集清單。哪些資料真正能支持報導？哪些只是傳聞或背景？',
+  all:'請確認每一份引用資料與報導主張的關聯，必要時調整引用。',
   investigate:'目前蒐集的資料還不足以確認報導的核心說法。還有哪些原始紀錄或不同角度值得查訪？',
   connection:'已找到一些重要資料，但還需要把能直接支持主張的資料放進引用。你最重要的依據是什麼？',
   stanceConflict:'目前證據尚不足以證實原始傳言。請重新判斷立場：能否反駁傳言，或只能保留判斷？',
