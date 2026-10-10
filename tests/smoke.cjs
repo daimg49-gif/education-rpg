@@ -11,6 +11,9 @@ const http=require('node:http'),fs=require('node:fs'),assert=require('node:asser
  try{
   await page.goto('http://127.0.0.1:'+server.address().port);
   assert.match(await page.locator('h1').innerText(),/最後的校園祭/);
+  assert.equal(await page.locator('#dialogOverlay').isVisible(),true,'Opening dialogue appears over game');
+  await page.locator('#closeDialog').click();
+  assert.equal(await page.locator('#dialogOverlay').isVisible(),false,'Dialogue can close');
   await page.locator('[data-dir=left]').dispatchEvent('pointerdown',{pointerId:1});
   await page.locator('[data-dir=left]').dispatchEvent('pointerup',{pointerId:1});
   assert.equal((await state()).x,7);
@@ -24,7 +27,7 @@ const http=require('node:http'),fs=require('node:fs'),assert=require('node:asser
   assert.equal((await state()).room,3,'North exit reaches science room');
   await position(0,3,2);
   await page.locator('#interact').click();
-  assert.match(await page.locator('#choices').innerText(),/校長室通知/);
+  assert.match(await page.locator('#dialogActions').innerText(),/校長室通知/);
   assert.ok((await state()).seen.includes('notice'));
   await page.evaluate(()=>{const s=JSON.parse(localStorage.getItem('last-festival-v1'));s.seen=['notice','budget','music','history','equipment','circuit'];s.choices.science='low';s.choices.history='scan';localStorage.setItem('last-festival-v1',JSON.stringify(s));});
   await page.reload();
