@@ -1,366 +1,83 @@
-<!doctype html>
-<html lang="zh-Hant"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><title>校園真相調查局</title>
-<style>
-*{box-sizing:border-box}body{margin:0;background:#171f2c;color:#f4ebd7;font-family:system-ui,-apple-system,sans-serif}header{padding:14px 16px;background:#243349;display:flex;justify-content:space-between;align-items:center;gap:10px}h1{font-size:20px;margin:0}small{color:#bfcddd}button{touch-action:none;user-select:none;-webkit-user-select:none;background:#365371;color:white;border:2px solid #7994ad;border-radius:12px;padding:12px 16px;font-size:17px;font-weight:700}main{max-width:850px;margin:auto;padding:12px}canvas{display:block;width:100%;height:auto;image-rendering:pixelated;background:#273d49;border:5px solid #637d8f;border-radius:12px}.controls{display:flex;justify-content:space-between;align-items:center;margin:12px 0;gap:12px}.pad{display:grid;grid-template-columns:repeat(3,56px);gap:4px}.pad button{padding:8px 0;height:52px}.pad .up{grid-column:2}.pad .left{grid-column:1}.pad .down{grid-column:2}.pad .right{grid-column:3;grid-row:2}.pad .left,.pad .down{grid-row:2}.interact{background:#9b7141;border-color:#d8ac6b;color:#fff4e2}section{background:#26364b;padding:16px;border:1px solid #647f96;border-radius:14px;line-height:1.7;margin-top:12px}#message{min-height:110px}#choices{display:flex;flex-wrap:wrap;gap:8px;margin-top:12px}#choices button{font-size:15px}#inventory{font-size:14px;color:#cddde8}#status{font-size:13px;color:#c4d5e5}.tip{font-size:13px;color:#cbd7e4}#message{white-space:pre-line}#quest{line-height:2}#history{display:grid;gap:9px;margin-top:8px}.record{padding:10px;border-radius:9px;background:#1b2939;border:1px solid #526b81;font-size:14px}.record strong{color:#f3dca9}.tabs{display:flex;gap:8px;flex-wrap:wrap;margin:8px 0}.tabs button{font-size:14px;padding:8px 12px}.modal-note{color:#e6c68c;font-size:13px}body{background:radial-gradient(ellipse at 50% 0%,#354d57 0%,#111a27 72%)}header{background:linear-gradient(120deg,#334a57,#263447);border-bottom:3px solid #b18a5e;box-shadow:0 5px 20px #0005}h1{letter-spacing:.04em;text-shadow:2px 2px #142433}section{background:linear-gradient(150deg,#2c4152,#202f42);border-color:#71818a;box-shadow:0 5px 0 #111d2b,0 8px 18px #0003}section>strong{display:block;color:#f6d59d;font-size:18px;margin-bottom:8px}button{box-shadow:0 4px 0 #182b3c;transition:filter .12s,transform .12s}button:active{transform:translateY(3px);box-shadow:0 1px 0 #182b3c}button:focus-visible{outline:3px solid #f9d68c;outline-offset:3px}canvas{border:6px ridge #b28e67;box-shadow:0 9px 0 #152430,0 14px 30px #0007;filter:saturate(1.12) contrast(1.04)}.interact{background:linear-gradient(#bd8b4c,#936539)}#message{font-size:16px;line-height:1.85}.record{border-left:4px solid #bba078}.tip{margin-top:7px}@media(max-width:420px){header{padding:12px 10px}h1{font-size:17px}main{padding:9px}.pad{grid-template-columns:repeat(3,51px)}.pad button{height:50px}section{padding:13px}button{font-size:15px;padding:11px 12px}}#error{color:#ffb4a7;white-space:pre-wrap}.document{background:#f3e8cc;color:#302a23;border:3px double #8a7357;border-radius:7px;padding:14px;margin:8px 0;box-shadow:2px 3px 0 #151c28}.document strong{color:#563e2b}.document small{color:#6b5645}.document button{font-size:13px;padding:6px 10px}.story-panel{background:#1c2a39;border-left:4px solid #e0ba70;padding:12px;margin:10px 0}.story-panel button{margin:4px 5px 4px 0;font-size:14px}.panel-heading{font-size:17px;color:#f5db9d}.hint{font-size:13px;color:#c3d6df}</style></head><body>
-<header><div><h1>校園真相調查局 <small>v2.8</small></h1><small>探索資料・訪談人物・撰寫校刊報導</small></div><button id="reset">重新開始</button></header>
-<main><canvas id="game" width="640" height="384" aria-label="遊戲地圖"></canvas>
-<div class="controls"><div class="pad"><button class="up" data-dir="up">▲</button><button class="left" data-dir="left">◀</button><button class="down" data-dir="down">▼</button><button class="right" data-dir="right">▶</button></div><button class="interact" id="interact">調查／對話</button></div>
-<div class="tip">方向鍵或 WASD 移動；走向地圖四周標示的出口切換空間。靠近人物或文件可調查。</div>
-<section><strong id="sceneTitle">圖書館</strong><div id="message">你是校刊社的小編。校園群組正在轉傳：「閱讀週讓四年級借閱量翻倍，閱讀能力全面提升！」請蒐集資料，完成一篇報導。</div><div id="choices"></div></section>
-<section><strong>事件紀錄板</strong><div id="board"></div></section><section><strong>調查委託與進度</strong><div id="quest"></div></section><section><strong>讀者來信</strong><div id="letters"></div></section><section><strong>校刊版本紀錄</strong><div id="history"></div></section><section><strong>調查資料</strong><div id="inventory">尚未蒐集資料</div><div id="status"></div></section><div id="error"></div></main>
-<script>
-(function(){
+<!doctype html><html lang="zh-Hant"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><title>最後的校園祭</title><style>
+*{box-sizing:border-box}body{margin:0;background:#151f2b;color:#f5ebd7;font-family:system-ui,-apple-system,sans-serif}header{padding:13px 16px;background:#263a4b;border-bottom:3px solid #b78d58;display:flex;justify-content:space-between;align-items:center;gap:12px}h1{font-size:21px;margin:0}small{color:#c1d1d6}main{max-width:790px;margin:auto;padding:12px}canvas{width:100%;height:auto;display:block;image-rendering:pixelated;border:5px ridge #b99468;border-radius:12px;background:#34495b}button{font:600 15px system-ui;background:#395c75;border:2px solid #8caab5;color:white;border-radius:10px;padding:11px 13px;touch-action:manipulation}button:active{filter:brightness(1.3)}.controls{display:flex;justify-content:space-between;align-items:center;gap:12px;margin:12px 0}.pad{display:grid;grid-template-columns:repeat(3,52px);gap:4px}.pad button{height:48px;padding:0}.up{grid-column:2}.left{grid-column:1;grid-row:2}.down{grid-column:2;grid-row:2}.right{grid-column:3;grid-row:2}#interact{background:#a27440;border-color:#d9b27a}section{background:#253749;border:1px solid #668397;border-radius:13px;padding:14px;margin:12px 0;line-height:1.75}section strong{color:#f3d59b}#message{white-space:pre-line;min-height:110px}#choices{display:grid;gap:9px;margin-top:12px}#choices button{text-align:left;line-height:1.5}#choices button:disabled{opacity:.5}.tip{font-size:13px;color:#cad8dd}.paper{background:#f1e4c7;color:#302a24;border:3px double #937c5e;padding:13px;border-radius:5px;white-space:pre-line;margin:10px 0}.paper strong{color:#513b27}.grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}.tile{background:#1a2b3b;border:1px solid #567184;border-radius:8px;padding:10px;font-size:14px}.muted{color:#bdd0d8;font-size:13px}#error{color:#ffb4a7;white-space:pre-wrap}@media(max-width:420px){header{padding:10px}h1{font-size:18px}main{padding:9px}section{padding:12px}.pad{grid-template-columns:repeat(3,48px)}.pad button{height:47px}}
+</style></head><body><header><div><h1>最後的校園祭 <small>第一章・試行版</small></h1><small>七天前｜青禾國小學生自治會</small></div><button id="reset">重新開始</button></header><main><canvas id="game" width="640" height="360" aria-label="校園地圖"></canvas><div class="controls"><div class="pad"><button class="up" data-dir="up">▲</button><button class="left" data-dir="left">◀</button><button class="down" data-dir="down">▼</button><button class="right" data-dir="right">▶</button></div><button id="interact">調查／對話</button></div><div class="tip">方向鍵／WASD 移動；靠近人物或物件後按「調查／對話」。走到有箭頭的出口切換空間。</div><section><strong id="roomTitle">自治會辦公室</strong><div id="message"></div><div id="choices"></div></section><section><strong>自治會工作桌</strong><div id="dashboard"></div></section><section><strong>找到的文件與紀錄</strong><div id="records"></div></section><div id="error"></div></main><script>
+(()=>{
 'use strict';
-const cv=document.getElementById('game');let ctx=cv.getContext('2d');const msg=document.getElementById('message'),choices=document.getElementById('choices'),inv=document.getElementById('inventory'),status=document.getElementById('status'),sceneTitle=document.getElementById('sceneTitle');
+const $=id=>document.getElementById(id),cv=$('game'),g=cv.getContext('2d'),msg=$('message'),choices=$('choices');
 const W=16,H=9,T=40;
-const campusPositions=[[-1,0],[1,0],[0,-1],[0,0],[0,1]];
-const directions={left:[-1,0],right:[1,0],up:[0,-1],down:[0,1]};
-const routes=campusPositions.map(([cx,cy])=>{const neighbors={};for(const [dir,[dx,dy]] of Object.entries(directions)){const j=campusPositions.findIndex(([x,y])=>x===cx+dx&&y===cy+dy);if(j!==-1)neighbors[dir]=j;}return neighbors;});
-const opposite={left:'right',right:'left',up:'down',down:'up'};
-for(let i=0;i<routes.length;i++)for(const [dir,j] of Object.entries(routes[i]))if(routes[j][opposite[dir]]!==i)throw Error('校園地圖連接錯誤');
-const routeNames={left:'西側',right:'東側',up:'北側',down:'南側'};
-const quest=document.getElementById('quest'),history=document.getElementById('history'),letters=document.getElementById('letters'),board=document.getElementById('board');
-let animationFrame=0;
-const decor=[
-[{x:1,y:1,w:3,h:1,c:'#806149'},{x:11,y:1,w:3,h:1,c:'#806149'},{x:10,y:6,w:3,h:1,c:'#6b8a79'}],
-[{x:1,y:1,w:3,h:1,c:'#947a5d'},{x:11,y:1,w:3,h:1,c:'#947a5d'},{x:10,y:6,w:3,h:1,c:'#947a5d'}],
-[{x:1,y:1,w:3,h:1,c:'#6d6b82'},{x:11,y:1,w:3,h:1,c:'#6d6b82'},{x:10,y:6,w:3,h:1,c:'#6d6b82'}],[],[]
+const rooms=[
+{name:'自治會辦公室',pos:[0,0],floor:'#a38b6d',wall:'#54768a',objects:[{id:'notice',x:4,y:2,label:'校長通知'},{id:'budget',x:11,y:2,label:'活動經費表'},{id:'xiaoqing',x:4,y:6,label:'小晴'},{id:'zihao',x:11,y:6,label:'子豪'}]},
+{name:'音樂教室',pos:[-1,0],floor:'#a47964',wall:'#77566d',objects:[{id:'azhe',x:5,y:4,label:'阿哲'},{id:'music',x:11,y:3,label:'演出時間表'}]},
+{name:'校史展覽室',pos:[1,0],floor:'#948978',wall:'#55776c',objects:[{id:'yian',x:5,y:4,label:'以安'},{id:'history',x:11,y:3,label:'展覽清單'}]},
+{name:'科學教室',pos:[0,-1],floor:'#8e9a9c',wall:'#4b7880',objects:[{id:'science',x:5,y:4,label:'科學組長'},{id:'equipment',x:11,y:3,label:'器材表'}]},
+{name:'器材室',pos:[0,1],floor:'#777e83',wall:'#69677e',objects:[{id:'acheng',x:5,y:4,label:'阿澄'},{id:'circuit',x:11,y:3,label:'配電圖'}]}
 ];
-function blocked(scene,x,y){
-if(x<1||x>14||y<1||y>7)return true;
-if((x===1&&y>=3&&y<=5&&routes[scene]?.left!==undefined)||(x===14&&y>=3&&y<=5&&routes[scene]?.right!==undefined)||(y===1&&x>=7&&x<=8&&routes[scene]?.up!==undefined)||(y===7&&x>=7&&x<=8&&routes[scene]?.down!==undefined))return false;
-return !scenes[scene]||scenes[scene].objects.some(o=>o.x===x&&o.y===y);
-}
-function rect(x,y,w,h,c){ctx.fillStyle=c;ctx.fillRect(x,y,w,h);}
-function outline(x,y,w,h,c='#382e38'){rect(x-2,y-2,w+4,h+4,c);}
-function book(x,y,c){outline(x,y,10,14);rect(x,y,10,14,c);rect(x+2,y+2,2,10,'#e6cf9c');}
-function roomArt(){
-const scene=state.scene;
-const wall=['#344d54','#516b66','#4b4a67','#465965','#504c48'][scene],trim=['#8f7759','#7b9b88','#8d829f','#8ea1a9','#b5a078'][scene];
-rect(0,0,640,360,wall);
-rect(16,16,608,327,['#c9aa80','#b2c4ad','#b8b4c9','#b8c7c6','#b8aa90'][scene]);
-for(let y=0;y<9;y++)for(let x=0;x<16;x++){const tx=x*40,ty=y*40;rect(tx+1,ty+1,38,38,(x+y)%2?['#d7b68a','#b9cfb6','#c2bed2','#cbd8d5','#cbb99b'][scene]:['#c9a47a','#adc2ac','#b4b0c7','#b3c7c7','#b8a688'][scene]);rect(tx+2,ty+36,36,2,'rgba(41,39,47,.10)');}
-rect(0,0,640,25,wall);rect(0,325,640,35,wall);rect(0,0,22,360,wall);rect(618,0,22,360,wall);
-for(let i=0;i<13;i++){rect(30+i*45,17,28,5,trim);rect(30+i*45,333,28,5,trim);}
-// Door openings are drawn only when a real neighboring room exists.
-const doors=routes[scene];
-if(doors.left!==undefined){rect(0,139,27,87,'#e8c77b');rect(3,146,16,72,'#6d503d');rect(4,153,13,56,'#ffe8a5');}
-if(doors.right!==undefined){rect(613,139,27,87,'#e8c77b');rect(621,146,16,72,'#6d503d');rect(623,153,13,56,'#ffe8a5');}
-if(doors.up!==undefined){rect(280,0,80,26,'#d5a765');rect(289,5,62,15,'#ffe3a4');}
-if(doors.down!==undefined){rect(280,330,80,27,'#d5a765');rect(289,334,62,15,'#ffe3a4');}
-if(scene===0){
-for(const x of [48,452]){outline(x,44,132,57,'#493b35');rect(x,44,132,57,'#896248');for(let i=0;i<9;i++)book(x+6+i*13,53,['#c96961','#e6bb69','#73999b','#8b82a7'][i%4]);rect(x+3,77,126,7,'#5a4235');for(let i=0;i<9;i++)book(x+6+i*13,84,['#82a46f','#d99c63','#b5a0b4'][i%3]);}
-outline(408,251,125,45);rect(408,251,125,45,'#6b8b7b');rect(420,257,30,31,'#e9cda0');rect(465,257,45,26,'#8d6d53');rect(468,260,39,3,'#e0b98b');
-rect(260,38,118,48,'#6b4f3b');rect(267,44,104,36,'#f2dcaa');rect(276,54,86,4,'#b67862');rect(276,65,70,4,'#7a9e9c');
-}else if(scene===1){
-for(const x of [54,445]){outline(x,47,129,57);rect(x,47,129,57,'#92745a');for(let i=0;i<3;i++){rect(x+8+i*41,56,32,30,'#f4e1b6');rect(x+10+i*41,59,28,4,'#d39a72');rect(x+10+i*41,68,22,3,'#7e9b88');}rect(x,90,129,8,'#5e483b');}
-outline(418,251,115,47);rect(418,251,115,47,'#93735a');rect(426,259,40,28,'#efe0b5');rect(480,259,42,28,'#e6b67e');rect(487,266,28,4,'#886f60');
-rect(268,35,118,51,'#385d52');rect(275,42,104,37,'#568a76');rect(286,53,81,4,'#e9e1bd');rect(300,64,52,4,'#e9e1bd');
-}else if(scene===2){
-for(const x of [51,447]){outline(x,47,133,59);rect(x,47,133,59,'#705e73');rect(x+7,54,119,45,'#ded4bd');rect(x+12,61,80,5,'#b58e75');rect(x+12,72,105,4,'#8c879d');rect(x+12,83,91,4,'#8c879d');}
-outline(406,247,134,51);rect(406,247,134,51,'#715c69');rect(416,257,64,34,'#c6c0aa');rect(485,257,43,32,'#494a5e');rect(491,262,31,22,'#8294a3');
-rect(250,39,136,47,'#6d586b');rect(258,46,120,33,'#f2dbac');rect(270,54,96,4,'#a88c81');rect(270,65,71,4,'#a88c81');
-}else if(scene===3){
-// Outdoor covered corridor: garden, windows, lockers and distinct stone walkway.
-rect(25,25,590,108,'#8bb5b0');rect(25,25,590,28,'#c7e3db');for(let i=0;i<11;i++){const x=38+i*54;rect(x,50,4,80,'#547d79');rect(x+9,80,37,45,i%2?'#80a999':'#6e9c8b');rect(x+15,60,24,28,'#a7d4be');}
-rect(24,220,592,105,'#8a9c93');for(let i=0;i<9;i++){rect(40+i*67,232,52,77,i%2?'#a5b1a4':'#b6c1b1');rect(48+i*67,240,37,6,'#d8cfad');}
-rect(250,45,139,62,'#d9c79b');rect(260,55,119,42,'#426d77');rect(270,66,98,5,'#e8e2c6');rect(284,79,69,5,'#e8e2c6');
-}else{
-// Records archive: tall filing cabinets, paper boxes and amber desk lamp.
-rect(38,37,178,95,'#5d5347');rect(45,44,164,81,'#8c7b63');for(let i=0;i<4;i++){rect(52+i*39,50,32,67,'#c2b49b');rect(56+i*39,55,24,7,'#6f6153');rect(62+i*39,77,12,5,'#a28a68');}
-rect(432,37,167,94,'#64574b');for(let i=0;i<4;i++){rect(441+i*37,47,31,74,'#a89475');rect(445+i*37,54,23,10,'#d3c4a6');rect(451+i*37,91,11,5,'#6c5d4d');}
-rect(405,249,144,49,'#765d48');rect(415,257,118,30,'#d2bd94');rect(464,241,12,18,'#715d4c');rect(453,234,34,12,'#efc971');rect(461,246,18,6,'#fff0a9');
-rect(251,35,134,50,'#675c4f');rect(258,42,120,36,'#f0e1bf');rect(271,52,96,4,'#927f66');rect(271,64,75,4,'#927f66');
-}
-}
-// Decorative layers use only drawing operations; no new collision tiles.
-function ellipse(x,y,rx,ry,c){ctx.fillStyle=c;ctx.beginPath();ctx.ellipse(x,y,rx,ry,0,0,Math.PI*2);ctx.fill();}
-function plant(x,y,scale=1){
-ctx.save();ctx.translate(x,y);ctx.scale(scale,scale);
-ellipse(0,11,17,5,'#0003');rect(-10,-1,20,15,'#936747');rect(-7,0,14,11,'#c08b5d');rect(-3,-24,6,27,'#3e6951');
-for(const [dx,dy,a] of [[-15,-27,-.6],[15,-27,.6],[-11,-42,-.3],[12,-42,.3],[0,-49,0]]){ctx.save();ctx.translate(dx,dy);ctx.rotate(a);ellipse(0,0,9,17,'#39745d');ellipse(-2,-5,4,9,'#66a47a');ctx.restore();}
-ctx.restore();
-}
-function windowArt(x,y,w=96){
-rect(x-4,y-4,w+8,66,'#584b43');rect(x,y,w,58,'#b7dce0');
-rect(x+4,y+4,w-8,50,'#8ec2c9');
-for(let i=0;i<4;i++){rect(x+6+i*22,y+31,15,20,'#79a9a2');rect(x+6+i*22,y+39,15,12,'#6b9882');}
-rect(x+w/2-3,y,6,58,'#e4d6b4');rect(x,y+27,w,5,'#e4d6b4');
-rect(x-6,y+56,w+12,8,'#c9a880');rect(x+6,y+5,18,13,'#fff5cb55');
-}
-function carpet(x,y,w,h,c){
-ellipse(x+w/2,y+h/2+5,w/2+6,h/2+5,'#0002');
-rect(x,y,w,h,'#e8d5ae');rect(x+5,y+5,w-10,h-10,c);
-for(let i=0;i<Math.floor(w/20);i++){rect(x+12+i*20,y+9,8,3,'#f6e8c0');rect(x+12+i*20,y+h-12,8,3,'#f6e8c0');}
-}
-function lamp(x,y){ellipse(x,y+4,22,6,'#0002');rect(x-3,y-39,6,41,'#776554');rect(x-17,y-48,34,17,'#e5b86f');rect(x-13,y-44,26,8,'#ffe2a0');rect(x-12,y-2,24,5,'#9c7c57');}
-function atmosphere(){
-const n=state.scene;
-if(n===0){
-carpet(207,182,224,102,'#8baca3');windowArt(198,40,82);windowArt(359,40,82);
-plant(47,314,.7);plant(586,311,.7);
-for(const [x,y] of [[95,239],[319,116],[546,239]]){ellipse(x,y+28,49,14,'#0002');rect(x-43,y,86,25,'#8a6044');rect(x-37,y+4,74,13,'#d4ad76');rect(x-30,y+20,9,15,'#5a4236');rect(x+21,y+20,9,15,'#5a4236');book(x-16,y+3,'#c36d62');book(x+4,y+3,'#7a9b9b');}
-}else if(n===1){
-rect(203,32,234,95,'#594f41');rect(210,39,220,80,'#42755d');
-for(let i=0;i<3;i++){rect(224+i*65,46,52,4,'#d9e3c2');rect(226+i*65,57,37,3,'#a8cbb5');}
-rect(201,124,238,7,'#b99a72');windowArt(44,37,100);windowArt(489,37,100);
-for(const [x,y] of [[101,179],[310,179],[519,179],[101,278],[310,278],[519,278]]){ellipse(x,y+19,38,11,'#0002');rect(x-32,y-9,64,32,'#987653');rect(x-27,y-8,54,20,'#dfbd8b');rect(x-23,y-3,22,13,'#f3e9cb');rect(x+8,y-4,12,14,'#6d9eaa');rect(x-28,y+23,7,8,'#59483e');rect(x+21,y+23,7,8,'#59483e');}
-}else if(n===2){
-carpet(216,155,213,149,'#656d87');windowArt(42,41,110);
-rect(480,154,108,75,'#4c4659');rect(488,161,92,61,'#d7caa8');
-for(let i=0;i<4;i++){rect(495,171+i*11,78-i*8,3,['#aa7d6a','#7b8a9a','#a5a085','#aa7d6a'][i]);}
-for(const [x,y] of [[108,274],[325,218],[528,284]]){ellipse(x,y+16,40,12,'#0003');rect(x-33,y-9,66,32,'#715b59');rect(x-29,y-5,58,21,'#b4a18c');rect(x-15,y-2,30,17,'#e9e1c8');rect(x-13,y+1,25,3,'#ac9984');}
-lamp(572,124);
-}else if(n===3){
-for(let i=0;i<8;i++){const x=41+i*77;rect(x,25,8,104,'#d5e0d1');rect(x+8,28,60,97,'#90b5b0');ellipse(x+35,109,26,19,'#4e8873');ellipse(x+47,100,18,22,'#70a68a');}
-for(let i=0;i<7;i++){const x=49+i*89;rect(x,250,71,65,'#7b8e82');rect(x+5,257,61,52,'#a4b3a1');rect(x+11,262,50,6,'#d1d9bb');}
-plant(93,212,.65);plant(541,209,.7);
-rect(242,36,152,85,'#7b624d');rect(250,43,136,70,'#d7d0a7');rect(261,53,114,7,'#b1765e');rect(261,69,86,4,'#6d9189');rect(261,80,101,4,'#6d9189');
-}else{
-carpet(217,154,193,141,'#937e68');
-for(const [x,y] of [[66,174],[484,170]]){rect(x,y,99,58,'#69584b');for(let i=0;i<3;i++){rect(x+7+i*30,y+6,25,45,'#b19d7e');rect(x+12+i*30,y+13,15,6,'#e4d5ae');rect(x+16+i*30,y+35,7,5,'#675747');}}
-for(const [x,y] of [[99,283],[326,242],[548,284]]){ellipse(x,y+12,38,12,'#0003');rect(x-31,y-12,62,32,'#886d50');rect(x-26,y-8,52,22,'#c4ac7c');rect(x-20,y-4,38,17,'#eee0b6');rect(x-17,y+1,32,2,'#a69474');}
-lamp(337,126);
-}
-}
-// Room backgrounds are independent scene assets, cached as canvas layers.
-const sceneBackgrounds=new Map();
-function renderSceneBackground(scene){
- let art=sceneBackgrounds.get(scene);
- if(!art){
-  const buffer=document.createElement('canvas');buffer.width=640;buffer.height=384;
-  const offscreen=buffer.getContext('2d');
-  if(!offscreen){roomArt();atmosphere();return;}
-  const main=ctx;
-  try{ctx=offscreen;roomArt();atmosphere();}finally{ctx=main;}
-  art=buffer;sceneBackgrounds.set(scene,art);
- }
- ctx.drawImage(art,0,0);
-}
-function sprite(x,y,color,phase=0){
-const px=x*T,py=y*T;
-ctx.fillStyle='#2c3340';ctx.fillRect(px+12,py+34,7,4);ctx.fillRect(px+23,py+34,7,4);
-ctx.fillStyle=color;ctx.fillRect(px+9,py+18,23,16);ctx.fillRect(px+5,py+22,5,11);ctx.fillRect(px+31,py+22,5,11);
-ctx.fillStyle='#f6c796';ctx.fillRect(px+11,py+6+phase,19,16);
-ctx.fillStyle='#3b302e';ctx.fillRect(px+10,py+4+phase,21,6);ctx.fillStyle=color;ctx.fillRect(px+8,py+20,5,10);ctx.fillRect(px+28,py+20,5,10);
-ctx.fillStyle='#29343e';ctx.fillRect(px+15,py+14+phase,3,3);ctx.fillRect(px+24,py+14+phase,3,3);
-}
-function prop(o){
-const x=o.x*T,y=o.y*T;
-if(['teacher','hua','ming'].includes(o.id)){sprite(o.x,o.y,o.id==='teacher'?'#88658c':o.id==='hua'?'#528d99':'#b57e5a',animationFrame%2);if(o.id==='teacher'){rect(x+9,y+4,23,4,'#483947');rect(x+13,y+29,14,3,'#f2dfb0');}else if(o.id==='ming'){rect(x+8,y+7,5,7,'#443330');rect(x+29,y+7,5,7,'#443330');}else{rect(x+8,y+3,25,4,'#4c3a30');}return;}
-ctx.fillStyle='#4a3940';ctx.fillRect(x+2,y+30,36,6);ctx.fillStyle=o.id==='editor'?'#9b755d':'#78958a';ctx.fillRect(x+4,y+12,32,23);
-ctx.fillStyle='#f7e8c7';ctx.fillRect(x+10,y+6,21,16);ctx.fillStyle='#c69d66';ctx.fillRect(x+7,y+13,3,16);
-ctx.fillStyle='#5c6872';ctx.fillRect(x+13,y+10,14,2);ctx.fillRect(x+13,y+14,10,2);
-if(o.id==='editor'){ctx.fillStyle='#c9a57a';ctx.fillRect(x+1,y+29,38,7);}
-}
-const scenes=[
-{name:'圖書館',floor:'#c6a87c',objects:[{x:3,y:2,label:'借閱統計表',id:'stats',text:'四年級借閱統計：活動前一週 80 冊，閱讀週 164 冊。資料由圖書館借閱系統匯出。'},{x:8,y:2,label:'閱讀週公告',id:'notice',text:'閱讀週活動：每借閱一本書可獲得一點，集滿五點可兌換書籤。活動期間為星期一至星期五。'},{x:5,y:6,label:'黃小米老師',id:'teacher',text:'黃小米老師：我們整理的是借出冊數，活動週從星期一到星期五。'}]},
-{name:'四年級教室',floor:'#a8c5b4',objects:[{x:3,y:2,label:'小華',id:'hua',text:'小華：我借了六本，有兩本已經讀完，其他還放在書包裡。'},{x:8,y:3,label:'明明',id:'ming',text:'明明：我和同學一起參加集點，還交換推薦的書單。'},{x:5,y:6,label:'班級閱讀紀錄',id:'class',text:'四年級閱讀紀錄：本週完成心得分享的學生共 12 人；上週共 9 人。'}]},
-{name:'校刊社',floor:'#b4b8d2',objects:[{x:4,y:3,label:'校刊編輯桌',id:'editor',text:'編輯桌上放著三份候選標題。你可以決定要發表哪一篇報導。'},{x:9,y:5,label:'群組訊息',id:'rumor',text:'校園群組貼文：「閱讀週讓四年級借閱量翻倍，閱讀能力全面提升！」貼文未附原始統計資料。'}]},
-{name:'校園走廊',floor:'#b8c7c6',objects:[{x:5,y:2,label:'活動看板',id:'billboard',text:'活動看板：閱讀週週一開幕，週五集點兌換。公布欄貼著各班閱讀小隊的活動照片。'},{x:11,y:6,label:'走廊留言',id:'hallnote',text:'走廊便利貼：「有人借了好多書！」「我推薦的那本終於被借走了。」署名：四年級閱讀小隊。'}]},
-{name:'資料室',floor:'#b8aa90',objects:[{x:4,y:3,label:'舊校刊合訂本',id:'archive',text:'校刊社資料室：去年的閱讀活動也曾出現借閱冊數上升的新聞。附錄只列了借閱量，沒有列閱讀測驗成績。'},{x:10,y:5,label:'紀錄整理簿',id:'ledger',text:'借閱資料整理簿：本次活動由四年級閱讀小隊小華、明明、阿甘協助整理，指導老師黃小米。整理方式：按借閱系統日期篩選星期一至星期五，計算借出冊數。'}]}
-];
-const names={stats:'借閱統計表',notice:'閱讀週公告',teacher:'黃小米老師訪談',hua:'小華訪談',ming:'明明訪談',class:'班級閱讀紀錄',rumor:'群組訊息',billboard:'活動看板',hallnote:'走廊留言',archive:'舊校刊合訂本',ledger:'紀錄整理簿'};
-const documentIds=new Set(['stats','notice','class','rumor','billboard','hallnote','archive','ledger']);
-let state={scene:0,x:2,y:4,found:[],ending:null,citations:[],headline:null,publications:[],followups:[],readerLetters:[],direction:'down',introSeen:false,chapterDone:false,boardNotes:[],bodyChoice:0};
-try{let old=JSON.parse(localStorage.getItem('education-rpg-v28')||localStorage.getItem('education-rpg-v27')||localStorage.getItem('education-rpg-v26')||localStorage.getItem('education-rpg-v252')||localStorage.getItem('education-rpg-v251')||localStorage.getItem('education-rpg-v25')||localStorage.getItem('education-rpg-v21')||localStorage.getItem('education-rpg-v20')||localStorage.getItem('education-rpg-v16')||localStorage.getItem('education-rpg-v15')||localStorage.getItem('education-rpg-v12')||localStorage.getItem('education-rpg-v11')||localStorage.getItem('education-rpg-v10')||localStorage.getItem('education-rpg-v09')||localStorage.getItem('education-rpg-v03'));if(old&&Number.isInteger(old.scene)&&old.scene>=0&&old.scene<5)state={...state,...old};}catch(e){}
-if(!Number.isInteger(state.scene)||state.scene<0||state.scene>=scenes.length)state.scene=0;
-if(!Number.isInteger(state.x)||state.x<1||state.x>14)state.x=2;
-if(!Number.isInteger(state.y)||state.y<1||state.y>7)state.y=4;
-if(!Array.isArray(state.publications))state.publications=[];if(typeof state.introSeen!=='boolean')state.introSeen=false;if(typeof state.chapterDone!=='boolean')state.chapterDone=false;if(!Array.isArray(state.readerLetters))state.readerLetters=[];if(!Array.isArray(state.boardNotes))state.boardNotes=[];if(!Number.isInteger(state.bodyChoice))state.bodyChoice=0;if(!['up','down','left','right'].includes(state.direction))state.direction='down';if(!Array.isArray(state.followups))state.followups=[];if(!Array.isArray(state.found))state.found=[];if(!Array.isArray(state.citations))state.citations=[];
-function save(){try{localStorage.setItem('education-rpg-v28',JSON.stringify(state));}catch(e){}}
+const dirs={left:[-1,0],right:[1,0],up:[0,-1],down:[0,1]};
+const exits=rooms.map(r=>Object.fromEntries(Object.entries(dirs).flatMap(([d,[dx,dy]])=>{let i=rooms.findIndex(q=>q.pos[0]===r.pos[0]+dx&&q.pos[1]===r.pos[1]+dy);return i<0?[]:[[d,i]];})));
+const defaultState=()=>({version:1,room:0,x:8,y:5,seen:[],choices:{},phase:0,ending:null,selection:['science','history','music'],intro:false});
+let state;
+try{state=JSON.parse(localStorage.getItem('last-festival-v1'))||defaultState();if(!Number.isInteger(state.room)||!rooms[state.room]||!Array.isArray(state.seen)||!state.choices)state=defaultState();}catch(e){state=defaultState();}
+const save=()=>{try{localStorage.setItem('last-festival-v1',JSON.stringify(state));}catch(e){}};
+const docs={
+notice:['校長室通知｜10月5日','舊校舍整修前最後一屆校園祭，原有六項提案，受場地與預算限制，只能保留三項。自治會須於10月8日中午前提交活動表。','校長室｜事務組'],
+budget:['學生自治會經費試算','可用預算：8點；可調度工作人力：6人；活動名額：3。\n科學體驗：預算3、人力2。\n校史展覽：預算2、人力2。\n音樂演出：預算3、人力2。\n合計：預算8、人力6、名額3。\n備註：尚未計入設備故障或天候變動。','自治會財務紀錄｜10月5日'],
+music:['音樂組演出時間表','14:00–14:10 開場\n14:10–14:35 合唱\n14:35–15:00 樂團\n15:00–15:15 收場\n舞台劇組申請使用14:35–14:50，與樂團時段重疊。','音樂組｜10月6日'],
+history:['校史展覽清單','借用舊照片28張，其中12張未數位化。\n需要：乾燥室內空間、6張展示桌、避免飲水與實驗液體接近展品。\n目前展覽室可提供4張桌。','校史展覽組｜10月6日'],
+equipment:['科學體驗器材清單','磁力小車：無須插電。\n光影實驗：投影機1台。\n電路體驗：低壓電源組2套。\n水流模型：需要水槽與防水桌墊。\n科學組願意調整展示項目，但須保留至少兩個可操作體驗。','科學組｜10月6日'],
+circuit:['器材室配電檢查表','體育館東側插座群與展覽室投影設備共用同一迴路。\n目前音響與投影機同時啟動時，負載接近使用上限。\n建議：改用無電展示、分時段使用，並由老師確認設備配置。','後勤組 阿澄｜10月6日']
+};
+const mark=id=>{if(!state.seen.includes(id))state.seen.push(id);save();render();};
 function say(t){msg.textContent=t;choices.replaceChildren();}
-function noteBoard(id){
-if(!state.found.includes(id)){say('請先調查這份資料。');return;}
-if(state.boardNotes.includes(id))state.boardNotes=state.boardNotes.filter(x=>x!==id);else state.boardNotes.push(id);
-save();draw();
+function btn(label,fn){const b=document.createElement('button');b.textContent=label;b.onclick=fn;choices.appendChild(b);}
+function documentView(id){mark(id);const [title,body,by]=docs[id];say('你拿起桌上的資料。');const d=document.createElement('div');d.className='paper';d.textContent=title+'\n\n'+body+'\n\n'+by;choices.appendChild(d);btn('收起文件',()=>say('文件已放入自治會工作桌。'));}
+function talk(id){
+mark(id);
+if(id==='xiaoqing'){say('小晴把三份活動提案放在桌上。\n「目前名額已滿。阿哲剛才來問舞台劇的事。明天中午前一定要交出安排表。」');btn('問她有沒有其他限制',()=>say('小晴：「經費表在辦公室右側。場地能不能共用，我還沒拿到各組的器材清單。」'));}
+if(id==='zihao'){say('子豪：「三個活動已經選好了。要不要直接公布？這樣大家才有時間準備。」');btn('詢問他是否看過各組清單',()=>say('子豪：「還沒。我只看了提案需要的人力和預算。你可以去找各組長。」'));}
+if(id==='azhe'){say('阿哲拿出一本寫滿筆記的劇本。\n「我們排練了三個月。音樂組有舞台，我們卻沒有。你們能不能留十五分鐘？」');btn('詢問能否改成短篇演出',()=>{state.choices.azhe='short';save();say('阿哲翻了幾頁：「可以縮成十分鐘，但需要音樂組同意讓出時段。我去問他們。」');render();});btn('告訴他目前沒有空檔',()=>{state.choices.azhe='declined';save();say('阿哲合上劇本：「好，我會告訴組員。」他把劇本收進書包。');render();});btn('承諾一定安排演出',()=>{state.choices.azhe='promise';save();say('阿哲：「真的？那我們今晚繼續排練。」你還沒有取得音樂組同意。');render();});}
+if(id==='yian'){say('以安正在把老照片放進保護套。\n「這十二張沒有電子檔，借來時老師說不能碰水。展覽室只有四張桌子，我們還缺兩張。」');btn('提議先把照片掃描備份',()=>{state.choices.history='scan';save();say('以安：「我可以先請老師協助掃描。不過今天要先把原件搬進乾燥的地方。」');render();});btn('建議和科學組共用場地',()=>{state.choices.history='share';save();say('以安：「如果他們不使用水流模型，也許可以。但請先看看器材表。」');render();});}
+if(id==='science'){say('科學組長指著桌上的磁力小車。\n「我們最想讓大家親手試。水流模型和投影機只是其中兩項，可以討論。」');btn('詢問能否改成無水、低耗電展示',()=>{state.choices.science='low';save();say('科學組長：「磁力小車和手動光影盒可以留下。我們要花一個下午重新做材料。」');render();});btn('維持原有展示項目',()=>{state.choices.science='full';save();say('科學組長：「那我們需要原本的水槽、投影機和插座。」');render();});}
+if(id==='acheng'){say('阿澄把一張配電圖推到你面前。\n「音響和投影機會用到同一組電路。我還沒把這件事告訴各組。」');btn('請他參加下一次場地協調',()=>{state.choices.acheng='included';save();say('阿澄：「好，我把每個時段的設備使用情況整理出來。」');render();});btn('請他先整理器材即可',()=>{state.choices.acheng='ignored';save();say('阿澄：「好。但用電的事情還是得有人確認。」');render();});}
 }
-function documentView(o){
-say('【'+o.label+'】');
-const paper=document.createElement('div');paper.className='document';
-const h=document.createElement('strong');h.textContent=o.label;
-const body=document.createElement('div');body.textContent=o.text;
-paper.append(h,body);
-const mark=document.createElement('button');mark.textContent=state.boardNotes.includes(o.id)?'從紀錄板移除':'貼到事件紀錄板';mark.onclick=()=>{noteBoard(o.id);documentView(o);};
-paper.appendChild(mark);choices.appendChild(paper);
+function interact(){const obj=rooms[state.room].objects.find(o=>Math.abs(o.x-state.x)<=1&&Math.abs(o.y-state.y)<=1);if(!obj){say('附近沒有可互動的人物或物件。');return;}if(docs[obj.id])documentView(obj.id);else talk(obj.id);}
+function readiness(){return ['notice','budget','music','history','equipment','circuit'].filter(id=>state.seen.includes(id)).length;}
+function meeting(){
+if(readiness()<4){say('小晴：「我們還沒拿到足夠的場地與器材資料。先把各組的文件找齊幾份，再討論安排吧。」');return;}
+say('【10月7日｜自治會協調會】\n桌上放著三份活動表。音樂組希望保留完整演出，展覽組需要乾燥空間，科學組希望保留動手操作。\n小晴：「明天中午就要交了。這次怎麼安排？」');
+btn('三組依原計畫分開準備',()=>resolve('separate'));
+btn('安排共用場地，先確認設備與動線',()=>resolve('coordinate'));
+btn('邀請舞台劇組參與音樂演出協商',()=>resolve('stage'));
 }
-function compareReports(){
-if(state.publications.length<2){say('需要至少兩版報導才能比較。');return;}
-const a=state.publications[state.publications.length-2],b=state.publications[state.publications.length-1];
-const changes=[];
-if(a.headline!==b.headline)changes.push('標題：'+headlines[a.headline]+' → '+headlines[b.headline]);
-if(a.bodyChoice!==b.bodyChoice)changes.push('主段落：'+(bodyOptions[a.bodyChoice]||bodyOptions[0])+' → '+(bodyOptions[b.bodyChoice]||bodyOptions[0]));
-const added=b.citations.filter(id=>!a.citations.includes(id)),removed=a.citations.filter(id=>!b.citations.includes(id));
-if(added.length)changes.push('新增引用：'+added.map(id=>names[id]||id).join('、'));
-if(removed.length)changes.push('移除引用：'+removed.map(id=>names[id]||id).join('、'));
-if(!changes.length)changes.push('這兩版的標題、主段落與引用資料相同。');
-say('【校刊修訂比較｜第 '+(state.publications.length-1)+' 版 → 第 '+state.publications.length+' 版】\n'+changes.join('\n'));
-}
-function narrative(){
-if(!state.introSeen){
-state.introSeen=true;save();
-say('【校刊社｜閱讀週結束後】\n學校群組出現一則熱門消息：「閱讀週讓四年級借閱量翻倍，閱讀能力全面提升！」\n校刊社收到讀者阿甘的來信：「我們班真的每個人都變得更會閱讀了嗎？我想知道這句話有什麼根據。」\n主編請你走訪圖書館、四年級教室和資料室，帶著證據回來，查清楚這則消息。');
-return;
-}
-if(state.publications.length>=1&&!state.chapterDone){showConclusion();return;}
-}
-function showConclusion(){
-const found=new Set(state.found);
-const hasStats=found.has('stats'),hasMethods=found.has('ledger'),hasStudent=found.has('hua')||found.has('ming');
-const pub=state.publications[state.publications.length-1];
-state.chapterDone=true;save();draw();
-say('【事件結案｜校刊社】\n主編把借閱紀錄、活動公告和你的報導放在桌上。\n借閱統計顯示：四年級活動前一週借出80冊，閱讀週借出164冊，增加84冊。\n閱讀週設有借書集點換書籤活動。\n小華借了六本、讀完兩本；明明與同學交換書單。\n校刊社沒有收到可以證明「全體閱讀能力全面提升」的測驗或評量資料。\n主編說：「借閱冊數的增加有紀錄可查；閱讀能力是否全面提升，目前的資料還不能證實。」\n你完成了這次校園傳聞調查，校刊將保留你發表的報導。');
-button('查看這次的調查檔案',()=>{say('【結案檔案】\n借閱統計：'+(hasStats?'已取得':'尚未取得')+'\n資料整理方法：'+(hasMethods?'已取得':'尚未取得')+'\n學生訪談：'+(hasStudent?'已取得':'尚未取得')+'\n發表標題：'+headlines[pub.headline]+'\n報導引用：'+(pub.citations.map(id=>names[id]||id).join('、')||'未列出'));button('返回結案畫面',showConclusion);});
-button('返回校園繼續查閱資料',()=>say('調查已結案。你仍然可以走訪各處，查看先前蒐集的文件。'));
-}
-function draw(){
-if(!scenes[state.scene]){state.scene=0;state.x=2;state.y=4;save();}
-if(!Array.isArray(state.boardNotes))state.boardNotes=[];
-if(!Array.isArray(state.found))state.found=[];
-if(!Array.isArray(state.publications))state.publications=[];
-if(!Array.isArray(state.followups))state.followups=[];
-if(!Array.isArray(state.citations))state.citations=[];
-ctx.clearRect(0,0,640,384);renderSceneBackground(state.scene);
-ctx.fillStyle='#fff0c6';ctx.font='bold 12px sans-serif';ctx.textAlign='center';
-const links=routes[state.scene];
-for(const [dir,target] of Object.entries(links)){
-let x=320,y=180;
-if(dir==='left'){x=67;y=132;}if(dir==='right'){x=573;y=132;}if(dir==='up'){x=320;y=31;}if(dir==='down'){x=320;y=320;}
-ctx.fillStyle='#293a46';ctx.fillRect(x-62,y-13,124,24);ctx.fillStyle='#ffe3a4';
-ctx.fillText(({left:'← ',right:'→ ',up:'↑ ',down:'↓ '})[dir]+scenes[target].name,x,y+4);
-}
-
-for(const o of scenes[state.scene].objects){const px=o.x*T,py=o.y*T;prop(o);ctx.fillStyle='#26303a';ctx.fillRect(px-26,py-21,92,18);ctx.fillStyle='#fff2d2';ctx.font='bold 11px sans-serif';ctx.textAlign='center';ctx.fillText(o.label,px+20,py-8);}
-// Pixel-art investigator with direction indicator, bag and face
-const px=state.x*T,py=state.y*T;
-ctx.fillStyle='#263e73';ctx.fillRect(px+9,py+18,22,17);
-ctx.fillStyle='#394e71';ctx.fillRect(px+5,py+21,5,13);ctx.fillRect(px+30,py+21,5,13);
-ctx.fillStyle='#253046';ctx.fillRect(px+10,py+33,8,5);ctx.fillRect(px+22,py+33,8,5);
-ctx.fillStyle='#d8a86e';ctx.fillRect(px+29,py+20,7,11);
-ctx.fillStyle='#ffcf99';ctx.fillRect(px+11,py+6,18,16);
-ctx.fillStyle='#273043';ctx.fillRect(px+10,py+4,20,6);
-ctx.fillStyle='#1a2935';
-if(state.direction==='left'){ctx.fillRect(px+12,py+13,3,3);}
-else if(state.direction==='right'){ctx.fillRect(px+25,py+13,3,3);}
-else if(state.direction==='down'){ctx.fillRect(px+15,py+13,3,3);ctx.fillRect(px+23,py+13,3,3);}
-else{ctx.fillStyle='#394d63';ctx.fillRect(px+12,py+11,16,8);}
-const near=scenes[state.scene].objects.find(o=>Math.abs(o.x-state.x)<=1&&Math.abs(o.y-state.y)<=1);
-if(near){const px=near.x*T+20,py=near.y*T-24;ctx.fillStyle='#fff1b6';ctx.fillRect(px-16,py-16,32,23);ctx.fillStyle='#202b39';ctx.font='bold 15px sans-serif';ctx.textAlign='center';ctx.fillText('!',px,py);ctx.strokeStyle='#ffeb88';ctx.lineWidth=3;ctx.strokeRect(near.x*T+2,near.y*T+2,36,36);ctx.lineWidth=1;}
-ctx.fillStyle='#172633';ctx.fillRect(0,360,640,24);ctx.fillStyle='#fff';ctx.textAlign='left';ctx.font='14px sans-serif';ctx.fillText(near?'可調查：'+near.label+'｜按調查／對話':'場景：'+scenes[state.scene].name+'｜黃色門口切換場景',12,377);
-// Compass mini-map: world positions never rotate between rooms.
-const mx=544,my=32;
-ctx.fillStyle='#192d38d9';ctx.fillRect(mx-47,my-20,94,92);
-ctx.strokeStyle='#d8b985';ctx.strokeRect(mx-47,my-20,94,92);
-for(let i=0;i<campusPositions.length;i++){
- const [cx,cy]=campusPositions[i],x=mx+cx*26,y=my+cy*25;
- ctx.fillStyle=i===state.scene?'#f5d08a':'#759b9b';
- ctx.fillRect(x-9,y-8,18,16);
- ctx.fillStyle='#233341';ctx.font='bold 10px sans-serif';ctx.textAlign='center';
- ctx.fillText(['圖','教','刊','廊','檔'][i],x,y+4);
-}
-ctx.fillStyle='#fff0c6';ctx.font='10px sans-serif';ctx.fillText('北 ↑',mx,my-11);
-sceneTitle.textContent=scenes[state.scene].name;inv.replaceChildren();if(!state.found.length){inv.textContent='尚未蒐集資料';}else{state.found.forEach(id=>{const b=document.createElement('button');b.textContent='📄 '+(names[id]||id);b.style.margin='4px';b.style.fontSize='13px';b.onclick=()=>review(id);inv.appendChild(b);});}status.textContent='已蒐集 '+state.found.length+' 項資料｜已發表 '+state.publications.length+' 篇版本';
-const tasks=[['取得借閱統計表',state.found.includes('stats')],['查閱閱讀週活動公告',state.found.includes('notice')],['訪問四年級學生',state.found.some(x=>['hua','ming'].includes(x))],['找到資料整理方式',state.found.includes('ledger')],['回校刊社提交調查報導',state.publications.length>0],['完成事件結案',state.chapterDone]];
-quest.textContent=tasks.map(([t,done])=>(done?'☑ ':'☐ ')+t).join('　｜　');
-board.replaceChildren();
-const boardIntro=document.createElement('div');boardIntro.className='hint';boardIntro.textContent='調查紀錄：點選已取得的文件或訪談，整理這次事件的證據。';board.appendChild(boardIntro);
-if(!state.boardNotes.length){const empty=document.createElement('div');empty.textContent='目前沒有釘選的資料。';board.appendChild(empty);}
-else state.boardNotes.forEach(id=>{const card=document.createElement('div');card.className='record';const b=document.createElement('button');b.textContent='查看 '+(names[id]||id);b.onclick=()=>review(id);card.appendChild(b);board.appendChild(card);});
-const addable=state.found.filter(id=>!state.boardNotes.includes(id));if(addable.length){const tools=document.createElement('div');tools.className='tabs';addable.forEach(id=>{const b=document.createElement('button');b.textContent='＋'+(names[id]||id);b.onclick=()=>noteBoard(id);tools.appendChild(b);});board.appendChild(tools);}
-
-letters.replaceChildren();
-if(!state.publications.length){letters.textContent='校刊發行後，讀者來信會出現在這裡。';}
-else {
-const latest=state.publications[state.publications.length-1];
-const lettersData=[
-{from:'五年級讀者 阿甘',text:'我在群組看到「閱讀能力全面提升」。你們有做閱讀能力測驗嗎？'},
-{from:'四年級閱讀小隊 小華',text:'我這週借了六本書，現在讀完兩本。我的心得還沒寫好。'},
-{from:'圖書館老師 黃小米',text:'附件是借閱系統匯出的統計表。下週的數字要等星期五才能整理。'},
-{from:'校刊社讀者 明明',text:'你們提到我和同學交換書單，我可以提供我們寫的推薦卡。'}
-];
-const selected=latest.headline===0?[0,2]:latest.headline===1?[2,1]:[1,3];
-if(state.publications.length>1&&!selected.includes(3))selected.push(3);
-selected.forEach(i=>{const note=document.createElement('div');note.className='record';const title=document.createElement('strong');title.textContent=lettersData[i].from;const body=document.createElement('div');body.textContent=lettersData[i].text;note.append(title,body);letters.appendChild(note);});
-}
-history.replaceChildren();
-if(!state.publications.length){history.textContent='尚未發表報導。';}else {if(state.publications.length>=2){const compare=document.createElement('button');compare.textContent='比較最近兩版的修改';compare.onclick=compareReports;history.appendChild(compare);}state.publications.forEach((pub,i)=>{
-const wrap=document.createElement('div');wrap.className='record';
-const heading=document.createElement('strong');heading.textContent='第 '+(i+1)+' 版｜'+(headlines[pub.headline]||'未命名標題');wrap.appendChild(heading);
-const paragraph=document.createElement('div');paragraph.textContent=bodyOptions[pub.bodyChoice]||bodyOptions[0];wrap.appendChild(paragraph);
-const detail=document.createElement('div');detail.textContent='引用：'+((pub.citations||[]).map(id=>names[id]||id).join('、')||'未列出');wrap.appendChild(detail);
-const b=document.createElement('button');b.textContent='閱讀這一版';b.style.fontSize='13px';b.style.padding='6px 10px';b.onclick=()=>{say('【第 '+(i+1)+' 版】\n'+(headlines[pub.headline]||'')+'\n引用資料：'+detail.textContent.slice(3));window.scrollTo({top:document.getElementById('message').getBoundingClientRect().top+window.scrollY-70,behavior:'smooth'});};wrap.appendChild(b);history.appendChild(wrap);
-});}
-}
-function move(dx,dy){
-if(dx<0)state.direction='left';else if(dx>0)state.direction='right';else if(dy<0)state.direction='up';else if(dy>0)state.direction='down';
-let x=Math.max(1,Math.min(14,state.x+dx)),y=Math.max(1,Math.min(7,state.y+dy));
-if(blocked(state.scene,x,y)){draw();return;}
-state.x=x;state.y=y;animationFrame++;
-let exit=null;
-if(x===14&&y>=3&&y<=5&&routes[state.scene]?.right!==undefined)exit='right';
-else if(x===1&&y>=3&&y<=5&&routes[state.scene]?.left!==undefined)exit='left';
-else if(y===1&&x>=7&&x<=8&&routes[state.scene]?.up!==undefined)exit='up';
-else if(y===7&&x>=7&&x<=8&&routes[state.scene]?.down!==undefined)exit='down';
-const destination=exit===null?undefined:routes[state.scene]?.[exit];
-if(Number.isInteger(destination)&&destination>=0&&destination<scenes.length){
-state.scene=destination;
-const entry={right:[2,4],left:[13,4],up:[7,6],down:[7,2]}[exit];
-state.x=entry[0];state.y=entry[1];
-say('你從'+routeNames[exit]+'通道來到「'+scenes[state.scene].name+'」。仔細看看這裡有什麼新線索。');
-}
-save();draw();
-}
-function review(id){const o=scenes.flatMap(scene=>scene.objects).find(item=>item.id===id);if(o){if(documentIds.has(id))documentView(o);else say('【'+(names[id]||o.label)+'】'+o.text);}}
-function button(label,fn){const b=document.createElement('button');b.textContent=label;b.onclick=fn;choices.appendChild(b);}
-function interact(targetId){const o=scenes[state.scene].objects.find(o=>(!targetId||o.id===targetId)&&Math.abs(o.x-state.x)<=1&&Math.abs(o.y-state.y)<=1);if(!o){say('附近沒有可調查的物件。請靠近人物或文件。');return;}let detail=o.text;
-if(state.publications.length&&['teacher','hua','ming'].includes(o.id)){
-const extra={teacher:'黃小米老師：校刊出來了啊！下週我還會匯出一份借閱紀錄。',hua:'小華：我看到校刊了。我昨天又讀完一本借來的書。',ming:'明明：我們班有人把報導貼在群組，大家都在討論。'};
-detail+='\n【發表後回訪】'+extra[o.id];if(!state.followups.includes(o.id))state.followups.push(o.id);
-}
-say(detail);if(o.id==='editor'){if(state.chapterDone){say('【校刊社】\n調查報導已經發行，主編將結案檔案放在桌上。');button('閱讀事件結案',showConclusion);button('重新編輯報導',openEditor);}else openEditor();}else{if(!state.found.includes(o.id))state.found.push(o.id);save();draw();if(documentIds.has(o.id))documentView(o);}}
-const bodyOptions=['借閱紀錄：四年級活動前一週借出80冊，閱讀週借出164冊。','學生訪談：小華借了六本、已讀完兩本；明明與同學交換推薦書單。','活動公告：閱讀週每借一本書可獲得一點，集滿五點可兌換書籤。'];
-const headlines=['閱讀週讓四年級閱讀能力全面提升！','閱讀週借閱量從80冊增加到164冊','閱讀週借閱量增加，閱讀能力提升仍待查證'];
-function openEditor(){
-say('【校刊社｜調查報導】\n主編：「這則消息究竟哪些部分有證據？先整理資料，再決定校刊要刊登什麼。」');
-const h=document.createElement('div');h.textContent='第一步：選擇標題';choices.appendChild(h);
-headlines.forEach((name,i)=>button((state.headline===i?'✓ ':'')+name,()=>{state.headline=i;save();openEditor();}));
-if(state.headline===null)return;
-const bodyHeading=document.createElement('div');bodyHeading.textContent='第二步：選擇報導主段落';bodyHeading.style.width='100%';choices.appendChild(bodyHeading);
-bodyOptions.forEach((body,i)=>button((state.bodyChoice===i?'◉ ':'○ ')+body,()=>{state.bodyChoice=i;save();openEditor();}));
-const t=document.createElement('div');t.textContent='第三步：勾選要引用的資料（可多選）';t.style.width='100%';choices.appendChild(t);
-state.found.forEach(id=>{const b=document.createElement('button');b.textContent=(state.citations.includes(id)?'☑ ':'☐ ')+(names[id]||id);b.onclick=()=>{if(state.citations.includes(id))state.citations=state.citations.filter(x=>x!==id);else state.citations.push(id);save();openEditor();};choices.appendChild(b);});
-const preview=document.createElement('div');preview.className='record';preview.style.width='100%';preview.textContent='報導預覽｜'+headlines[state.headline]+'\n'+bodyOptions[state.bodyChoice]+'\n引用：'+(state.citations.map(id=>names[id]||id).join('、')||'未列出');preview.style.whiteSpace='pre-line';choices.appendChild(preview);
-button('提交調查報導並結案',()=>finish(state.headline));
-}
-function finish(n){
-if(!state.found.includes('stats')||!state.found.includes('notice')||!state.found.some(id=>['hua','ming'].includes(id))||!state.found.includes('ledger')){
-say('主編：「目前還缺少一些關鍵資料。請帶回借閱統計表、活動公告、至少一位學生的訪談，以及資料室的紀錄整理簿。」');
-button('返回編輯桌',openEditor);return;
-}
-if(!state.citations.length){say('主編：「請在報導中附上至少一份你查到的資料，讀者才知道消息從哪裡來。」');button('返回編輯桌',openEditor);return;}
-state.ending=n+1;
-state.publications.push({headline:n,bodyChoice:state.bodyChoice,citations:[...state.citations],timestamp:Date.now()});
-state.chapterDone=false;save();draw();showConclusion();
-}
-const keymap={ArrowUp:[0,-1],w:[0,-1],W:[0,-1],ArrowDown:[0,1],s:[0,1],S:[0,1],ArrowLeft:[-1,0],a:[-1,0],A:[-1,0],ArrowRight:[1,0],d:[1,0],D:[1,0]};
-document.addEventListener('keydown',e=>{if(keymap[e.key]){e.preventDefault();move(...keymap[e.key]);}else if(e.key===' '||e.key==='Enter'){e.preventDefault();interact();}});
-// Long-press to walk, while preserving one-tap movement
-let walkTimer=null,walkDelay=null;
-function stopWalk(){clearInterval(walkTimer);clearTimeout(walkDelay);walkTimer=null;walkDelay=null;}
-document.querySelectorAll('[data-dir]').forEach(b=>{
-const d={up:[0,-1],down:[0,1],left:[-1,0],right:[1,0]}[b.dataset.dir];
-b.addEventListener('pointerdown',e=>{e.preventDefault();stopWalk();try{b.setPointerCapture(e.pointerId);}catch(err){}move(...d);walkDelay=setTimeout(()=>{walkTimer=setInterval(()=>move(...d),135);},260);});
-['pointerup','pointercancel','lostpointercapture','pointerleave'].forEach(name=>b.addEventListener(name,stopWalk));
-});document.addEventListener('visibilitychange',()=>{if(document.hidden)stopWalk();});
-document.getElementById('interact').onclick=()=>interact();
-cv.addEventListener('pointerdown',e=>{
-const r=cv.getBoundingClientRect(),x=Math.floor((e.clientX-r.left)/r.width*640/T),y=Math.floor((e.clientY-r.top)/r.height*384/T);
-const o=scenes[state.scene].objects.find(o=>o.x===x&&o.y===y);
-if(o&&Math.abs(o.x-state.x)<=1&&Math.abs(o.y-state.y)<=1){interact(o.id);}
-});
-
-document.getElementById('reset').onclick=()=>{if(confirm('確定清除目前進度？')){state={scene:0,x:2,y:4,found:[],ending:null,citations:[],headline:null,publications:[],followups:[],readerLetters:[],direction:'down',introSeen:false,chapterDone:false,boardNotes:[],bodyChoice:0};save();draw();narrative();}};
-draw();narrative();
-window.addEventListener('error',e=>{document.getElementById('error').textContent='執行錯誤：'+e.message;});
+function resolve(plan){state.choices.plan=plan;state.phase=1;save();render();
+const text={separate:'各組收到原定時段。音樂組照表排練，校史組繼續找展示桌。阿哲把舞台劇劇本帶回教室。',coordinate:'你把各組清單攤在桌上。科學組提出改用磁力小車，以安同意討論展區共用，但展品仍須隔離水源。',stage:'阿哲帶著十分鐘的短篇劇本來到會議。音樂組同意討論，但提出必須保留合唱與收場時間。'}[plan];
+say('【協調結果】\n'+text+'\n\n傍晚，總務處送來最新氣象通知：活動日可能降下大雨，戶外備用空間不能保證使用。');btn('查看雨天應變安排',storm);}
+function storm(){say('【10月8日｜雨天備案】\n總務處公告：戶外場地暫停列入正式活動空間。體育館與兩間教室可供使用。\n阿澄的配電圖仍在桌上。音樂組需要音響，科學組原提案需要投影機。');btn('將高耗電項目錯開時段，保留安全動線',()=>ending('schedule'));btn('科學組改用無水、低耗電體驗，與校史展覽分區',()=>ending('adapt'));btn('照原時間表進行，開幕當天再視情況調整',()=>ending('unchanged'));}
+function ending(action){state.phase=2;state.choices.storm=action;let safe=action!=='unchanged';let joined=state.choices.plan==='stage'&&state.choices.azhe==='short';let flexible=action==='adapt'||state.choices.science==='low';let trust=state.choices.azhe==='promise'&&!joined;let parts=[];
+parts.push('【10月9日｜校園祭當天】');
+parts.push(safe?'雨停了一陣，學生依照重新張貼的動線圖進入各活動室。':'活動開始前，老師檢查配電配置，要求音響與投影機不得同時啟動。科學組臨時撤下光影實驗。');
+parts.push(flexible?'科學組的磁力小車和手動光影盒吸引了不少人排隊。':'科學組依照核准的時段輪流開放體驗。');
+parts.push(state.choices.history==='scan'?'校史組展出掃描複本，原件由老師收存。':'校史組將原件放在隔離水源的展區，安排組員輪流看守。');
+parts.push(joined?'音樂演出中段，阿哲帶著舞台劇組完成十分鐘的短劇。':'音樂組完成演出。阿哲坐在觀眾席最後一排，手上仍拿著劇本。');
+if(trust)parts.push('阿哲在活動後問你：「你那天說一定有舞台，後來為什麼沒有通知我們？」');
+parts.push('【活動結束｜自治會辦公室】\n桌上留下活動表、設備借用單和一張全體合照。窗外的舊校舍已經熄燈。');
+state.ending={action,joined,flexible,safe,trust};save();render();say(parts.join('\n\n'));btn('查看最後的工作紀錄',finalRecord);btn('留在校園繼續走訪',()=>say('校園祭結束了。教室裡還留著當天的資料。'));}
+function finalRecord(){const e=state.ending;if(!e)return;say('【自治會結案紀錄】\n保留活動：科學體驗、校史展覽、音樂演出\n雨天安排：'+({schedule:'錯開設備使用時段',adapt:'改用低耗電體驗並分區',unchanged:'原表未提前調整，當日撤下部分設備'}[e.action])+'\n舞台劇：'+(e.joined?'與音樂組合作演出十分鐘':'未列入正式演出')+'\n尚待處理：'+(e.trust?'阿哲對先前承諾提出疑問':'活動後各組器材歸還與展品整理')+'\n\n紀錄人：青禾國小學生自治會');btn('返回活動當天',()=>{const x=state.ending;state.ending=null;ending(x.action);});}
+function draw(){const r=rooms[state.room];g.clearRect(0,0,640,360);g.fillStyle=r.wall;g.fillRect(0,0,640,360);g.fillStyle=r.floor;g.fillRect(35,35,570,290);for(let y=1;y<8;y++)for(let x=1;x<15;x++){g.strokeStyle='#ffffff12';g.strokeRect(x*T,y*T,T,T);}
+g.fillStyle='#30495a';g.fillRect(30,30,580,13);g.fillRect(30,310,580,15);
+const palette=['#745642','#60465b','#51674d','#527580','#555a6b'][state.room];
+for(const o of r.objects){const x=o.x*T,y=o.y*T;g.fillStyle='#273642';g.fillRect(x-5,y-8,51,48);g.fillStyle=palette;g.fillRect(x,y,40,32);g.fillStyle='#dfc594';g.fillRect(x+8,y+4,24,18);g.fillStyle='#182d3d';g.font='bold 12px sans-serif';g.textAlign='center';g.fillText(o.label,x+20,y-15);}
+for(const [d,i] of Object.entries(exits[state.room])){let x=320,y=170;if(d==='left')x=37;if(d==='right')x=603;if(d==='up')y=38;if(d==='down')y=310;g.fillStyle='#edcb83';g.fillRect(x-25,y-16,50,32);g.fillStyle='#213447';g.font='bold 18px sans-serif';g.fillText(({left:'←',right:'→',up:'↑',down:'↓'})[d],x,y+6);}
+const px=state.x*T,py=state.y*T;g.fillStyle='#253b68';g.fillRect(px+9,py+18,22,18);g.fillStyle='#f4c491';g.fillRect(px+11,py+7,18,17);g.fillStyle='#3a3030';g.fillRect(px+10,py+4,20,7);g.fillStyle='#243746';g.fillRect(px+14,py+16,3,3);g.fillRect(px+24,py+16,3,3);g.fillStyle='#f5e7c2';g.font='bold 13px sans-serif';g.textAlign='left';g.fillText(r.name,12,350);
+$('roomTitle').textContent=r.name;$('dashboard').innerHTML='<div class="grid"><div class="tile">活動<br><strong>科學體驗・校史展覽・音樂演出</strong></div><div class="tile">資源<br><strong>預算 8/8｜人力 6/6</strong></div><div class="tile">文件<br><strong>'+readiness()+'/6 份</strong></div><div class="tile">進度<br><strong>'+(['調查與訪談','協調完成・雨天應變','校園祭結束'][state.phase])+'</strong></div></div>';
+const dash=$('dashboard');const action=document.createElement('button');action.textContent=state.phase===0?'召開自治會協調會':state.phase===1?'進入雨天應變會議':'查看結案紀錄';action.style.marginTop='10px';action.onclick=state.phase===0?meeting:state.phase===1?storm:finalRecord;dash.appendChild(action);
+const records=$('records');records.replaceChildren();if(!state.seen.length)records.textContent='尚未取得資料。';for(const id of state.seen){if(!docs[id])continue;const b=document.createElement('button');b.textContent='📄 '+docs[id][0];b.style.margin='4px';b.onclick=()=>documentView(id);records.appendChild(b);}}
+function blocked(room,x,y){if(x<1||x>14||y<1||y>7)return true;return rooms[room].objects.some(o=>o.x===x&&o.y===y);}
+function move(dx,dy){let x=Math.max(1,Math.min(14,state.x+dx)),y=Math.max(1,Math.min(7,state.y+dy));if(blocked(state.room,x,y))return;state.x=x;state.y=y;let dir=null;if(x===1&&y>=3&&y<=5)dir='left';else if(x===14&&y>=3&&y<=5)dir='right';else if(y===1&&x>=7&&x<=8)dir='up';else if(y===7&&x>=7&&x<=8)dir='down';const to=dir&&exits[state.room][dir];if(to!==undefined&&to!==null){state.room=to;const entry={left:[13,4],right:[2,4],up:[8,6],down:[8,2]}[dir];state.x=entry[0];state.y=entry[1];say('你來到'+rooms[to].name+'。');}save();draw();}
+const keymap={ArrowUp:[0,-1],w:[0,-1],ArrowDown:[0,1],s:[0,1],ArrowLeft:[-1,0],a:[-1,0],ArrowRight:[1,0],d:[1,0]};document.addEventListener('keydown',e=>{if(keymap[e.key]){e.preventDefault();move(...keymap[e.key]);}else if(e.key==='Enter'||e.key===' '){e.preventDefault();interact();}});
+let hold=null,delay=null;function stop(){clearTimeout(delay);clearInterval(hold);hold=null;delay=null;}document.querySelectorAll('[data-dir]').forEach(b=>{const d={up:[0,-1],down:[0,1],left:[-1,0],right:[1,0]}[b.dataset.dir];b.addEventListener('pointerdown',e=>{e.preventDefault();stop();try{b.setPointerCapture(e.pointerId);}catch(err){}move(...d);delay=setTimeout(()=>{hold=setInterval(()=>move(...d),145);},280);});for(const ev of ['pointerup','pointercancel','lostpointercapture','pointerleave'])b.addEventListener(ev,stop);});$('interact').onclick=interact;
+cv.addEventListener('pointerdown',e=>{const box=cv.getBoundingClientRect(),x=Math.floor((e.clientX-box.left)/box.width*640/40),y=Math.floor((e.clientY-box.top)/box.height*360/40);const o=rooms[state.room].objects.find(o=>o.x===x&&o.y===y);if(o&&Math.abs(o.x-state.x)<=1&&Math.abs(o.y-state.y)<=1)interact();});
+$('reset').onclick=()=>{if(confirm('確定清除目前校園祭進度？')){state=defaultState();save();draw();intro();}};
+function intro(){if(state.ending){finalRecord();return;}if(state.phase===1){storm();return;}say('【10月5日｜學生自治會】\n校長室送來一份通知：舊校舍整修前的最後一場校園祭，六項提案只能留下三項。\n\n自治會已選定「科學體驗、校史展覽、音樂演出」。明天中午前，必須交出可執行的安排表。\n\n桌上放著通知和經費表。小晴正在等你。');}
+window.addEventListener('error',e=>{$('error').textContent='執行錯誤：'+e.message;});draw();intro();
 })();
 </script></body></html>
