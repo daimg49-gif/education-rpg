@@ -44,7 +44,7 @@
  next.addEventListener('click',()=>{if(page===0){showPage(1);}else{window.__openingDone=true;screen.hidden=true;if(typeof window.__onOpeningDone==='function')window.__onOpeningDone();}});
 })();
 </script>
-<header><div><h1>校園真相調查局 <small>v3.4.5｜五案完結篇</small></h1><small>探索資料・訪談人物・撰寫校刊報導</small></div><button id="reset">重新開始</button></header>
+<header><div><h1>校園真相調查局 <small>v3.5.0｜五案完結篇</small></h1><small>探索資料・訪談人物・撰寫校刊報導</small></div><button id="reset">重新開始</button></header>
 <main><div class="game-stage"><canvas id="game" width="640" height="384" aria-label="遊戲地圖"></canvas><div id="storyOverlay" class="story-overlay" hidden><img id="storyImage" alt="調查場景插畫"><div class="story-shade"></div><div class="story-dialog"><button id="closeStory" class="story-close" aria-label="返回探索地圖">× 返回探索</button><div id="overlayTitle" class="overlay-title"></div><div id="overlayMessage" class="overlay-message"></div><div id="overlayChoices" class="overlay-choices"></div></div></div></div>
 <div class="controls"><div class="pad"><button class="up" data-dir="up">▲</button><button class="left" data-dir="left">◀</button><button class="down" data-dir="down">▼</button><button class="right" data-dir="right">▶</button></div><button class="interact" id="interact">調查／對話</button></div>
 <div class="tip">方向鍵或 WASD 移動；走向地圖四周標示的出口切換空間。靠近人物或文件可調查。</div>
@@ -285,7 +285,29 @@ function caseWizard(cfg,step=0){
  if(step===0){wizardHeading('① 你準備如何處理傳言？');['我認為傳言可能成立，想提出證據支持','我認為傳言可能不成立，想提出證據反駁','目前無法判定，想先釐清哪些部分可證實'].forEach((t,i)=>wizardButton((stance===i?'● ':'○ ')+t,()=>{state['stance'+cfg.which]=i;save();caseWizard(cfg,0);},stance===i?'selected':'option'));wizardButton('確認調查立場 → 下一頁',()=>{if(!Number.isInteger(state['stance'+cfg.which])){say('請先選擇要檢驗的方向。');wizardButton('返回選擇',()=>caseWizard(cfg,0),'next');return;}caseWizard(cfg,1);},'next');}
  if(step===1){wizardHeading('② 報導標題');cfg.headlines.forEach((h,i)=>wizardButton((headline===i?'● ':'○ ')+h,()=>{state[cfg.headKey]=i;save();caseWizard(cfg,1);},headline===i?'selected':'option'));wizardButton('← 返回調查立場',()=>caseWizard(cfg,0),'back');wizardButton('確認標題 → 下一頁',()=>{if(!Number.isInteger(state[cfg.headKey])){say('請先選擇標題。');wizardButton('返回標題',()=>caseWizard(cfg,1),'next');return;}caseWizard(cfg,2);},'next');}
  if(step===2){wizardHeading('③ 報導內容');cfg.bodies.forEach((b,i)=>wizardButton((body===i?'● ':'○ ')+b,()=>{state[cfg.bodyKey]=i;save();caseWizard(cfg,2);},body===i?'selected':'option'));wizardButton('← 返回標題',()=>caseWizard(cfg,1),'back');wizardButton('確認內容 → 下一頁',()=>{if(!Number.isInteger(state[cfg.bodyKey])){say('請先選擇報導內容。');wizardButton('返回內容',()=>caseWizard(cfg,2),'next');return;}caseWizard(cfg,3);},'next');}
- if(step===3){wizardHeading('④ 引用證據（可多選）');const selected=state[cfg.citeKey]||[];cfg.found().forEach(id=>wizardButton((selected.includes(id)?'☑ ':'☐ ')+(cfg.names[id]||id),()=>{state[cfg.citeKey]=selected.includes(id)?selected.filter(x=>x!==id):[...selected,id];save();caseWizard(cfg,3);},selected.includes(id)?'selected':'option'));wizardButton('← 返回報導內容',()=>caseWizard(cfg,2),'back');wizardButton('確認證據並發表校刊',cfg.publish,'next');}
+ if(step===3){
+  const rubric=evidenceRubrics[cfg.which],selected=Array.isArray(state[cfg.citeKey])?state[cfg.citeKey]:[];
+  const found=new Set(cfg.found());
+  wizardHeading('④ 引用證據｜勾選全部必要證據；補充證據自由選擇；勿引用不合理的證據');
+  const groups=[
+   ['必要證據｜必須全部勾選',rubric.necessary],
+   ['補充證據｜可選可不選',rubric.supplementary],
+   ['反證／待查資料｜不宜直接當成報導依據',rubric.counter]
+  ];
+  groups.forEach(([title,ids])=>{
+   if(!ids.length)return;
+   wizardHeading(title);
+   ids.forEach(id=>{
+    const chosen=selected.includes(id),available=found.has(id);
+    wizardButton((chosen?'☑ ':'☐ ')+(cfg.names[id]||id)+(available?'':'（尚未取得）'),()=>{
+     if(!available){say('【證據尚未取得】\\n請先回校園調查「'+(cfg.names[id]||id)+'」，再返回編輯桌。');wizardButton('返回證據清單',()=>caseWizard(cfg,3),'next');wizardButton('回校園繼續調查',closeStory,'back');return;}
+     state[cfg.citeKey]=chosen?selected.filter(x=>x!==id):[...selected,id];save();caseWizard(cfg,3);
+    },chosen?'selected':'option');
+   });
+  });
+  wizardButton('← 返回報導內容',()=>caseWizard(cfg,2),'back');
+  wizardButton('確認證據並發表校刊',cfg.publish,'next');
+ }
 }
 function editorConfig(which){
  if(which===1)return {which:1,title:'第一案：閱讀週',headKey:'headline',bodyKey:'bodyChoice',citeKey:'citations',headlines,bodies:bodyOptions,names,found:()=>state.found,publish:()=>finish(state.headline)};
@@ -314,62 +336,56 @@ function startLater(n){if(n===4&&!state.thirdReport||n===5&&!state.laterReports[
 function laterEvidence(o){const n=state.chapter;if(o.id==='desk'+n){caseWizard(editorConfig(n));return;}const found=state.laterFound[n]||[];if(!found.includes(o.id))found.push(o.id);state.laterFound[n]=found;save();draw();say('【'+o.label+'】\n'+o.text);button('加入證據板',()=>{state.laterPins[n]=state.laterPins[n]||[];if(!state.laterPins[n].includes(o.id))state.laterPins[n].push(o.id);save();draw();say('已記錄：'+o.label);});}
 function laterProgress(){const n=state.chapter,c=laterCases[n],found=state.laterFound[n]||[];inv.textContent='已蒐集：'+found.map(id=>c.names[id]).join('、');status.textContent='第'+n+'案｜'+found.length+'份證據｜'+(state.laterReports[n]?'已結案':'調查中');board.replaceChildren();found.forEach(id=>{const b=document.createElement('button');b.textContent='查看 '+c.names[id];b.onclick=()=>review(id);board.appendChild(b);});}
 const evidenceRubrics={
- 1:{allowed:['stats','notice','ledger','hua','ming','class','archive'],core:['stats','ledger'],minimum:2,question:'你的證據能證明借閱量的變化嗎？有沒有把借閱量誤當成讀完冊數或能力進步？'},
- 2:{allowed:['lunch_photo','photographer','original','menu','witness','class_note','service'],core:['original','photographer'],minimum:2,question:'照片本身、拍攝者說法與原始影像能相互印證嗎？這些證據能否支持你寫的每一句話？'},
- 3:{allowed:['fake_notice','official3','versions3','register3','chain3','librarian3','library_log'],core:['official3','versions3'],minimum:2,question:'哪些文件有正式發布來源？哪些只是轉傳者的說法？所選資料是否能支持你的標題？'},
- 4:{allowed:['poster4','stat4','rules4','roster4','calc4','teacher4'],core:['stat4','rules4','roster4'],minimum:3,question:'要判斷比賽名次，哪些資料能證明排名規則、班級人數與借閱數量？群組意見本身算證據嗎？'},
- 5:{allowed:['frame5','closing5','witness5','duty5','guard5','timeline5','video5'],core:['frame5','duty5','timeline5'],minimum:3,question:'你選的是原始時間紀錄與可核對的證詞，還是未經證實的轉傳？能否只憑模糊截圖認定身分？'}
+ 1:{necessary:['stats','ledger'],supplementary:['notice','hua','ming','class','archive'],counter:['rumor','billboard','hallnote'],question:'統計表與整理簿是否支持借閱量增加？借閱量能直接證明閱讀能力嗎？'},
+ 2:{necessary:['original','photographer'],supplementary:['lunch_photo','menu','witness','class_note','service'],counter:['viral','forwarder','cook','poster2'],question:'照片的原始畫面與拍攝時間能否支持傳言？'},
+ 3:{necessary:['official3','versions3'],supplementary:['fake_notice','register3','chain3','librarian3','library_log'],counter:['source3','editor3','class_msg3','student3'],question:'正式公告與截圖差異是什麼？轉述能否代替原始公告？'},
+ 4:{necessary:['stat4','rules4','roster4'],supplementary:['poster4','calc4','teacher4'],counter:[],question:'排名規則、借閱總數與班級人數是否能支持結論？'},
+ 5:{necessary:['frame5','duty5','timeline5'],supplementary:['closing5','witness5','guard5','video5'],counter:[],question:'影像與時間紀錄能確認哪些事實？是否足以辨認身分？'}
 };
 function evaluatePublication(which,selected,found,headline,body){
  const rubric=evidenceRubrics[which],stance=state['stance'+which];
- const citations=Array.isArray(selected)?[...new Set(selected)]:[];
- const discovered=Array.isArray(found)?[...new Set(found)]:[];
- const known=new Set(discovered);
  if(!rubric)return {ok:false,reason:'system'};
+ const citations=Array.isArray(selected)?[...new Set(selected)]:[];
+ const known=new Set(Array.isArray(found)?found:[]);
  if(!Number.isInteger(stance))return {ok:false,reason:'stance'};
  if(!Number.isInteger(headline))return {ok:false,reason:'headline'};
  if(!Number.isInteger(body))return {ok:false,reason:'body'};
- if(citations.length===0)return {ok:false,reason:'empty'};
- if(citations.length<rubric.minimum)return {ok:false,reason:'few'};
  if(citations.some(id=>!known.has(id)))return {ok:false,reason:'unknown'};
- if(citations.some(id=>!rubric.allowed.includes(id)))return {ok:false,reason:'irrelevant'};
- // Selecting every discovered item is allowed; assess evidence relevance instead.
- if(!rubric.core.every(id=>known.has(id)))return {ok:false,reason:'investigate'};
- if(!rubric.core.some(id=>citations.includes(id)))return {ok:false,reason:'connection'};
+ if(citations.some(id=>rubric.counter.includes(id)))return {ok:false,reason:'counter',items:citations.filter(id=>rubric.counter.includes(id))};
+ if(citations.some(id=>!rubric.necessary.includes(id)&&!rubric.supplementary.includes(id)))return {ok:false,reason:'irrelevant'};
+ const missing=rubric.necessary.filter(id=>!citations.includes(id));
+ if(missing.length)return {ok:false,reason:'necessary',items:missing};
  if(stance===0)return {ok:false,reason:'stanceConflict'};
  if(headline!==1||body!==1)return {ok:false,reason:'claim'};
  return {ok:true,reason:'ok'};
 }
 function checkEvidence(which,selected,found,headline,body){return evaluatePublication(which,selected,found,headline,body).ok;}
 function evidenceReflection(which,result){
- const reason=result&&result.reason||'investigate',rubric=evidenceRubrics[which];
+ const rubric=evidenceRubrics[which],reason=result?.reason||'system';
+ const labels=editorConfig(which).names;
+ const itemNames=(result?.items||[]).map(id=>labels[id]||id).join('、');
  const prompts={
-  system:'資料檢查暫時無法完成，請重新開啟編輯頁。',
-  stance:'還沒選擇要查證的方向。先提出你的調查立場。',
-  headline:'還沒確認報導標題。標題是否能由調查資料支持？',
-  body:'還沒確認報導內容。請先檢查報導的主要主張。',
-  empty:'目前沒有引用任何資料。讀者要如何核對你的說法？',
-  few:'目前引用的資料偏少。是否有不同來源能相互印證？',
-  unknown:'有些引用資料尚未完成調查，請先回到現場確認來源。',
-  irrelevant:'你選的資料中，有些未必能支持這篇報導。請逐份問自己：「這份資料證明了哪一句話？」',
-  all:'請確認每一份引用資料與報導主張的關聯，必要時調整引用。',
-  investigate:'目前蒐集的資料還不足以確認報導的核心說法。還有哪些原始紀錄或不同角度值得查訪？',
-  connection:'已找到一些重要資料，但還需要把能直接支持主張的資料放進引用。你最重要的依據是什麼？',
-  stanceConflict:'目前證據尚不足以證實原始傳言。請重新判斷立場：能否反駁傳言，或只能保留判斷？',
-  claim:'這份標題或內文含有未經證實的推論，或把有限資料當成確定結論。請比對原始紀錄，找出只陳述可查證事實的選項。'
+  system:'編輯檢查發生問題，請重新開啟編輯桌。',
+  stance:'尚未選擇調查立場，請返回第一步。',
+  headline:'尚未選擇報導標題。',
+  body:'尚未選擇報導內容。',
+  unknown:'引用清單中有尚未取得的資料，請重新確認。',
+  irrelevant:'有些引用資料與本案報導主張無直接關聯，請重新挑選。',
+  counter:'你勾選了不足以支持報導結論的資料：'+itemNames+'。這些資料可作為調查線索，但不適合當作已查證的依據。',
+  necessary:'必要證據尚未勾選完整：'+itemNames+'。請先取得並勾選這些資料。',
+  investigate:'仍有必要調查資料尚未取得，請返回校園蒐集。',
+  stanceConflict:'目前的證據不能證實原始傳言。請重新檢查你的調查立場。',
+  claim:'標題或報導內容有超出證據的推論，請重新檢查。',
  };
- say('【校刊編輯審查｜尚未通過】\n'+prompts[reason]+'\n\n主編再問你：「'+rubric.question+'」');
- wizardButton('返回調查立場',()=>caseWizard(editorConfig(which),0),'back');
- wizardButton('重新檢查標題與內容',()=>caseWizard(editorConfig(which),1),'back');
+ say('【校刊編輯審查｜尚未通過】\\n'+(prompts[reason]||prompts.system)+'\\n\\n主編提問：「'+rubric.question+'」');
  wizardButton('調整引用證據',()=>caseWizard(editorConfig(which),3),'next');
+ wizardButton('修改標題與內容',()=>caseWizard(editorConfig(which),1),'back');
+ wizardButton('修改調查立場',()=>caseWizard(editorConfig(which),0),'back');
  wizardButton('返回校園繼續查證',closeStory,'back');
 }
 function publicationGuard(which,selected,found,headline,body,required){
  const result=evaluatePublication(which,selected,found,headline,body);
  if(!result.ok){evidenceReflection(which,result);return false;}
- if(Array.isArray(required)&&required.some(id=>!found.includes(id))){
-  evidenceReflection(which,{reason:'investigate'});return false;
- }
  return true;
 }
 function publishLater(n){const c=laterCases[n],found=state.laterFound[n]||[],cit=state['laterCite'+n]||[],req=n===4?['poster4','stat4','rules4','roster4']:['frame5','duty5','guard5','timeline5'];if(!publicationGuard(n,cit,found,state['laterHead'+n],state['laterBody'+n],req))return;state.laterReports[n]={headline:state['laterHead'+n],body:state['laterBody'+n],citations:[...cit]};save();draw();say('【第'+n+'案結案】\n'+c.headlines[state['laterHead'+n]]+'\n'+c.bodies[state['laterBody'+n]]+'\n引用：'+cit.map(id=>c.names[id]).join('、'));if(n===4)button('新線索：校園黑影 → 進入第五單元',()=>startLater(5));else button('查看五案總結局',finalEnding);}
@@ -562,8 +578,7 @@ const bodyOptions=["借閱量由80本增加至164本，足以證明全班閱讀�
 const headlines=["閱讀週借閱量上升，證明全班閱讀能力進步","閱讀週借閱冊數增加，尚不能證明能力提升","閱讀週借閱量上升，證明學生已讀完所有書"];
 function openEditor(){caseWizard(editorConfig(1));}
 function finish(n){
-if(!publicationGuard(1,state.citations,state.found,n,state.bodyChoice,['stats','notice','ledger']))return;
-if(!state.found.some(id=>['hua','ming'].includes(id))){evidenceReflection(1,{reason:'investigate'});return;}
+if(!publicationGuard(1,state.citations,state.found,n,state.bodyChoice))return;
 state.ending=n+1;
 state.publications.push({headline:n,bodyChoice:state.bodyChoice,citations:[...state.citations],timestamp:Date.now()});
 state.chapterDone=false;save();draw();showConclusion();
