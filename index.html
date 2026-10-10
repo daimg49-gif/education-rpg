@@ -10,9 +10,30 @@
 .opening-card h2{font-size:clamp(23px,5vw,33px);margin:12px 0;color:#fff4d4}
 .opening-card p{white-space:pre-line;line-height:1.85;font-size:clamp(15px,3vw,18px)}
 #openingNext{display:block;width:100%;margin-top:20px;background:#ad7932;border-color:#ffe3a5;font-size:18px;touch-action:manipulation}
-</style></head><body><div id="openingScreen" role="dialog" aria-modal="true" aria-labelledby="openingTitle" hidden><div class="opening-card"><div class="opening-kicker" id="openingKicker">校園真相調查局</div><h2 id="openingTitle"></h2><p id="openingText"></p><button id="openingNext" type="button"></button></div></div>
+</style></head><body><div id="openingScreen" role="dialog" aria-modal="true" aria-labelledby="openingTitle"><div class="opening-card"><div class="opening-kicker" id="openingKicker">新進編輯報到 · 遊戲說明</div><h2 id="openingTitle">歡迎加入校園真相調查局</h2><p id="openingText">你是校刊社的新進編輯員。校園裡流傳著各種消息，你的工作不是立刻相信或否定，而是找出可以查證的事實。\n\n【通關任務】\n① 走訪校園，訪談人物、閱讀文件並蒐集證據。\n② 比對來源，查證校園傳聞。\n③ 前往「校刊社」編輯桌，選擇立場、標題、內文與引用證據。\n④ 發表有證據支持的正確報導，才能結案並解鎖下一案。\n\n全遊戲共有五件校園案件。</p><button id="openingNext" type="button">下一步｜閱讀第一案委託 →</button></div></div>
 
-<header><div><h1>校園真相調查局 <small>v3.4.2｜五案完結篇</small></h1><small>探索資料・訪談人物・撰寫校刊報導</small></div><button id="reset">重新開始</button></header>
+<script>
+/* Independent opening boot: runs before the game engine and remains visible even if game initialization fails. */
+(function(){
+ const screen=document.getElementById('openingScreen'),next=document.getElementById('openingNext');
+ if(!screen||!next)return;
+ let page=0;
+ next.addEventListener('click',function(){
+  if(page===0){
+   page=1;
+   document.getElementById('openingKicker').textContent='第一案 · 閱讀週的驚人數字';
+   document.getElementById('openingTitle').textContent='借閱量翻倍，閱讀能力也翻倍？';
+   document.getElementById('openingText').textContent='閱讀週剛結束，校園群組流傳一則熱門消息：\\n「閱讀週讓四年級借閱量翻倍，閱讀能力全面提升！」\\n\\n阿甘寫信到校刊社：「我們班真的每個人都變得更會閱讀了嗎？這句話有什麼根據？」\\n\\n主編交代你：「到圖書館、四年級教室和資料室查證，找到可靠證據後，回校刊社編寫第一篇報導。」';
+   next.textContent='接受委託｜進入校園探索 →';
+  }else{
+   window.__openingDone=true;
+   screen.hidden=true;
+   if(typeof window.__onOpeningDone==='function')window.__onOpeningDone();
+  }
+ });
+})();
+</script>
+<header><div><h1>校園真相調查局 <small>v3.4.3｜五案完結篇</small></h1><small>探索資料・訪談人物・撰寫校刊報導</small></div><button id="reset">重新開始</button></header>
 <main><div class="game-stage"><canvas id="game" width="640" height="384" aria-label="遊戲地圖"></canvas><div id="storyOverlay" class="story-overlay" hidden><img id="storyImage" alt="調查場景插畫"><div class="story-shade"></div><div class="story-dialog"><button id="closeStory" class="story-close" aria-label="返回探索地圖">× 返回探索</button><div id="overlayTitle" class="overlay-title"></div><div id="overlayMessage" class="overlay-message"></div><div id="overlayChoices" class="overlay-choices"></div></div></div></div>
 <div class="controls"><div class="pad"><button class="up" data-dir="up">▲</button><button class="left" data-dir="left">◀</button><button class="down" data-dir="down">▼</button><button class="right" data-dir="right">▶</button></div><button class="interact" id="interact">調查／對話</button></div>
 <div class="tip">方向鍵或 WASD 移動；走向地圖四周標示的出口切換空間。靠近人物或文件可調查。</div>
@@ -380,26 +401,12 @@ if(removed.length)changes.push('移除引用：'+removed.map(id=>names[id]||id).
 if(!changes.length)changes.push('這兩版的標題、主段落與引用資料相同。');
 say('【校刊修訂比較｜第 '+(state.publications.length-1)+' 版 → 第 '+state.publications.length+' 版】\n'+changes.join('\n'));
 }
-function firstCaseIntro(page=0){
- introLocked=true;
- const screen=document.getElementById('openingScreen');
- const title=document.getElementById('openingTitle'),copy=document.getElementById('openingText'),next=document.getElementById('openingNext');
- overlay.hidden=true;storyOpen=false;
- screen.hidden=false;
- if(page===0){
-  document.getElementById('openingKicker').textContent='新進編輯報到 · 遊戲說明';
-  title.textContent='歡迎加入校園真相調查局';
-  copy.textContent='你是校刊社的新進編輯員。校園裡流傳著各種消息，你的工作不是立刻相信或否定，而是找出可以查證的事實。\n\n【通關任務】\n① 走訪校園，訪談人物、閱讀文件並蒐集證據。\n② 比對消息來源，查證校園傳聞。\n③ 前往「校刊社」編輯桌，選擇調查立場、標題、內文與引用資料。\n④ 發表有證據支持的正確報導，才能結案並解鎖下一案。\n\n全遊戲共有五件校園案件。';
-  next.textContent='下一步｜閱讀第一案委託 →';
-  next.onclick=()=>firstCaseIntro(1);
- }else{
-  document.getElementById('openingKicker').textContent='第一案 · 閱讀週的驚人數字';
-  title.textContent='借閱量翻倍，閱讀能力也翻倍？';
-  copy.textContent='閱讀週剛結束，校園群組流傳一則熱門消息：\n「閱讀週讓四年級借閱量翻倍，閱讀能力全面提升！」\n\n阿甘寫信到校刊社：「我們班真的每個人都變得更會閱讀了嗎？這句話有什麼根據？」\n\n主編交代你：「到圖書館、四年級教室和資料室查證，找到可靠證據後，回校刊社編寫第一篇報導。」';
-  next.textContent='接受委託｜進入校園探索 →';
-  next.onclick=()=>{introLocked=false;screen.hidden=true;state.introSeen=true;save();draw();};
- }
+function firstCaseIntro(){
+ // The standalone opening screen is already rendered before game initialization.
+ introLocked=!window.__openingDone;
+ document.getElementById('openingScreen').hidden=!!window.__openingDone;
 }
+window.__onOpeningDone=()=>{introLocked=false;state.introSeen=true;save();draw();};
 function narrative(){
 if(isLater()){say('【第'+state.chapter+'單元｜'+laterCases[state.chapter].title+'】\n回校刊社繼續調查。');return;}if(isThird()){say('【第三單元｜不存在的校長公告】\n回校刊社繼續查證公告。');return;}if(isSecond()){say('【第二單元｜消失的午餐】\\n回校刊社繼續調查照片爭議。');return;}
 if(!state.introSeen){firstCaseIntro(0);return;}
