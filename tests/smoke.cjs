@@ -26,7 +26,7 @@ const http=require('node:http'),fs=require('node:fs'),assert=require('node:asser
   await page.locator('#interact').click();
   assert.match(await page.locator('#choices').innerText(),/校長室通知/);
   assert.ok((await state()).seen.includes('notice'));
-  await page.evaluate(()=>{const s=JSON.parse(localStorage.getItem('last-festival-v1'));s.seen=['notice','budget','music','history','equipment','circuit'];localStorage.setItem('last-festival-v1',JSON.stringify(s));});
+  await page.evaluate(()=>{const s=JSON.parse(localStorage.getItem('last-festival-v1'));s.seen=['notice','budget','music','history','equipment','circuit'];s.choices.science='low';s.choices.history='scan';localStorage.setItem('last-festival-v1',JSON.stringify(s));});
   await page.reload();
   await page.getByRole('button',{name:'召開自治會協調會'}).click();
   await page.getByRole('button',{name:'安排共用場地，先確認設備與動線'}).click();
